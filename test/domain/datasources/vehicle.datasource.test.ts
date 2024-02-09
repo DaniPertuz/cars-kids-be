@@ -7,9 +7,6 @@ describe('Vehicle datasource', () => {
     createVehicle(vehicle: VehicleEntity): Promise<VehicleEntity> {
       throw new Error('Method not implemented.');
     }
-    getVehicleById(id: string): Promise<VehicleEntity | null> {
-      throw new Error('Method not implemented.');
-    }
     getVehicleByNickname(nickname: string): Promise<VehicleEntity | null> {
       throw new Error('Method not implemented.');
     }
@@ -42,7 +39,6 @@ describe('Vehicle datasource', () => {
     expect(mockDatasource).toBeInstanceOf(MockDatasource);
     expect(typeof mockDatasource.createVehicle).toBe('function');
     expect(typeof mockDatasource.getVehicles).toBe('function');
-    expect(typeof mockDatasource.getVehicleById).toBe('function');
     expect(typeof mockDatasource.getVehicleByNickname).toBe('function');
     expect(typeof mockDatasource.getVehiclesByColor).toBe('function');
     expect(typeof mockDatasource.getVehiclesByColorAndSize).toBe('function');

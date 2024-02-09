@@ -16,14 +16,6 @@ export class VehiclesController {
     return res.json(vehicles);
   };
 
-  public getVehicleById = async (req: Request, res: Response) => {
-    const { id } = req.params;
-
-    const vehicle = await this.vehicleRepo.getVehicleById(id);
-
-    return (vehicle) ? res.json(vehicle.params) : res.status(404).json({ error: `No se encontró vehículo con ID ${id}` });
-  };
-
   public getVehicleByNickname = async (req: Request, res: Response) => {
     const { nickname } = req.params;
 

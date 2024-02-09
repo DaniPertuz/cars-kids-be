@@ -14,10 +14,6 @@ export class VehicleRepositoryImpl implements VehicleRepository {
     return this.vehicleDatasource.getVehicleByNickname(id);
   }
 
-  getVehicleById(id: string): Promise<VehicleEntity | null> {
-    return this.vehicleDatasource.getVehicleById(id);
-  }
-
   getVehicles(): Promise<VehicleEntity[]> {
     return this.vehicleDatasource.getVehicles();
   }

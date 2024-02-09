@@ -11,7 +11,6 @@ describe('Vehicle repository implementation', () => {
   const mockVehicleDatasource: MockVehicleDatasource = {
     createVehicle: jest.fn(),
     getVehicleByNickname: jest.fn(),
-    getVehicleById: jest.fn(),
     getVehicles: jest.fn(),
     getVehiclesByColor: jest.fn(),
     getVehiclesByColorAndSize: jest.fn(),
@@ -39,7 +38,6 @@ describe('Vehicle repository implementation', () => {
     { method: 'createVehicle', args: [vehicle], },
     { method: 'getVehicles', args: [], },
     { method: 'getVehicleByNickname', args: ['Test Name'], },
-    { method: 'getVehicleById', args: ['Test ID'], },
     { method: 'getVehiclesByColor', args: ['Test Color'], },
     { method: 'getVehiclesByColorAndSize', args: ['Test Color', 'Test Size' as IVehicleSize], },
     { method: 'getVehiclesBySize', args: ['Test Size' as IVehicleSize], },

@@ -3,7 +3,6 @@ import { VehicleEntity } from '../entities/vehicle.entity';
 
 export abstract class VehicleDatasource {
   abstract createVehicle(vehicle: VehicleEntity): Promise<VehicleEntity>;
-  abstract getVehicleById(id: string): Promise<VehicleEntity | null>;
   abstract getVehicleByNickname(nickname: string): Promise<VehicleEntity | null>;
   abstract getVehicles(): Promise<VehicleEntity[]>;
   abstract getVehiclesByColor(color: string): Promise<VehicleEntity[]>;

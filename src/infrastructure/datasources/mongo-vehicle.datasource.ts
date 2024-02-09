@@ -15,12 +15,6 @@ export class MongoVehicleDatasource implements VehicleDatasource {
     return VehicleEntity.fromObject(data);
   }
 
-  async getVehicleById(id: string): Promise<VehicleEntity | null> {
-    const vehicleData = await VehicleModel.findById(id).select('-status');
-
-    return vehicleData ? VehicleEntity.fromObject(vehicleData) : null;
-  }
-
   async getVehicleByNickname(nickname: string): Promise<VehicleEntity | null> {
     const vehicleData = await VehicleModel.findOne({ nickname }).select('-status');
 
