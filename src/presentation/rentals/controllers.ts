@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { RentalRepositoryImpl } from '../../infrastructure/repositories/rental-impl.repository';
 import { MongoRentalDatasource } from '../../infrastructure/datasources/mongo-rental.datasource';
 import { RentalEntity } from '../../domain/entities/rental.entity';
-import { IRental, IStatus } from '../../interfaces';
+import { IStatus } from '../../interfaces';
 import { RentalDTO } from '../../domain/dtos/rental';
 
 export class RentalsController {
