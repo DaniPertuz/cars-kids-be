@@ -42,7 +42,7 @@ export class VehicleRepositoryImpl implements VehicleRepository {
     return this.vehicleDatasource.updateVehicle(nickname, vehicle);
   }
 
-  deactivateVehicle(id: string): Promise<void> {
+  deactivateVehicle(id: string): Promise<VehicleEntity | null> {
     return this.vehicleDatasource.deactivateVehicle(id);
   }
 }

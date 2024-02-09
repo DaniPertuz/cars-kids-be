@@ -11,5 +11,5 @@ export abstract class VehicleRepository {
   abstract getVehiclesBySize(size: string): Promise<VehicleEntity[]>;
   abstract getVehiclesByStatus(status: IStatus): Promise<VehicleEntity[]>;
   abstract updateVehicle(nickname: string, vehicle: VehicleEntity): Promise<VehicleEntity | null>;
-  abstract deactivateVehicle(nickname: string): Promise<void>;
+  abstract deactivateVehicle(nickname: string): Promise<VehicleEntity | null>;
 }

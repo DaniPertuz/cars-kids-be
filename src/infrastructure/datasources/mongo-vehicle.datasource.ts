@@ -44,7 +44,8 @@ export class MongoVehicleDatasource implements VehicleDatasource {
     return vehicleData ? VehicleEntity.fromObject(vehicleData) : null;
   }
 
-  async deactivateVehicle(nickname: string): Promise<void> {
-    await VehicleModel.findOneAndUpdate({ nickname }, { status: IStatus.Inactive }, { new: true });
+  async deactivateVehicle(nickname: string): Promise<VehicleEntity | null> {
+    const vehicleData = await VehicleModel.findOneAndUpdate({ nickname }, { status: IStatus.Inactive }, { new: true });
+    return vehicleData ? VehicleEntity.fromObject(vehicleData) : null;
   }
 }
