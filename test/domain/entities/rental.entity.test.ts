@@ -25,15 +25,15 @@ describe('Rental entity', () => {
     expect(user.params.exception).toBe(data.exception);
   });
 
-  test('should create a VehicleEntity from object', () => {
+  test('should create a RentalEntity from object', () => {
     const user = RentalEntity.fromObject(data);
     
     expect(user).toBeInstanceOf(RentalEntity);
-    expect(typeof user.params.time).toBe(Number);
-    expect(typeof user.params.date).toBe(String);
-    expect(typeof user.params.vehicle).toBe(String);
-    expect(typeof user.params.payment).toBe(String);
-    expect(typeof user.params.amount).toBe(Number);
-    expect(typeof user.params.exception).toBe(String);
+    expect(typeof user.params.time).toBe('number');
+    expect(typeof user.params.date).toBe('string');
+    expect(typeof user.params.vehicle).toBe('string');
+    expect(typeof user.params.payment).toBe('string');
+    expect(typeof user.params.amount).toBe('number');
+    expect(typeof user.params.exception).toBe('string');
   });
 });
