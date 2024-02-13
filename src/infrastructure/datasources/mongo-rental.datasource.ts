@@ -53,8 +53,8 @@ export class MongoRentalDatasource implements RentalDatasource {
   async getRentalsByMonth(month: string, year: string): Promise<RentalEntity[]> {
     try {
       const monthNumber = new Date(`${month} 1, ${year}`).getMonth() + 1;
-      const firstDayOfMonth = new Date(new Date().getFullYear(), monthNumber - 1, 1);
-      const lastDayOfMonth = new Date(new Date().getFullYear(), monthNumber, 0);
+      const firstDayOfMonth = new Date(Number(year), monthNumber - 1, 1);
+      const lastDayOfMonth = new Date(Number(year), monthNumber, 0);
 
       const result = await RentalModel.find({
         date: {
@@ -99,7 +99,7 @@ export class MongoRentalDatasource implements RentalDatasource {
 
   async deactivateRental(id: string): Promise<void> {
     try {
-      await RentalModel.findByIdAndDelete(id, { new: true });
+      await RentalModel.findByIdAndDelete(id);
     } catch (error) {
       throw CustomError.serverError(`Error al eliminar alquiler: ${error}`);
     }
