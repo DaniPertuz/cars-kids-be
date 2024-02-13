@@ -6,9 +6,9 @@ jest.mock('mongoose');
 describe('Connection to MongoDB', () => {
 
   jest.mock('mongoose', () => ({
-    connections: [], // Inicialmente, no hay conexiones
-    connect: jest.fn(), // Mock de la función connect de Mongoose
-    disconnect: jest.fn(), // Mock de la función disconnect de Mongoose
+    connections: [],
+    connect: jest.fn(),
+    disconnect: jest.fn(),
   }));
 
   afterEach(() => {
