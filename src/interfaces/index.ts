@@ -29,7 +29,7 @@ export enum IVehicleSize {
 }
 
 export interface IRental {
-  _id?:       string;
+  _id:        string;
   client:     string;
   time:       number;
   date:       string;
