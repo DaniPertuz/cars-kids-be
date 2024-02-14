@@ -4,7 +4,7 @@ import { connect } from '../database';
 import { ServerOptions } from '../interfaces';
 
 export class Server {
-  private app = express();
+  public readonly app = express();
   private readonly port: number;
   private readonly publicPath: string;
   private readonly routes: Router;
