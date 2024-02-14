@@ -3,7 +3,7 @@ import { IRental } from '../../../interfaces';
 export class RentalDTO {
   private constructor(public params: IRental) { }
 
-  static create(object: IRental): [string?, RentalDTO?] {
+  static create(object: { [key: string]: any; }): [string?, RentalDTO?] {
     const { client, time, date, vehicle, payment, amount } = object;
 
     if (!client) return ['Nombre de cliente es requerido'];
@@ -13,7 +13,7 @@ export class RentalDTO {
     if (!payment) return ['Tipo de pago es requerido'];
     if (!amount) return ['Monto es requerido'];
 
-    return [undefined, new RentalDTO(object)];
+    return [undefined, new RentalDTO(object as IRental)];
   }
 
   static update(object: IRental): [string?, RentalDTO?] {
