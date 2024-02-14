@@ -5,7 +5,7 @@ export class VehiclesRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const { getVehicles, getVehicleByNickname, getVehiclesByColor, getVehiclesByColorAndSize, getVehiclesBySize, getVehiclesByStatus, createVehicle, updateVehicle, deactivateteVehicle } = new VehiclesController();
+    const { getVehicles, getVehicleByNickname, getVehiclesByColor, getVehiclesByColorAndSize, getVehiclesBySize, getVehiclesByStatus, createVehicle, updateVehicle, deactivateVehicle } = new VehiclesController();
 
     router.get('/', getVehicles);
     router.get('/color', getVehiclesByColor);
@@ -15,7 +15,7 @@ export class VehiclesRoutes {
     router.get('/nickname/:nickname', getVehicleByNickname);
     router.post('/', createVehicle);
     router.put('/:nickname', updateVehicle);
-    router.delete('/:nickname', deactivateteVehicle);
+    router.delete('/:nickname', deactivateVehicle);
 
     return router;
   }

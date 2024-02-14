@@ -104,7 +104,7 @@ export class VehiclesController {
     return res.json(updatedVehicle?.params);
   };
 
-  public deactivateteVehicle = async (req: Request, res: Response) => {
+  public deactivateVehicle = async (req: Request, res: Response) => {
     const { nickname } = req.params;
 
     const vehicleDB = await this.vehicleRepo.getVehicleByNickname(nickname);
