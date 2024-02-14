@@ -1,4 +1,4 @@
-import { IStatus, IVehicle, IVehicleSize } from '../../interfaces';
+import { IStatus, IVehicleSize } from '../../interfaces';
 import { VehicleEntity } from '../entities/vehicle.entity';
 
 export abstract class VehicleDatasource {
