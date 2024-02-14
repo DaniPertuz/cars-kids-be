@@ -86,9 +86,7 @@ export class VehiclesController {
 
     const vehicleDB = await this.vehicleRepo.getVehicleByNickname(nickname);
 
-    if (!vehicleDB) {
-      return res.status(404).json({ error: 'Vehículo no encontrado' });
-    }
+    if (!vehicleDB) return res.status(404).json({ error: 'Vehículo no encontrado' });
 
     const updatedVehicleData: IVehicle = {
       nickname: newNickname,
@@ -108,6 +106,10 @@ export class VehiclesController {
 
   public deactivateteVehicle = async (req: Request, res: Response) => {
     const { nickname } = req.params;
+
+    const vehicleDB = await this.vehicleRepo.getVehicleByNickname(nickname);
+
+    if (!vehicleDB) return res.status(404).json({ error: 'Vehículo no encontrado' });
 
     await this.vehicleRepo.deactivateVehicle(nickname);
 
