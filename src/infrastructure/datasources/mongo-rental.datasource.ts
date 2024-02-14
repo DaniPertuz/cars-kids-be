@@ -4,7 +4,7 @@ import { RentalEntity } from '../../domain/entities/rental.entity';
 import { CustomError } from '../../domain/errors';
 
 export class MongoRentalDatasource implements RentalDatasource {
-  private async getRentalsByQuery(query: any): Promise<RentalEntity[]> {
+  public async getRentalsByQuery(query: any): Promise<RentalEntity[]> {
     const rentalData = await RentalModel.find(query).populate('vehicle', '-createdAt -updatedAt');
     return rentalData.map(RentalEntity.fromObject);
   }
