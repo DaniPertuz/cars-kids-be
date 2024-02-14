@@ -12,10 +12,6 @@ describe('Vehicles routes testing', () => {
     await VehicleModel.deleteMany();
   });
 
-  afterAll(() => {
-    testServer.close();
-  });
-
   const vehicle1 = {
     nickname: 'Test Name',
     img: 'Test image',
