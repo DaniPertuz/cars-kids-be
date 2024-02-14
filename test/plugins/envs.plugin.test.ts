@@ -6,7 +6,7 @@ describe('Test envs.plugin.ts', () => {
     expect(envs).toEqual({
       JWT_SEED: 'C@R$K!D$S3ED',
       MONGO_URL: 'mongodb+srv://dpertuzo:E3QxBGhjtpNqOnsC@cluster0.fo76r.mongodb.net/cars-kids-test',
-      PORT: 3300,
+      PORT: 3400,
       PUBLIC_PATH: 'public'
     });
   });
