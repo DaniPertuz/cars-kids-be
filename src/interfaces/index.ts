@@ -30,7 +30,6 @@ export enum IVehicleSize {
 
 export interface IProduct {
   name:    string;
-  payment: IPayment;
   amount:  number;
   status:  IStatus;
 }
