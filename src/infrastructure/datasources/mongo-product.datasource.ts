@@ -6,15 +6,18 @@ import { IStatus } from '../../interfaces';
 
 export class MongoProductDatasource implements ProductDatasource {
   async createProduct(product: ProductEntity): Promise<ProductEntity> {
-    const data = await ProductModel.create(product.params);
+    try {
+      const data = await ProductModel.create(product.params);
 
-    return ProductEntity.fromObject(data);
+      return ProductEntity.fromObject(data);
+    } catch (error) {
+      throw CustomError.serverError(`Error al crear producto: ${error}`);
+    }
   }
 
   async getActiveProducts(): Promise<ProductEntity[]> {
     try {
-      const productData = await ProductModel.find({ status: IStatus.Active });
-      return productData.map(ProductEntity.fromObject);
+      return (await ProductModel.find({ status: IStatus.Active })).map(ProductEntity.fromObject);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener productos: ${error}`);
     }
@@ -22,8 +25,7 @@ export class MongoProductDatasource implements ProductDatasource {
 
   async getAllProducts(): Promise<ProductEntity[]> {
     try {
-      const productData = await ProductModel.find({});
-      return productData.map(ProductEntity.fromObject);
+      return (await ProductModel.find({})).map(ProductEntity.fromObject);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener productos: ${error}`);
     }
