@@ -35,6 +35,7 @@ export interface IProduct {
 }
 
 export interface IPurchase {
+  _id?:         string;
   product:      string;
   quantity:     number;
   price:        number;
