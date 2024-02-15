@@ -28,6 +28,13 @@ export enum IVehicleSize {
   Large  = 'L'
 }
 
+export interface IProduct {
+  name:    string;
+  payment: IPayment;
+  amount:  number;
+  status:  IStatus;
+}
+
 export interface IRental {
   _id?:       string;
   client:     string;
