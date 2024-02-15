@@ -77,8 +77,10 @@ export class MongoRentalDatasource implements RentalDatasource {
 
   async getRentalsByPeriod(starting: string, ending: string): Promise<RentalEntity[]> {
     try {
-      const startDate = new Date(starting);
-      const endDate = new Date(ending);
+      const startingDateParts = starting.split('-').map(Number);
+      const endingDateParts = ending.split('-').map(Number);
+      const startDate = new Date(startingDateParts[2], startingDateParts[1] - 1, startingDateParts[0]);
+      const endDate = new Date(endingDateParts[2], endingDateParts[1] - 1, endingDateParts[0]);
 
       const result = await RentalModel.find({
         date: {
