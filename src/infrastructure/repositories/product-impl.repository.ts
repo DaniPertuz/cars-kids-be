@@ -9,8 +9,12 @@ export class ProductRepositoryImpl implements ProductRepository {
     return this.productDatasource.createProduct(product);
   }
 
-  getProducts(): Promise<ProductEntity[]> {
-    return this.productDatasource.getProducts();
+  getActiveProducts(): Promise<ProductEntity[]> {
+    return this.productDatasource.getActiveProducts();
+  }
+
+  getAllProducts(): Promise<ProductEntity[]> {
+    return this.productDatasource.getAllProducts();
   }
 
   getProduct(name: string): Promise<ProductEntity | null> {

@@ -10,8 +10,14 @@ export class ProductsController {
     new MongoProductDatasource()
   );
 
-  public getProducts = async (req: Request, res: Response) => {
-    const vehicles = (await this.productRepo.getProducts()).map(vehicle => vehicle.params);
+  public getActiveProducts = async (req: Request, res: Response) => {
+    const vehicles = (await this.productRepo.getActiveProducts()).map(vehicle => vehicle.params);
+
+    return res.json(vehicles);
+  };
+
+  public getAllProducts = async (req: Request, res: Response) => {
+    const vehicles = (await this.productRepo.getAllProducts()).map(vehicle => vehicle.params);
 
     return res.json(vehicles);
   };
@@ -38,7 +44,7 @@ export class ProductsController {
 
   public updateProduct = async (req: Request, res: Response) => {
     const { name } = req.params;
-    const { name: newName, payment, amount, status } = req.body;
+    const { name: newName, amount, status } = req.body;
 
     const productDB = await this.productRepo.getProduct(name);
 
@@ -46,16 +52,15 @@ export class ProductsController {
 
     const updatedProductData: IProduct = {
       name: newName,
-      payment,
       amount,
       status
     };
 
     const updatedProductEntity = ProductEntity.fromObject(updatedProductData);
 
-    const updatedVehicle = await this.productRepo.updateProduct(name, updatedProductEntity);
+    const updatedProduct = await this.productRepo.updateProduct(name, updatedProductEntity);
 
-    return res.json(updatedVehicle?.params);
+    return res.json(updatedProduct?.params);
   };
 
   public deleteProduct = async (req: Request, res: Response) => {
@@ -67,6 +72,6 @@ export class ProductsController {
 
     const product = await this.productRepo.deleteProduct(name);
 
-    return res.json(product);
+    return res.json(product?.params);
   };
 }
