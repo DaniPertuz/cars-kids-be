@@ -27,7 +27,13 @@ export class MongoRentalDatasource implements RentalDatasource {
     }
   }
 
-  getRentals = (): Promise<RentalEntity[]> => this.getRentalsByQuery({});
+  async getRentals(): Promise<RentalEntity[]> {
+    try {
+      return await this.getRentalsByQuery({});
+    } catch (error) {
+      throw CustomError.serverError(`Error al obtener alquileres: ${error}`);
+    }
+  }
 
   async getRentalsByDay(day: string, month: string, year: string): Promise<RentalEntity[]> {
     try {
