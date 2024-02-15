@@ -34,6 +34,13 @@ export interface IProduct {
   status:  IStatus;
 }
 
+export interface IPurchase {
+  product:      string;
+  quantity:     number;
+  price:        number;
+  purchaseDate: string;
+}
+
 export interface IRental {
   _id?:       string;
   client:     string;
