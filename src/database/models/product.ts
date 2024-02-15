@@ -3,7 +3,6 @@ import { IProduct } from '../../interfaces';
 
 const productSchema = new Schema({
   name:      { type: String, required: true },
-  date:      { type: Date, required: true },
   payment:   { type: String, required: true,
                enum: {
                 values: ['cash', 'nequi', 'bancolombia', 'daviplata'],
