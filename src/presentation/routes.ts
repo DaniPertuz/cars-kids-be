@@ -4,7 +4,7 @@ import { ProductsRoutes } from './products/routes';
 import { RentalsRoutes } from './rentals/routes';
 import { UsersRoutes } from './users/routes';
 import { VehiclesRoutes } from './vehicles/routes';
-import { PurchasesRoutes } from './purchase/routes';
+import { PurchasesRoutes } from './purchases/routes';
 
 export class AppRoutes {
   static get routes(): Router {
