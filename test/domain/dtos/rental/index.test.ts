@@ -112,9 +112,10 @@ describe('RentalDTO', () => {
         exception: ''
       };
 
-      const [error] = RentalDTO.update(invalidObject);
+      const [error, rentalDTO] = RentalDTO.update(invalidObject);
 
-      expect(error).toBeTruthy();
+      expect(error).toBe('ID de alquiler no es válido');
+      expect(rentalDTO).toBeUndefined();
     });
 
     test('should return RentalDTO instance with default ID when object is valid', () => {
