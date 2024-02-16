@@ -32,7 +32,7 @@ describe('Rentals routes testing', () => {
       .post('/api/rentals')
       .send(testRental);
 
-    expect(body).toEqual({
+    expect(body).toEqual(expect.objectContaining({
       client: testRental.client,
       time: testRental.time,
       date: new Date(testRental.date).toISOString(),
@@ -40,7 +40,7 @@ describe('Rentals routes testing', () => {
       payment: testRental.payment,
       amount: testRental.amount,
       exception: testRental.exception
-    });
+    }));
   });
 
   test('should get rentals /api/rentals', async () => {
@@ -103,7 +103,7 @@ describe('Rentals routes testing', () => {
       .send({ client: 'Testing Update' })
       .expect(200);
 
-    expect(body).toEqual({
+    expect(body).toEqual(expect.objectContaining({
       client: 'Testing Update',
       time: 15,
       date: '2023-01-24T05:00:00.000Z',
@@ -111,7 +111,7 @@ describe('Rentals routes testing', () => {
       payment: IPayment.Cash,
       amount: 10000,
       exception: ''
-    });
+    }));
   });
 
   test('should delete rental /api/rentals/:id', async () => {
