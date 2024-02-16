@@ -2,16 +2,16 @@ import mongoose, { Model, Schema, model } from 'mongoose';
 import { IProduct } from '../../interfaces';
 
 const productSchema = new Schema({
-  name:      { type: String, required: true },
-  amount:    { type: Number, required: true },
-  status:   { type: String,
-              enum: {
-                values: ['active', 'inactive'],
-                message: '{VALUE} no es un estado válido',
-                default: 'active',
-                required: true
-              }
+  name:   { type: String, required: true },
+  amount: { type: Number, required: true },
+  status: { type: String,
+            enum: {
+              values: ['active', 'inactive'],
+              message: '{VALUE} no es un estado válido',
+              default: 'active',
+              required: true
             }
+          }
 }, {
   versionKey: false
 });
