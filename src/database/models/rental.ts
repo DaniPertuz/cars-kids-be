@@ -6,7 +6,7 @@ const rentalSchema = new Schema({
   time:      { type: Number, required: true },
   date:      { type: Date, required: true },
   vehicle:   { type: Schema.Types.ObjectId, ref: 'Vehicle', required: true },
-  payment:   { type: String, required: true,
+  payment:   { type: String,
                enum: {
                 values: ['cash', 'nequi', 'bancolombia', 'daviplata'],
                 message: '{VALUE} no es un medio de pago válido',
