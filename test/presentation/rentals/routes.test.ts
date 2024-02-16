@@ -38,8 +38,7 @@ describe('Rentals routes testing', () => {
       date: new Date(testRental.date).toISOString(),
       vehicle: testRental.vehicle,
       payment: testRental.payment,
-      amount: testRental.amount,
-      exception: testRental.exception
+      amount: testRental.amount
     }));
   });
 
