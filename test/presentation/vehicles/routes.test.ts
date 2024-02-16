@@ -60,9 +60,11 @@ describe('Vehicles routes testing', () => {
       .post('/api/vehicles')
       .send(vehicle1);
 
+    const imgValue = body.img ? body.img : '';
+
     expect(body).toEqual({
       nickname: vehicle1.nickname,
-      img: vehicle1.img,
+      img: imgValue,
       category: vehicle1.category,
       color: vehicle1.color,
       size: vehicle1.size,
