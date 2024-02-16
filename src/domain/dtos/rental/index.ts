@@ -13,7 +13,7 @@ export class RentalDTO {
     if (!payment) return ['Tipo de pago es requerido'];
     if (!amount) return ['Monto es requerido'];
 
-    return [undefined, new RentalDTO(object as IRental)];
+    return [undefined, new RentalDTO({ client, time, date, vehicle, payment, amount })];
   }
 
   static update(object: IRental): [string?, RentalDTO?] {
