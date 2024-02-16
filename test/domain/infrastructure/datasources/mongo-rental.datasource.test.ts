@@ -36,7 +36,7 @@ describe('Mongo Rental datasource', () => {
 
     expect(rentalDB).toBeInstanceOf(RentalEntity);
 
-    await RentalModel.findOneAndDelete({ cliente: rentalDB.params.client });
+    await RentalModel.findOneAndDelete({ client: rentalDB.params.client });
   });
 
   test('should throw CustomError.serverError when RentalModel.create throws an error', async () => {
@@ -45,13 +45,23 @@ describe('Mongo Rental datasource', () => {
     await expect(rentalDatasource.createRental(rental)).rejects.toThrow('Error al crear alquiler: Error: Test error');
   });
 
-  test('should get vehicles', async () => {
-    await rentalDatasource.createRental(rental);
+  test('should get rentals', async () => {
+    const rentalDB = await rentalDatasource.createRental(rental);
 
     const rentals = await rentalDatasource.getRentals();
 
     expect(rentals.length).toBeGreaterThanOrEqual(1);
     expect(rentals[0].params.client).toBe('NN Test');
+
+    await RentalModel.findOneAndDelete({ client: rentalDB.params.client });
+  });
+
+  test('should getRentals throw an error', async () => {
+    jest.spyOn(RentalModel, 'find').mockImplementationOnce(() => {
+      throw new Error('Test error');
+    });
+
+    await expect(rentalDatasource.getRentals()).rejects.toThrow('Error al obtener alquileres: Error: Test error');
   });
 
   test('should return the rental corresponding to the provided ID', async () => {
@@ -84,11 +94,13 @@ describe('Mongo Rental datasource', () => {
   });
 
   test('should get rentals by day', async () => {
-    await rentalDatasource.createRental(rental);
+    const rentalDB = await rentalDatasource.createRental(rental);
 
     const rentals = await rentalDatasource.getRentalsByDay('24', '01', '2023');
 
     expect(rentals.length).toBeGreaterThanOrEqual(1);
+
+    await RentalModel.findOneAndDelete({ client: rentalDB.params.client });
   });
 
   test('should getRentalsByDay throw an error', async () => {
@@ -98,17 +110,19 @@ describe('Mongo Rental datasource', () => {
 
     const day = '1';
     const month = '1';
-    const year = '2024';
+    const year = '2020';
 
     await expect(rentalDatasource.getRentalsByDay(day, month, year)).rejects.toThrow('Error al obtener los alquileres por día: Error: Test error');
   });
 
   test('should get rentals by month', async () => {
-    await rentalDatasource.createRental(rental);
+    const rentalDB = await rentalDatasource.createRental(rental);
 
     const rentals = await rentalDatasource.getRentalsByMonth('01', '2023');
 
     expect(rentals.length).toBeGreaterThanOrEqual(1);
+
+    await RentalModel.findOneAndDelete({ client: rentalDB.params.client });
   });
 
   test('should getRentalsByMonth throw an error', async () => {
@@ -122,20 +136,17 @@ describe('Mongo Rental datasource', () => {
     await expect(rentalDatasource.getRentalsByMonth(month, year)).rejects.toThrow('Error al obtener los alquileres por mes: Error: Test error');
   });
 
-  test('should return rentals within the specified period', async () => {
-    const mockRentals = [
-      { id: '1', date: new Date('2024-01-01') },
-      { id: '2', date: new Date('2024-01-15') },
-      { id: '3', date: new Date('2024-01-31') }
-    ];
-    jest.spyOn(RentalModel, 'find').mockResolvedValueOnce(mockRentals);
+  test('should get rentals within the specified period', async () => {
+    const rentalDB = await rentalDatasource.createRental(rental);
 
-    const starting = '2024-01-01';
-    const ending = '2024-02-01';
+    const starting = '10-12-2022';
+    const ending = '01-02-2023';
 
     const result = await rentalDatasource.getRentalsByPeriod(starting, ending);
 
-    expect(result).toHaveLength(3);
+    expect(result).toHaveLength(1);
+
+    await RentalModel.findOneAndDelete({ client: rentalDB.params.client });
   });
 
   test('should throw an error when querying within the specified period', async () => {
@@ -143,8 +154,8 @@ describe('Mongo Rental datasource', () => {
       throw new Error('Test error');
     });
 
-    const starting = '2024-01-01';
-    const ending = '2024-02-01';
+    const starting = '01-01-2023';
+    const ending = '01-02-2023';
 
     await expect(rentalDatasource.getRentalsByPeriod(starting, ending)).rejects.toThrow('Error al obtener los alquileres por periodo: Error: Test error');
   });
@@ -182,16 +193,16 @@ describe('Mongo Rental datasource', () => {
     await rentalDatasource.deactivateRental(rentalId);
 
     expect(RentalModel.findByIdAndDelete).toHaveBeenCalledWith(rentalId);
-});
+  });
 
   test('should throw an error when deleting a rental', async () => {
     jest.spyOn(RentalModel, 'findByIdAndDelete').mockImplementationOnce(() => {
-        throw new Error('Test error');
+      throw new Error('Test error');
     });
 
     const result = rentalDatasource.deactivateRental('1');
 
     await expect(result).rejects.toThrow('Error al eliminar alquiler: Error: Test error');
-});
+  });
 
 });
