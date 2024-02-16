@@ -35,7 +35,7 @@ describe('Rentals routes testing', () => {
     expect(body).toEqual({
       client: testRental.client,
       time: testRental.time,
-      date: '2023-01-24T05:00:00.000Z',
+      date: new Date(testRental.date).toISOString(),
       vehicle: testRental.vehicle,
       payment: testRental.payment,
       amount: testRental.amount,
@@ -87,7 +87,7 @@ describe('Rentals routes testing', () => {
     await RentalModel.create(testRental);
 
     const { body } = await request(testServer.app)
-      .get('/api/rentals/dates/period/2022-12-01/2023-01-31')
+      .get('/api/rentals/dates/period/01-12-2022/31-01-2023')
       .expect(200);
 
     expect(body).toBeInstanceOf(Array);
