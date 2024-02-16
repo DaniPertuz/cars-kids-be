@@ -15,7 +15,7 @@ describe('Purchase model', () => {
   test('should return PurchaseModel', async () => {
     const productData = {
       name: 'Test Product',
-      amount: 10000,
+      price: 10000,
       status: IStatus.Active
     };
 

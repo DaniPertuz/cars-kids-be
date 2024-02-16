@@ -29,9 +29,9 @@ export enum IVehicleSize {
 }
 
 export interface IProduct {
-  name:    string;
-  amount:  number;
-  status:  IStatus;
+  name:   string;
+  price:  number;
+  status: IStatus;
 }
 
 export interface IPurchase {

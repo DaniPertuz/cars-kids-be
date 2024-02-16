@@ -4,10 +4,10 @@ export class ProductDTO {
   private constructor(public params: IProduct) { }
 
   static create(object: IProduct): [string?, ProductDTO?] {
-    const { name, amount, status } = object;
+    const { name, price, status } = object;
 
     if (!name) return ['Nombre de producto es requerido'];
-    if (!amount) return ['Valor de producto es requerido'];
+    if (!price) return ['Precio de producto es requerido'];
     if (!status) return ['Estado de producto es requerido'];
 
     return [undefined, new ProductDTO(object)];

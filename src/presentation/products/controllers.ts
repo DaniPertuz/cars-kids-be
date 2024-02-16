@@ -44,7 +44,7 @@ export class ProductsController {
 
   public updateProduct = async (req: Request, res: Response) => {
     const { name } = req.params;
-    const { name: newName, amount, status } = req.body;
+    const { name: newName, price, status } = req.body;
 
     const productDB = await this.productRepo.getProduct(name);
 
@@ -52,7 +52,7 @@ export class ProductsController {
 
     const updatedProductData: IProduct = {
       name: newName,
-      amount,
+      price,
       status
     };
 
