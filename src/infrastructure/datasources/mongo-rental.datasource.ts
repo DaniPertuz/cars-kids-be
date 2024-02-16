@@ -48,7 +48,7 @@ export class MongoRentalDatasource implements RentalDatasource {
           $gte: selectedDate,
           $lt: new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000)
         }
-      });
+      }).populate('vehicle', '-_id nickname');
 
       return result.map(RentalEntity.fromObject);
     } catch (error) {
@@ -67,7 +67,7 @@ export class MongoRentalDatasource implements RentalDatasource {
           $gte: firstDayOfMonth,
           $lt: lastDayOfMonth
         }
-      });
+      }).populate('vehicle', '-_id nickname');
 
       return result.map(RentalEntity.fromObject);
     } catch (error) {
@@ -87,7 +87,7 @@ export class MongoRentalDatasource implements RentalDatasource {
           $gte: startDate,
           $lt: endDate
         }
-      });
+      }).populate('vehicle', '-_id nickname');
 
       return result.map(RentalEntity.fromObject);
     } catch (error) {
