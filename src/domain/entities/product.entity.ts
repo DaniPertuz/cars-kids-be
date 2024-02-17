@@ -4,7 +4,7 @@ export class ProductEntity {
   constructor(public params: IProduct) { }
 
   static fromObject = (object: IProduct): ProductEntity => {
-    const { name, price, status } = object;
-    return new ProductEntity({ name, price, status });
+    const { _id, name, price, status } = object;
+    return new ProductEntity({ _id, name, price, status });
   };
 }

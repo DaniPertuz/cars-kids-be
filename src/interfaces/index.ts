@@ -29,6 +29,7 @@ export enum IVehicleSize {
 }
 
 export interface IProduct {
+  _id?:   string;
   name:   string;
   price:  number;
   status: IStatus;
@@ -62,6 +63,7 @@ export interface IUser {
 }
 
 export interface IVehicle {
+  _id?:     string;
   nickname: string;
   category: ICategory;
   color:    string;
