@@ -31,7 +31,7 @@ describe('Mongo Rental datasource', () => {
     jest.clearAllMocks();
   });
 
-  test('should create a vehicle', async () => {
+  test('should create a rental', async () => {
     const rentalDB = await rentalDatasource.createRental(rental);
 
     expect(rentalDB).toBeInstanceOf(RentalEntity);
