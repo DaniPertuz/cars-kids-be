@@ -215,7 +215,14 @@ describe('Mongo Vehicle datasource', () => {
     const vehicleDB = await vehicleDatasource.updateVehicle('Test Name 3', updatedVehicle);
     const vehicleDB2 = await vehicleDatasource.updateVehicle('Testing Name', updatedVehicle);
 
-    expect(vehicleDB).toEqual(updatedVehicle);
+    expect(vehicleDB?.params).toEqual(expect.objectContaining({
+      nickname: 'Test Name 4',
+      img: 'Test image',
+      category: ICategory.Car,
+      color: '#000000',
+      size: IVehicleSize.Large,
+      status: IStatus.Active
+    }));
     expect(vehicleDB2).toBeNull();
   });
 

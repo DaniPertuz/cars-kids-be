@@ -62,14 +62,14 @@ describe('Vehicles routes testing', () => {
 
     const imgValue = body.img ? body.img : '';
 
-    expect(body).toEqual({
+    expect(body).toEqual(expect.objectContaining({
       nickname: vehicle1.nickname,
       img: imgValue,
       category: vehicle1.category,
       color: vehicle1.color,
       size: vehicle1.size,
       status: vehicle1.status
-    });
+    }));
   });
 
   test('should return a bad request if a required field is not provided api/vehicles', async () => {
@@ -89,17 +89,17 @@ describe('Vehicles routes testing', () => {
       .send({ color: '#222222' })
       .expect(200);
 
-    expect(body).toEqual({
+    expect(body).toEqual(expect.objectContaining({
       nickname: 'Test Name 2',
       category: 'car',
       color: '#222222',
       img: 'Test image 2',
       size: 'M',
       status: 'active'
-    });
+    }));
   });
 
-  test('should return a bad request to update a vehicle if not found api/:nickname', async () => {
+  test('should return a bad request to update a vehicle if not found api/vehicles/:nickname', async () => {
     const vehicleDB = await VehicleModel.create(vehicle2);
 
     const { body } = await request(testServer.app)
