@@ -19,7 +19,7 @@ export class MongoProductDatasource implements ProductDatasource {
     try {
       return (await ProductModel.find({ status: IStatus.Active })).map(ProductEntity.fromObject);
     } catch (error) {
-      throw CustomError.serverError(`Error al obtener productos: ${error}`);
+      throw CustomError.serverError(`Error al obtener todos los productos: ${error}`);
     }
   }
 
@@ -27,7 +27,7 @@ export class MongoProductDatasource implements ProductDatasource {
     try {
       return (await ProductModel.find({})).map(ProductEntity.fromObject);
     } catch (error) {
-      throw CustomError.serverError(`Error al obtener productos: ${error}`);
+      throw CustomError.serverError(`Error al obtener todos los productos activos: ${error}`);
     }
   }
 
