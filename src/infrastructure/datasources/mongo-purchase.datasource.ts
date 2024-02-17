@@ -103,7 +103,7 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
       const purchaseData = await PurchaseModel.findByIdAndUpdate(id, data, { new: true });
       return purchaseData ? PurchaseEntity.fromObject(purchaseData) : null;
     } catch (error) {
-      throw CustomError.serverError(`Error al actualizar alquiler: ${error}`);
+      throw CustomError.serverError(`Error al actualizar compra: ${error}`);
     }
   }
 
