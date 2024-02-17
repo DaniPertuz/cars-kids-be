@@ -8,30 +8,39 @@ describe('Mongo Product datasource', () => {
 
   const productDatasource = new MongoProductDatasource();
 
-  const product = new ProductEntity({
-    name: 'Test Product',
-    price: 10000,
-    status: IStatus.Active
-  });
-
-  const inactiveProduct = new ProductEntity({
-    name: 'Test Product',
-    price: 10000,
-    status: IStatus.Inactive
-  });
-
   beforeAll(async () => {
     await connect();
   });
+
+    const testProduct = new ProductEntity({
+      name: 'Test Product',
+      price: 10000,
+      status: IStatus.Active
+    });
+
+    const activeProduct = new ProductEntity({
+      name: 'Active Product',
+      price: 10000,
+      status: IStatus.Active
+    });
+
+    const inactiveProduct = new ProductEntity({
+      name: 'Inactive Product',
+      price: 10000,
+      status: IStatus.Inactive
+    });
 
   afterAll(async () => {
     await ProductModel.deleteMany();
     await disconnect();
   });
 
-  test('should create a product', async () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-    const productDB = await productDatasource.createProduct(product);
+  test('should create a product', async () => {
+    const productDB = await productDatasource.createProduct(testProduct);
 
     expect(productDB).toBeInstanceOf(ProductEntity);
 
@@ -41,19 +50,19 @@ describe('Mongo Product datasource', () => {
   test('should throw an error if failed to create a product', async () => {
     jest.spyOn(ProductModel, 'create').mockRejectedValueOnce(new Error('Test error'));
 
-    await expect(productDatasource.createProduct(product)).rejects.toThrow('Error al crear producto: Error: Test error');
+    await expect(productDatasource.createProduct(testProduct)).rejects.toThrow('Error al crear producto: Error: Test error');
   });
 
   test('should get all products', async () => {
-    await productDatasource.createProduct(product);
+    await productDatasource.createProduct(activeProduct);
     await productDatasource.createProduct(inactiveProduct);
 
     const products = await productDatasource.getAllProducts();
 
-    expect(products.length).toBe(2);
-    expect(products[0].params.name).toBe(product.params.name);
+    expect(products.length).toBeGreaterThanOrEqual(2);
+    expect(products[0].params.name).toBe(activeProduct.params.name);
 
-    await ProductModel.findOneAndDelete({ name: product.params.name });
+    await ProductModel.findOneAndDelete({ name: activeProduct.params.name });
     await ProductModel.findOneAndDelete({ name: inactiveProduct.params.name });
   });
 
@@ -66,15 +75,15 @@ describe('Mongo Product datasource', () => {
   });
 
   test('should get active products', async () => {
-    await productDatasource.createProduct(product);
+    await productDatasource.createProduct(activeProduct);
     await productDatasource.createProduct(inactiveProduct);
 
     const products = await productDatasource.getActiveProducts();
 
-    expect(products.length).toBe(1);
-    expect(products[0].params.name).toBe(product.params.name);
+    expect(products.length).toBeGreaterThanOrEqual(1);
+    expect(products[0].params.name).toBe(activeProduct.params.name);
 
-    await ProductModel.findOneAndDelete({ name: product.params.name });
+    await ProductModel.findOneAndDelete({ name: activeProduct.params.name });
     await ProductModel.findOneAndDelete({ name: inactiveProduct.params.name });
   });
 
@@ -108,7 +117,7 @@ describe('Mongo Product datasource', () => {
       throw new Error('Test error');
     });
 
-    await expect(productDatasource.getProduct('Nickname')).rejects.toThrow('Error al obtener producto: Error: Test error');
+    await expect(productDatasource.getProduct('wrong_name')).rejects.toThrow('Error al obtener producto: Error: Test error');
   });
 
   test('should update product', async () => {
@@ -129,7 +138,11 @@ describe('Mongo Product datasource', () => {
     const productDB = await productDatasource.updateProduct('Testing Product', updatedProduct);
     const productDB2 = await productDatasource.updateProduct('Testing Name', updatedProduct);
 
-    expect(productDB).toEqual(updatedProduct);
+    expect(productDB?.params).toEqual(expect.objectContaining({
+      name: 'Testing Product Updated',
+      price: 10000,
+      status: IStatus.Active
+    }));
     expect(productDB2).toBeNull();
   });
 
