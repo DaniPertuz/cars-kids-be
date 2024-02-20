@@ -188,7 +188,7 @@ describe('Mongo Purchase datasource', () => {
 
     await purchaseDatasource.deletePurchase(purchaseId);
 
-    expect(PurchaseModel.findByIdAndDelete).toHaveBeenCalledWith(purchaseId);
+    expect(PurchaseModel.findByIdAndDelete).toHaveBeenCalledWith(purchaseId, { "new": true });
   });
 
   test('should throw an error when deleting a purchase', async () => {

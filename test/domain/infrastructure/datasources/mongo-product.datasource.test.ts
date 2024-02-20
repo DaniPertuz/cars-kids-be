@@ -126,7 +126,7 @@ describe('Mongo Product datasource', () => {
 
   test('should update product', async () => {
     const productTest = new ProductEntity({
-      name: 'Testing Product',
+      name: 'New Testing Product',
       cost: 8000,
       price: 10000,
       status: IStatus.Active
@@ -141,7 +141,7 @@ describe('Mongo Product datasource', () => {
       status: IStatus.Active
     });
 
-    const productDB = await productDatasource.updateProduct('Testing Product', updatedProduct);
+    const productDB = await productDatasource.updateProduct('New Testing Product', updatedProduct);
     const productDB2 = await productDatasource.updateProduct('Testing Name', updatedProduct);
 
     expect(productDB?.params).toEqual(expect.objectContaining({
@@ -176,7 +176,7 @@ describe('Mongo Product datasource', () => {
 
   test('should delete product', async () => {
     const productTest = new ProductEntity({
-      name: 'Testing Product',
+      name: 'Testing Product Delete',
       cost: 8000,
       price: 10000,
       status: IStatus.Active
@@ -184,7 +184,7 @@ describe('Mongo Product datasource', () => {
 
     await productDatasource.createProduct(productTest);
 
-    const productDB = await productDatasource.deleteProduct('Testing Product');
+    const productDB = await productDatasource.deleteProduct('Testing Product Delete');
     const productDB2 = await productDatasource.deleteProduct('Testing Name');
 
     expect(productDB?.params.status).toBe(IStatus.Inactive);

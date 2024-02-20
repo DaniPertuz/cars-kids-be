@@ -28,11 +28,11 @@ describe('Product model', () => {
 
   test('should return the schema object', () => {
     const expectedSchema = {
-      name: { type: expect.any(Function), required: true },
-      cost: { type: expect.any(Function), required: true },
-      price: { type: expect.any(Function), required: true },
+      name: { type: String, required: true, unique: true },
+      cost: { type: Number, required: true },
+      price: { type: Number, required: true },
       status: {
-        type: expect.any(Function),
+        type: String,
         enum: {
           values: ['active', 'inactive'],
           message: '{VALUE} no es un estado válido',

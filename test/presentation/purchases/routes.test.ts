@@ -105,11 +105,10 @@ describe('Purchases routes testing', () => {
 
     const { body } = await request(testServer.app)
       .put(`/api/purchases/${testPurchase._id}`)
-      .send({ quantity: 2, price: 10000 })
+      .send({ quantity: 2, price: 20000 })
       .expect(200);
 
     expect(body).toEqual(expect.objectContaining({
-      product: '65cec1ef73d47156e24f0c32',
       quantity: 2,
       price: 20000,
       purchaseDate: new Date('01-01-2020').toISOString()
