@@ -21,6 +21,7 @@ describe('Product repository implementation', () => {
 
   const product = new ProductEntity({
     name: 'Test Product',
+    cost: 8000,
     price: 10000,
     status: IStatus.Active
   });

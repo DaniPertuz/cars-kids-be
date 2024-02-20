@@ -4,6 +4,7 @@ import { ProductEntity } from '../../../src/domain/entities/product.entity';
 describe('Product entity', () => {
   const data = {
     name: 'Test Product',
+    cost: 8000,
     price: 10000,
     status: IStatus.Active
   };
@@ -13,6 +14,7 @@ describe('Product entity', () => {
 
     expect(product).toBeInstanceOf(ProductEntity);
     expect(product.params.name).toBe(data.name);
+    expect(product.params.cost).toBe(data.cost);
     expect(product.params.price).toBe(data.price);
     expect(product.params.status).toBe(data.status);
   });
@@ -22,6 +24,7 @@ describe('Product entity', () => {
 
     expect(product).toBeInstanceOf(ProductEntity);
     expect(product.params.name).toBe('Test Product');
+    expect(product.params.cost).toBe(8000);
     expect(product.params.price).toBe(10000);
     expect(product.params.status).toBe(IStatus.Active);
   });

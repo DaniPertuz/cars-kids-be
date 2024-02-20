@@ -14,6 +14,7 @@ describe('Product model', () => {
   test('should return ProductModel', async () => {
     const productData = {
       name: 'Test Name',
+      cost: 8000,
       price: 10000,
       status: IStatus.Active
     };
@@ -28,6 +29,7 @@ describe('Product model', () => {
   test('should return the schema object', () => {
     const expectedSchema = {
       name: { type: expect.any(Function), required: true },
+      cost: { type: expect.any(Function), required: true },
       price: { type: expect.any(Function), required: true },
       status: {
         type: expect.any(Function),

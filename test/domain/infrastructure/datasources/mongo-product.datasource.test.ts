@@ -14,18 +14,21 @@ describe('Mongo Product datasource', () => {
 
     const testProduct = new ProductEntity({
       name: 'Test Product',
+      cost: 8000,
       price: 10000,
       status: IStatus.Active
     });
 
     const activeProduct = new ProductEntity({
       name: 'Active Product',
+      cost: 8000,
       price: 10000,
       status: IStatus.Active
     });
 
     const inactiveProduct = new ProductEntity({
       name: 'Inactive Product',
+      cost: 8000,
       price: 10000,
       status: IStatus.Inactive
     });
@@ -98,6 +101,7 @@ describe('Mongo Product datasource', () => {
   test('should get product by name', async () => {
     const productTest = new ProductEntity({
       name: 'Testing Product',
+      cost: 8000,
       price: 10000,
       status: IStatus.Active
     });
@@ -123,6 +127,7 @@ describe('Mongo Product datasource', () => {
   test('should update product', async () => {
     const productTest = new ProductEntity({
       name: 'Testing Product',
+      cost: 8000,
       price: 10000,
       status: IStatus.Active
     });
@@ -131,6 +136,7 @@ describe('Mongo Product datasource', () => {
 
     const updatedProduct = new ProductEntity({
       name: 'Testing Product Updated',
+      cost: 8000,
       price: 10000,
       status: IStatus.Active
     });
@@ -150,6 +156,7 @@ describe('Mongo Product datasource', () => {
     const name = 'product_name';
     const product = new ProductEntity({
       name: 'Testing Product Updated',
+      cost: 8000,
       price: 10000,
       status: IStatus.Active
     });
@@ -170,6 +177,7 @@ describe('Mongo Product datasource', () => {
   test('should delete product', async () => {
     const productTest = new ProductEntity({
       name: 'Testing Product',
+      cost: 8000,
       price: 10000,
       status: IStatus.Active
     });
