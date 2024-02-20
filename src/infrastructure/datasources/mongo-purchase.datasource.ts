@@ -91,16 +91,7 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
 
   async updatePurchase(id: string, purchase: PurchaseEntity): Promise<PurchaseEntity | null> {
     try {
-      const { quantity } = purchase.params;
-
-      const totalPrice = (quantity * purchase.params.price);
-
-      const data = {
-        ...purchase.params,
-        price: totalPrice
-      };
-
-      const purchaseData = await PurchaseModel.findByIdAndUpdate(id, data, { new: true });
+      const purchaseData = await PurchaseModel.findByIdAndUpdate(id, purchase.params, { new: true });
       return purchaseData ? PurchaseEntity.fromObject(purchaseData) : null;
     } catch (error) {
       throw CustomError.serverError(`Error al actualizar compra: ${error}`);
