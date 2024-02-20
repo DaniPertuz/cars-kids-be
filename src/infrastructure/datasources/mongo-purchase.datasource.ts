@@ -100,7 +100,7 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
 
   async deletePurchase(id: string): Promise<PurchaseEntity | null> {
     try {
-      const purchase = await PurchaseModel.findByIdAndDelete(id);
+      const purchase = await PurchaseModel.findByIdAndDelete(id, { new: true });
       return purchase ? PurchaseEntity.fromObject(purchase) : null;
     } catch (error) {
       throw CustomError.serverError(`Error al eliminar compra: ${error}`);
