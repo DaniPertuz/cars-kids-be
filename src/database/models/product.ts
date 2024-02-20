@@ -2,7 +2,7 @@ import mongoose, { Model, Schema, model } from 'mongoose';
 import { IProduct } from '../../interfaces';
 
 const productSchema = new Schema({
-  name:   { type: String, required: true },
+  name:   { type: String, required: true, unique: true },
   cost:   { type: Number, required: true },
   price:  { type: Number, required: true },
   status: { type: String,
