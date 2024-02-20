@@ -35,6 +35,10 @@ export class ProductsController {
 
     if (error) return res.status(400).json({ error });
 
+    const productDB = await this.productRepo.getProduct(productDto!.params.name);
+
+    if (productDB) return res.status(400).json({ error: 'Ya existe producto con este nombre' });
+
     const productData: ProductEntity = ProductEntity.fromObject(productDto!.params);
 
     const product = (await this.productRepo.createProduct(productData)).params;
@@ -61,7 +65,7 @@ export class ProductsController {
 
     const updatedProduct = await this.productRepo.updateProduct(name, updatedProductEntity);
 
-    return res.json(updatedProduct?.params);
+    return res.json(updatedProduct!.params);
   };
 
   public deleteProduct = async (req: Request, res: Response) => {
@@ -73,6 +77,6 @@ export class ProductsController {
 
     const product = await this.productRepo.deleteProduct(name);
 
-    return res.json(product?.params);
+    return res.json(product!.params);
   };
 }
