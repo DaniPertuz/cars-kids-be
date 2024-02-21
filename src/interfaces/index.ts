@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { RentalEntity } from '../domain/entities/rental.entity';
+import { PurchaseEntity } from '../domain/entities/purchase.entity';
 
 export enum ICategory {
   Car   = 'car',
@@ -43,6 +44,15 @@ export interface IPurchase {
   quantity:     number;
   price:        number;
   purchaseDate: string;
+}
+
+export interface PurchaseQueryResult {
+  page:      number;
+  limit:     number;
+  total:     number;
+  next:      string | null;
+  prev:      string | null;
+  purchases: PurchaseEntity[];
 }
 
 export interface IRental {
