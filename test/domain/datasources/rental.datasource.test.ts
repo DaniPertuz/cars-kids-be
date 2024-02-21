@@ -1,5 +1,7 @@
 import { RentalDatasource } from '../../../src/domain/datasources/rental.datasource';
+import { PaginationDto } from '../../../src/domain/dtos/shared/pagination.dto';
 import { RentalEntity } from '../../../src/domain/entities/rental.entity';
+import { RentalQueryResult } from '../../../src/interfaces';
 
 describe('Rental datasource', () => {
   class MockDatasource implements RentalDatasource {
@@ -9,16 +11,16 @@ describe('Rental datasource', () => {
     getRental(id: string): Promise<RentalEntity | null> {
       throw new Error('Method not implemented.');
     }
-    getRentals(): Promise<RentalEntity[]> {
+    getRentals(paginationDto: PaginationDto): Promise<RentalQueryResult> {
       throw new Error('Method not implemented.');
     }
-    getRentalsByDay(day: string, month: string, year: string): Promise<RentalEntity[]> {
+    getRentalsByDay(day: string, month: string, year: string, paginationDto: PaginationDto): Promise<RentalQueryResult> {
       throw new Error('Method not implemented.');
     }
-    getRentalsByMonth(month: string, year: string): Promise<RentalEntity[]> {
+    getRentalsByMonth(month: string, year: string, paginationDto: PaginationDto): Promise<RentalQueryResult> {
       throw new Error('Method not implemented.');
     }
-    getRentalsByPeriod(starting: string, ending: string): Promise<RentalEntity[]> {
+    getRentalsByPeriod(starting: string, ending: string, paginationDto: PaginationDto): Promise<RentalQueryResult> {
       throw new Error('Method not implemented.');
     }
     updateRental(id: string, rental: RentalEntity): Promise<RentalEntity | null> {
