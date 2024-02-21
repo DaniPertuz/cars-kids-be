@@ -1,6 +1,8 @@
 import { RentalDatasource } from '../../domain/datasources/rental.datasource';
+import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 import { RentalEntity } from '../../domain/entities/rental.entity';
 import { RentalRepository } from '../../domain/repository/rental.repository';
+import { RentalQueryResult } from '../../interfaces';
 
 export class RentalRepositoryImpl implements RentalRepository {
   constructor(private readonly rentalDatasource: RentalDatasource) { }
@@ -13,20 +15,20 @@ export class RentalRepositoryImpl implements RentalRepository {
     return this.rentalDatasource.getRental(id);
   }
 
-  getRentals(): Promise<RentalEntity[]> {
-    return this.rentalDatasource.getRentals();
+  getRentals(paginationDto: PaginationDto): Promise<RentalQueryResult> {
+    return this.rentalDatasource.getRentals(paginationDto);
   }
 
-  getRentalsByDay(day: string, month: string, year: string): Promise<RentalEntity[]> {
-    return this.rentalDatasource.getRentalsByDay(day, month, year);
+  getRentalsByDay(day: string, month: string, year: string, paginationDto: PaginationDto): Promise<RentalQueryResult> {
+    return this.rentalDatasource.getRentalsByDay(day, month, year, paginationDto);
   }
 
-  getRentalsByMonth(month: string, year: string): Promise<RentalEntity[]> {
-    return this.rentalDatasource.getRentalsByMonth(month, year);
+  getRentalsByMonth(month: string, year: string, paginationDto: PaginationDto): Promise<RentalQueryResult> {
+    return this.rentalDatasource.getRentalsByMonth(month, year, paginationDto);
   }
 
-  getRentalsByPeriod(starting: string, ending: string): Promise<RentalEntity[]> {
-    return this.rentalDatasource.getRentalsByPeriod(starting, ending);
+  getRentalsByPeriod(starting: string, ending: string, paginationDto: PaginationDto): Promise<RentalQueryResult> {
+    return this.rentalDatasource.getRentalsByPeriod(starting, ending, paginationDto);
   }
 
   updateRental(id: string, rental: RentalEntity): Promise<RentalEntity | null> {
