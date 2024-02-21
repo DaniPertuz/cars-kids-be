@@ -49,9 +49,9 @@ describe('Rentals routes testing', () => {
       .get('/api/rentals')
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(1);
-    expect(body[0].client).toBe(testRental.client);
+    expect(body).toBeInstanceOf(Object);
+    expect(body.rentals.length).toBe(1);
+    expect(body.rentals[0].client).toBe(testRental.client);
   });
 
   test('should get rentals by day /api/rentals/dates/day/:day/:month/:year', async () => {
@@ -63,9 +63,9 @@ describe('Rentals routes testing', () => {
       .get(`/api/rentals/dates/day/${dateSplit[1]}/${dateSplit[0]}/${dateSplit[2]}`)
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(1);
-    expect(body[0].client).toBe(testRental.client);
+    expect(body).toBeInstanceOf(Object);
+    expect(body.rentals.length).toBe(1);
+    expect(body.rentals[0].client).toBe(testRental.client);
   });
 
   test('should get rentals by month /api/rentals/dates/month/:month/:year', async () => {
@@ -77,9 +77,9 @@ describe('Rentals routes testing', () => {
       .get(`/api/rentals/dates/month/${dateSplit[0]}/${dateSplit[2]}`)
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(1);
-    expect(body[0].client).toBe(testRental.client);
+    expect(body).toBeInstanceOf(Object);
+    expect(body.rentals.length).toBe(1);
+    expect(body.rentals[0].client).toBe(testRental.client);
   });
 
   test('should get rentals by period /api/rentals/dates/period/:starting/:ending', async () => {
@@ -89,9 +89,9 @@ describe('Rentals routes testing', () => {
       .get('/api/rentals/dates/period/01-12-2022/31-01-2023')
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(1);
-    expect(body[0].client).toBe(testRental.client);
+    expect(body).toBeInstanceOf(Object);
+    expect(body.rentals.length).toBe(1);
+    expect(body.rentals[0].client).toBe(testRental.client);
   });
 
   test('should update rental /api/rentals/:id', async () => {
