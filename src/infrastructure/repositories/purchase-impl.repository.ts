@@ -1,28 +1,30 @@
+import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 import { PurchaseDatasource } from '../../domain/datasources/purchase.datasource';
 import { PurchaseEntity } from '../../domain/entities/purchase.entity';
 import { PurchaseRepository } from '../../domain/repository/purchase.repository';
+import { PurchaseQueryResult } from '../../interfaces';
 
 export class PurchaseRepositoryImpl implements PurchaseRepository {
   constructor(private readonly purchaseDatasource: PurchaseDatasource) { }
 
-  createPurchase(purchase: PurchaseEntity): Promise<PurchaseEntity> {
+  createPurchase(purchase: PurchaseEntity): Promise<PurchaseEntity | null> {
     return this.purchaseDatasource.createPurchase(purchase);
   }
 
-  getAllPurchases(): Promise<PurchaseEntity[]> {
-    return this.purchaseDatasource.getAllPurchases();
+  getAllPurchases(paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
+    return this.purchaseDatasource.getAllPurchases(paginationDto);
   }
 
-  getPurchasesByDay(day: string, month: string, year: string): Promise<PurchaseEntity[]> {
-    return this.purchaseDatasource.getPurchasesByDay(day, month, year);
+  getPurchasesByDay(day: string, month: string, year: string, paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
+    return this.purchaseDatasource.getPurchasesByDay(day, month, year, paginationDto);
   }
 
-  getPurchasesByMonth(month: string, year: string): Promise<PurchaseEntity[]> {
-    return this.purchaseDatasource.getPurchasesByMonth(month, year);
+  getPurchasesByMonth(month: string, year: string, paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
+    return this.purchaseDatasource.getPurchasesByMonth(month, year, paginationDto);
   }
 
-  getPurchasesByPeriod(starting: string, ending: string): Promise<PurchaseEntity[]> {
-    return this.purchaseDatasource.getPurchasesByPeriod(starting, ending);
+  getPurchasesByPeriod(starting: string, ending: string, paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
+    return this.purchaseDatasource.getPurchasesByPeriod(starting, ending, paginationDto);
   }
 
   getPurchase(id: string): Promise<PurchaseEntity | null> {

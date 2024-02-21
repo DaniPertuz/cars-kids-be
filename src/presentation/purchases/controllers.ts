@@ -3,6 +3,7 @@ import { MongoPurchaseDatasource } from '../../infrastructure/datasources/mongo-
 import { PurchaseRepositoryImpl } from '../../infrastructure/repositories/purchase-impl.repository';
 import { PurchaseEntity } from '../../domain/entities/purchase.entity';
 import { PurchaseDTO } from '../../domain/dtos/purchase';
+import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 
 export class PurchasesController {
   readonly purchaseRepo = new PurchaseRepositoryImpl(
@@ -10,9 +11,24 @@ export class PurchasesController {
   );
 
   public getPurchases = async (req: Request, res: Response) => {
-    const purchases = (await this.purchaseRepo.getAllPurchases()).map(rental => rental.params);
+    const { page = 1, limit = 10 } = req.query;
 
-    return res.json(purchases);
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
+
+    if (error) return res.status(400).json({ error });
+
+    const purchases = await this.purchaseRepo.getAllPurchases(paginationDto!);
+
+    const { page: purchasePage, limit: limitPage, total, next, prev, purchases: data } = purchases;
+
+    return res.json({
+      page: purchasePage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      purchases: data.map(rental => rental.params)
+    });
   };
 
   public getPurchase = async (req: Request, res: Response) => {
@@ -25,26 +41,68 @@ export class PurchasesController {
 
   public getPurchasesByDay = async (req: Request, res: Response) => {
     const { day, month, year } = req.params;
+    const { page = 1, limit = 10 } = req.query;
 
-    const purchases = (await this.purchaseRepo.getPurchasesByDay(day, month, year)).map(purchase => purchase.params);
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
 
-    return res.json(purchases);
+    if (error) return res.status(400).json({ error });
+
+    const purchases = await this.purchaseRepo.getPurchasesByDay(day, month, year, paginationDto!);
+
+    const { page: purchasePage, limit: limitPage, total, next, prev, purchases: data } = purchases;
+
+    return res.json({
+      page: purchasePage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      purchases: data.map(purchase => purchase.params)
+    });
   };
 
   public getPurchasesByMonth = async (req: Request, res: Response) => {
     const { month, year } = req.params;
+    const { page = 1, limit = 10 } = req.query;
 
-    const purchases = (await this.purchaseRepo.getPurchasesByMonth(month, year)).map(purchase => purchase.params);
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
 
-    return res.json(purchases);
+    if (error) return res.status(400).json({ error });
+
+    const purchases = await this.purchaseRepo.getPurchasesByMonth(month, year, paginationDto!);
+
+    const { page: purchasePage, limit: limitPage, total, next, prev, purchases: data } = purchases;
+
+    return res.json({
+      page: purchasePage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      purchases: data.map(purchase => purchase.params)
+    });
   };
 
   public getPurchasesByPeriod = async (req: Request, res: Response) => {
     const { starting, ending } = req.params;
+    const { page = 1, limit = 10 } = req.query;
 
-    const purchases = (await this.purchaseRepo.getPurchasesByPeriod(starting, ending)).map(purchase => purchase.params);
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
 
-    return res.json(purchases);
+    if (error) return res.status(400).json({ error });
+
+    const purchases = await this.purchaseRepo.getPurchasesByPeriod(starting, ending, paginationDto!);
+
+    const { page: purchasePage, limit: limitPage, total, next, prev, purchases: data } = purchases;
+
+    return res.json({
+      page: purchasePage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      purchases: data.map(purchase => purchase.params)
+    });
   };
 
   public createPurchase = async (req: Request, res: Response) => {
@@ -54,9 +112,9 @@ export class PurchasesController {
 
     const purchaseData: PurchaseEntity = PurchaseEntity.fromObject(purchaseDto!.params);
 
-    const purchase = (await this.purchaseRepo.createPurchase(purchaseData)).params;
+    const purchase = await this.purchaseRepo.createPurchase(purchaseData);
 
-    return res.json(purchase);
+    return (!purchase) ? res.status(404).json({ error: 'Producto no disponible' }) : res.json(purchase.params);
   };
 
   public updatePurchase = async (req: Request, res: Response) => {
