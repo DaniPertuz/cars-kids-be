@@ -1,5 +1,6 @@
 import { connect, disconnect } from '../../../../src/database';
 import { RentalModel } from '../../../../src/database/models';
+import { PaginationDto } from '../../../../src/domain/dtos/shared/pagination.dto';
 import { RentalEntity } from '../../../../src/domain/entities/rental.entity';
 import { MongoRentalDatasource } from '../../../../src/infrastructure/datasources/mongo-rental.datasource';
 import { IPayment } from '../../../../src/interfaces';
@@ -46,22 +47,50 @@ describe('Mongo Rental datasource', () => {
   });
 
   test('should get rentals', async () => {
-    const rentalDB = await rentalDatasource.createRental(rental);
+    await rentalDatasource.createRental(rental);
+    const [error, paginationDto] = PaginationDto.create(1, 1);
 
-    const rentals = await rentalDatasource.getRentals();
+    const { rentals, prev, next } = await rentalDatasource.getRentals(paginationDto!);
 
     expect(rentals.length).toBeGreaterThanOrEqual(1);
     expect(rentals[0].params.client).toBe('NN Test');
+    expect(prev).toBeNull();
+    expect(next).toBeNull();
+    expect(error).toBeUndefined();
 
-    await RentalModel.findOneAndDelete({ client: rentalDB.params.client });
+    await RentalModel.findOneAndDelete({ client: 'NN Test' });
+  });
+
+  test('should getRentalsByQuery generate prev and next URLs', async () => {
+    await rentalDatasource.createRental(rental);
+    await rentalDatasource.createRental(rental);
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+
+    const pagination1 = await rentalDatasource.getRentalsByQuery({}, paginationDto1!);
+
+    expect(pagination1.next).toBe(`/rentals?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+    expect(error1).toBeUndefined();
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await rentalDatasource.getRentalsByQuery({}, paginationDto2!);
+
+    expect(pagination2.prev).toBe(`/rentals?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
+    expect(error2).toBeUndefined();
+
+    await RentalModel.findOneAndDelete({ client: 'NN Test' });
+    await RentalModel.findOneAndDelete({ client: 'NN Test' });
   });
 
   test('should getRentals throw an error', async () => {
+    const [error, paginationDto] = PaginationDto.create();
     jest.spyOn(RentalModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
 
-    await expect(rentalDatasource.getRentals()).rejects.toThrow('Error al obtener alquileres: Error: Test error');
+    await expect(rentalDatasource.getRentals(paginationDto!)).rejects.toThrow('Error al obtener alquileres: Error: Test error');
   });
 
   test('should return the rental corresponding to the provided ID', async () => {
@@ -95,15 +124,18 @@ describe('Mongo Rental datasource', () => {
 
   test('should get rentals by day', async () => {
     const rentalDB = await rentalDatasource.createRental(rental);
+    const [error, paginationDto] = PaginationDto.create();
 
-    const rentals = await rentalDatasource.getRentalsByDay('24', '01', '2023');
+    const { rentals } = await rentalDatasource.getRentalsByDay('24', '01', '2023', paginationDto!);
 
     expect(rentals.length).toBeGreaterThanOrEqual(1);
+    expect(error).toBeUndefined();
 
     await RentalModel.findOneAndDelete({ client: rentalDB.params.client });
   });
 
   test('should getRentalsByDay throw an error', async () => {
+    const [error, paginationDto] = PaginationDto.create();
     jest.spyOn(RentalModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
@@ -112,13 +144,37 @@ describe('Mongo Rental datasource', () => {
     const month = '1';
     const year = '2020';
 
-    await expect(rentalDatasource.getRentalsByDay(day, month, year)).rejects.toThrow('Error al obtener los alquileres por día: Error: Test error');
+    await expect(rentalDatasource.getRentalsByDay(day, month, year, paginationDto!)).rejects.toThrow('Error al obtener los alquileres por día: Error: Test error');
+  });
+
+  test('should getRentalsByDay generate prev and next URLs', async () => {
+    await rentalDatasource.createRental(rental);
+    await rentalDatasource.createRental(rental);
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+
+    const pagination1 = await rentalDatasource.getRentalsByDay('24', '01', '2023', paginationDto1!);
+
+    expect(pagination1.next).toBe(`/rentals?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+    expect(error1).toBeUndefined();
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await rentalDatasource.getRentalsByDay('24', '01', '2023', paginationDto2!);
+
+    expect(pagination2.prev).toBe(`/rentals?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
+    expect(error2).toBeUndefined();
+
+    await RentalModel.findOneAndDelete({ client: 'NN Test' });
+    await RentalModel.findOneAndDelete({ client: 'NN Test' });
   });
 
   test('should get rentals by month', async () => {
+    const [error, paginationDto] = PaginationDto.create();
     const rentalDB = await rentalDatasource.createRental(rental);
 
-    const rentals = await rentalDatasource.getRentalsByMonth('01', '2023');
+    const { rentals } = await rentalDatasource.getRentalsByMonth('01', '2023', paginationDto!);
 
     expect(rentals.length).toBeGreaterThanOrEqual(1);
 
@@ -126,6 +182,7 @@ describe('Mongo Rental datasource', () => {
   });
 
   test('should getRentalsByMonth throw an error', async () => {
+    const [error, paginationDto] = PaginationDto.create();
     jest.spyOn(RentalModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
@@ -133,23 +190,48 @@ describe('Mongo Rental datasource', () => {
     const month = '1';
     const year = '2024';
 
-    await expect(rentalDatasource.getRentalsByMonth(month, year)).rejects.toThrow('Error al obtener los alquileres por mes: Error: Test error');
+    await expect(rentalDatasource.getRentalsByMonth(month, year, paginationDto!)).rejects.toThrow('Error al obtener los alquileres por mes: Error: Test error');
+  });
+
+  test('should getRentalsByMonth generate prev and next URLs', async () => {
+    await rentalDatasource.createRental(rental);
+    await rentalDatasource.createRental(rental);
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+
+    const pagination1 = await rentalDatasource.getRentalsByMonth('01', '2023', paginationDto1!);
+
+    expect(pagination1.next).toBe(`/rentals?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+    expect(error1).toBeUndefined();
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await rentalDatasource.getRentalsByMonth('01', '2023', paginationDto2!);
+
+    expect(pagination2.prev).toBe(`/rentals?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
+    expect(error2).toBeUndefined();
+
+    await RentalModel.findOneAndDelete({ client: 'NN Test' });
+    await RentalModel.findOneAndDelete({ client: 'NN Test' });
   });
 
   test('should get rentals within the specified period', async () => {
     const rentalDB = await rentalDatasource.createRental(rental);
+    const [error, paginationDto] = PaginationDto.create();
 
     const starting = '10-12-2022';
     const ending = '01-02-2023';
 
-    const result = await rentalDatasource.getRentalsByPeriod(starting, ending);
+    const { rentals } = await rentalDatasource.getRentalsByPeriod(starting, ending, paginationDto!);
 
-    expect(result).toHaveLength(1);
+    expect(rentals).toHaveLength(1);
 
     await RentalModel.findOneAndDelete({ client: rentalDB.params.client });
   });
 
   test('should throw an error when querying within the specified period', async () => {
+    const [error, paginationDto] = PaginationDto.create();
     jest.spyOn(RentalModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
@@ -157,7 +239,52 @@ describe('Mongo Rental datasource', () => {
     const starting = '01-01-2023';
     const ending = '01-02-2023';
 
-    await expect(rentalDatasource.getRentalsByPeriod(starting, ending)).rejects.toThrow('Error al obtener los alquileres por periodo: Error: Test error');
+    await expect(rentalDatasource.getRentalsByPeriod(starting, ending, paginationDto!)).rejects.toThrow('Error al obtener los alquileres por periodo: Error: Test error');
+  });
+
+  test('should getRentalsByPeriod generate prev and next URLs', async () => {
+    await rentalDatasource.createRental(rental);
+    await rentalDatasource.createRental(rental);
+    const starting = '01-01-2023';
+    const ending = '01-02-2023';
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+
+    const pagination1 = await rentalDatasource.getRentalsByPeriod(starting, ending, paginationDto1!);
+
+    expect(pagination1.next).toBe(`/rentals?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+    expect(error1).toBeUndefined();
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await rentalDatasource.getRentalsByPeriod(starting, ending, paginationDto2!);
+
+    expect(pagination2.prev).toBe(`/rentals?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
+    expect(error2).toBeUndefined();
+
+    await RentalModel.findOneAndDelete({ client: 'NN Test' });
+    await RentalModel.findOneAndDelete({ client: 'NN Test' });
+  });
+
+  test('should update a valid rental successfully', async () => {
+    const id = '1234567890';
+    const updatedRentalData = new RentalEntity({
+      _id: id,
+      client: 'NN Test',
+      time: 15,
+      date: '01-24-2023',
+      vehicle: '15c42daad17250e579833f0e',
+      payment: IPayment.Cash,
+      amount: 10000,
+      exception: 'Exception'
+    });
+
+    jest.spyOn(RentalModel, 'findByIdAndUpdate').mockResolvedValueOnce(updatedRentalData);
+
+    const updatedRental = await rentalDatasource.updateRental(id, updatedRentalData);
+
+    expect(updatedRental).toBeInstanceOf(RentalEntity);
   });
 
   test('should return null when no rental is found for the provided ID', async () => {
