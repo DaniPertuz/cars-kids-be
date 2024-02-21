@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { RentalEntity } from '../domain/entities/rental.entity';
 
 export enum ICategory {
   Car   = 'car',
@@ -53,6 +54,15 @@ export interface IRental {
   payment:    IPayment;
   amount:     number;
   exception?: string; 
+}
+
+export interface RentalQueryResult {
+  page:    number;
+  limit:   number;
+  total:   number;
+  next:    string | null;
+  prev:    string | null;
+  rentals: RentalEntity[];
 }
 
 export interface IUser {
