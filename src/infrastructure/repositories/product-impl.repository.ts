@@ -1,6 +1,8 @@
 import { ProductDatasource } from '../../domain/datasources/product.datasource';
+import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 import { ProductEntity } from '../../domain/entities/product.entity';
 import { ProductRepository } from '../../domain/repository/product.repository';
+import { ProductQueryResult } from '../../interfaces';
 
 export class ProductRepositoryImpl implements ProductRepository {
   constructor(private readonly productDatasource: ProductDatasource) { }
@@ -9,8 +11,8 @@ export class ProductRepositoryImpl implements ProductRepository {
     return this.productDatasource.createProduct(product);
   }
 
-  getAllProducts(): Promise<ProductEntity[]> {
-    return this.productDatasource.getAllProducts();
+  getAllProducts(paginationDto: PaginationDto): Promise<ProductQueryResult> {
+    return this.productDatasource.getAllProducts(paginationDto);
   }
 
   getProduct(name: string): Promise<ProductEntity | null> {
