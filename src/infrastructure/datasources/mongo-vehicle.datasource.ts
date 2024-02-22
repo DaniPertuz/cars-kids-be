@@ -22,8 +22,8 @@ export class MongoVehicleDatasource implements VehicleDatasource {
       page,
       limit,
       total,
-      next: ((page * limit) < total) ? `/rentals?page=${(page + 1)}&limit=${limit}` : null,
-      prev: (page - 1 > 0) ? `/rentals?page=${(page - 1)}&limit=${limit}` : null,
+      next: ((page * limit) < total) ? `/vehicles?page=${(page + 1)}&limit=${limit}` : null,
+      prev: (page - 1 > 0) ? `/vehicles?page=${(page - 1)}&limit=${limit}` : null,
       vehicles: vehicles.map(VehicleEntity.fromObject)
     };
   }
