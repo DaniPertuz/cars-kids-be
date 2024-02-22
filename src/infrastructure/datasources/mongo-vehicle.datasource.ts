@@ -1,13 +1,31 @@
 import { VehicleModel } from '../../database/models';
 import { VehicleDatasource } from '../../domain/datasources/vehicle.datasource';
+import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 import { VehicleEntity } from '../../domain/entities/vehicle.entity';
 import { CustomError } from '../../domain/errors';
-import { IVehicleSize, IStatus } from '../../interfaces';
+import { IVehicleSize, IStatus, VehicleQueryResult } from '../../interfaces';
 
 export class MongoVehicleDatasource implements VehicleDatasource {
-  private async getVehiclesByQuery(query: any): Promise<VehicleEntity[]> {
-    const vehicleData = await VehicleModel.find(query).select('-status');
-    return vehicleData.map(VehicleEntity.fromObject);
+  public async getVehiclesByQuery(query: any, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
+    const { page, limit } = paginationDto;
+
+    const [total, vehicles] = await Promise.all([
+      VehicleModel.countDocuments(query),
+      VehicleModel.find(query)
+        .select('-status')
+        .sort({ nickname: 1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+    ]);
+
+    return {
+      page,
+      limit,
+      total,
+      next: ((page * limit) < total) ? `/rentals?page=${(page + 1)}&limit=${limit}` : null,
+      prev: (page - 1 > 0) ? `/rentals?page=${(page - 1)}&limit=${limit}` : null,
+      vehicles: vehicles.map(VehicleEntity.fromObject)
+    };
   }
 
   async createVehicle(vehicle: VehicleEntity): Promise<VehicleEntity> {
@@ -30,41 +48,41 @@ export class MongoVehicleDatasource implements VehicleDatasource {
     }
   }
 
-  async getVehicles(): Promise<VehicleEntity[]> {
+  async getVehicles(paginationDto: PaginationDto): Promise<VehicleQueryResult> {
     try {
-      return await this.getVehiclesByQuery({});
+      return await this.getVehiclesByQuery({}, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener vehículos: ${error}`);
     }
   }
 
-  async getVehiclesByColor(color: string): Promise<VehicleEntity[]> {
+  async getVehiclesByColor(color: string, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
     try {
-      return await this.getVehiclesByQuery({ color });
+      return await this.getVehiclesByQuery({ color }, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener vehículos por color: ${error}`);
     }
   }
 
-  async getVehiclesByColorAndSize(color: string, size: IVehicleSize): Promise<VehicleEntity[]> {
+  async getVehiclesByColorAndSize(color: string, size: IVehicleSize, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
     try {
-      return await this.getVehiclesByQuery({ color, size });
+      return await this.getVehiclesByQuery({ color, size }, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener vehículos por color y tamaño: ${error}`);
     }
   }
 
-  async getVehiclesBySize(size: IVehicleSize): Promise<VehicleEntity[]> {
+  async getVehiclesBySize(size: IVehicleSize, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
     try {
-      return await this.getVehiclesByQuery({ size });
+      return await this.getVehiclesByQuery({ size }, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener vehículos por tamaño: ${error}`);
     }
   }
 
-  async getVehiclesByStatus(status: IStatus): Promise<VehicleEntity[]> {
+  async getVehiclesByStatus(status: IStatus, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
     try {
-      return await this.getVehiclesByQuery({ status });
+      return await this.getVehiclesByQuery({ status }, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener vehículos por estado: ${error}`);
     }
