@@ -1,7 +1,8 @@
 import { VehicleDatasource } from '../../domain/datasources/vehicle.datasource';
 import { VehicleEntity } from '../../domain/entities/vehicle.entity';
 import { VehicleRepository } from '../../domain/repository/vehicle.repository';
-import { IVehicleSize, IStatus } from '../../interfaces';
+import { IVehicleSize, IStatus, VehicleQueryResult } from '../../interfaces';
+import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 
 export class VehicleRepositoryImpl implements VehicleRepository {
   constructor(private readonly vehicleDatasource: VehicleDatasource) { }
@@ -14,24 +15,24 @@ export class VehicleRepositoryImpl implements VehicleRepository {
     return this.vehicleDatasource.getVehicleByNickname(id);
   }
 
-  getVehicles(): Promise<VehicleEntity[]> {
-    return this.vehicleDatasource.getVehicles();
+  getVehicles(paginationDto: PaginationDto): Promise<VehicleQueryResult> {
+    return this.vehicleDatasource.getVehicles(paginationDto);
   }
 
-  getVehiclesByColor(color: string): Promise<VehicleEntity[]> {
-    return this.vehicleDatasource.getVehiclesByColor(color);
+  getVehiclesByColor(color: string, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
+    return this.vehicleDatasource.getVehiclesByColor(color, paginationDto);
   }
 
-  getVehiclesByColorAndSize(color: string, size: IVehicleSize): Promise<VehicleEntity[]> {
-    return this.vehicleDatasource.getVehiclesByColorAndSize(color, size);
+  getVehiclesByColorAndSize(color: string, size: IVehicleSize, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
+    return this.vehicleDatasource.getVehiclesByColorAndSize(color, size, paginationDto);
   }
 
-  getVehiclesBySize(size: IVehicleSize): Promise<VehicleEntity[]> {
-    return this.vehicleDatasource.getVehiclesBySize(size);
+  getVehiclesBySize(size: IVehicleSize, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
+    return this.vehicleDatasource.getVehiclesBySize(size, paginationDto);
   }
 
-  getVehiclesByStatus(status: IStatus): Promise<VehicleEntity[]> {
-    return this.vehicleDatasource.getVehiclesByStatus(status);
+  getVehiclesByStatus(status: IStatus, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
+    return this.vehicleDatasource.getVehiclesByStatus(status, paginationDto);
   }
 
   updateVehicle(nickname: string, vehicle: VehicleEntity): Promise<VehicleEntity | null> {
