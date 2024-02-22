@@ -95,13 +95,13 @@ describe('Mongo Rental datasource', () => {
 
   test('should return the rental corresponding to the provided ID', async () => {
     const rentalId = '1';
-    const mockRental = { id: rentalId };
+    const mockRental = { _id: rentalId };
     jest.spyOn(RentalModel, 'findById').mockResolvedValueOnce(mockRental);
 
     const result = await rentalDatasource.getRental(rentalId);
 
     expect(result).toBeDefined();
-    // expect(result?.id).toBe(rentalId); // Verificar que el ID del alquiler es el esperado
+    expect(result?.params._id).toBe(rentalId);
   });
 
   test('should throw an error when getting a rental', async () => {
