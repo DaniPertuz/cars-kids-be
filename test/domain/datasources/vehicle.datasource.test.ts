@@ -1,6 +1,7 @@
 import { VehicleDatasource } from '../../../src/domain/datasources/vehicle.datasource';
+import { PaginationDto } from '../../../src/domain/dtos/shared/pagination.dto';
 import { VehicleEntity } from '../../../src/domain/entities/vehicle.entity';
-import { IVehicleSize, IStatus } from '../../../src/interfaces';
+import { IVehicleSize, IStatus, VehicleQueryResult } from '../../../src/interfaces';
 
 describe('Vehicle datasource', () => {
   class MockDatasource implements VehicleDatasource {
@@ -10,19 +11,19 @@ describe('Vehicle datasource', () => {
     getVehicleByNickname(nickname: string): Promise<VehicleEntity | null> {
       throw new Error('Method not implemented.');
     }
-    getVehicles(): Promise<VehicleEntity[]> {
+    getVehicles(paginationDto: PaginationDto): Promise<VehicleQueryResult> {
       throw new Error('Method not implemented.');
     }
-    getVehiclesByColor(color: string): Promise<VehicleEntity[]> {
+    getVehiclesByColor(color: string, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
       throw new Error('Method not implemented.');
     }
-    getVehiclesByColorAndSize(color: string, size: IVehicleSize): Promise<VehicleEntity[]> {
+    getVehiclesByColorAndSize(color: string, size: IVehicleSize, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
       throw new Error('Method not implemented.');
     }
-    getVehiclesBySize(size: IVehicleSize): Promise<VehicleEntity[]> {
+    getVehiclesBySize(size: IVehicleSize, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
       throw new Error('Method not implemented.');
     }
-    getVehiclesByStatus(status: IStatus): Promise<VehicleEntity[]> {
+    getVehiclesByStatus(status: IStatus, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
       throw new Error('Method not implemented.');
     }
     updateVehicle(nickname: string, vehicle: VehicleEntity): Promise<VehicleEntity | null> {
