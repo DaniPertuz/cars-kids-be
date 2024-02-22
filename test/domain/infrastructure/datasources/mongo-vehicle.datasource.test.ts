@@ -1,5 +1,6 @@
 import { connect, disconnect } from '../../../../src/database';
 import { VehicleModel } from '../../../../src/database/models';
+import { PaginationDto } from '../../../../src/domain/dtos/shared/pagination.dto';
 import { VehicleEntity } from '../../../../src/domain/entities/vehicle.entity';
 import { MongoVehicleDatasource } from '../../../../src/infrastructure/datasources/mongo-vehicle.datasource';
 import { ICategory, IStatus, IVehicleSize } from '../../../../src/interfaces';
@@ -43,19 +44,65 @@ describe('Mongo Vehicle datasource', () => {
 
   test('should get vehicles', async () => {
     await vehicleDatasource.createVehicle(vehicle);
+    const [error, paginationDto] = PaginationDto.create(1, 1);
 
-    const vehicles = await vehicleDatasource.getVehicles();
+    const { vehicles } = await vehicleDatasource.getVehicles(paginationDto!);
 
+    expect(error).toBeUndefined();
     expect(vehicles.length).toBeGreaterThanOrEqual(1);
     expect(vehicles[0].params.category).toBe(ICategory.Car);
+
+    await VehicleModel.findOneAndDelete({ nickname: vehicle.params.nickname });
+  });
+
+  test('should getVehicles generate prev and next URLs', async () => {
+    const vehicle1 = new VehicleEntity({
+      nickname: 'Testing Name 1',
+      img: 'Test image',
+      category: ICategory.Car,
+      color: '#000000',
+      size: IVehicleSize.Large,
+      status: IStatus.Active
+    });
+
+    const vehicle2 = new VehicleEntity({
+      nickname: 'Testing Name 2',
+      img: 'Test image',
+      category: ICategory.Car,
+      color: '#000000',
+      size: IVehicleSize.Large,
+      status: IStatus.Active
+    });
+
+    await vehicleDatasource.createVehicle(vehicle1);
+    await vehicleDatasource.createVehicle(vehicle2);
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+
+    const pagination1 = await vehicleDatasource.getVehiclesByQuery({}, paginationDto1!);
+
+    expect(pagination1.next).toBe(`/vehicles?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+    expect(error1).toBeUndefined();
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await vehicleDatasource.getVehiclesByQuery({}, paginationDto2!);
+
+    expect(pagination2.prev).toBe(`/vehicles?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
+    expect(error2).toBeUndefined();
+
+    await VehicleModel.findOneAndDelete({ nickname: 'Test Name 1' });
+    await VehicleModel.findOneAndDelete({ nickname: 'Test Name 2' });
   });
 
   test('should throw an error if failed to get vehicles', async () => {
+    const [, paginationDto] = PaginationDto.create(1, 1);
     jest.spyOn(VehicleModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
 
-    await expect(vehicleDatasource.getVehicles()).rejects.toThrow('Error al obtener vehículos: Error: Test error');
+    await expect(vehicleDatasource.getVehicles(paginationDto!)).rejects.toThrow('Error al obtener vehículos: Error: Test error');
   });
 
   test('should get vehicle by Nickname', async () => {
@@ -87,6 +134,7 @@ describe('Mongo Vehicle datasource', () => {
   });
 
   test('should get vehicles by size', async () => {
+    const [error, paginationDto] = PaginationDto.create(1, 1);
     const vehicleTest = new VehicleEntity({
       nickname: 'Large Nickname',
       img: 'Test image',
@@ -98,21 +146,24 @@ describe('Mongo Vehicle datasource', () => {
 
     await vehicleDatasource.createVehicle(vehicleTest);
 
-    const vehicles = await vehicleDatasource.getVehiclesBySize(IVehicleSize.Large);
+    const { vehicles } = await vehicleDatasource.getVehiclesBySize(IVehicleSize.Large, paginationDto!);
 
+    expect(error).toBeUndefined();
     expect(vehicles.length).toBeGreaterThanOrEqual(1);
     expect(vehicles[0].params.category).toBe(ICategory.Car);
   });
 
   test('should throw an error if failed to get vehicles by size', async () => {
+    const [, paginationDto] = PaginationDto.create(1, 1);
     jest.spyOn(VehicleModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
 
-    await expect(vehicleDatasource.getVehiclesBySize(IVehicleSize.Large)).rejects.toThrow('Error al obtener vehículos por tamaño: Error: Test error');
+    await expect(vehicleDatasource.getVehiclesBySize(IVehicleSize.Large, paginationDto!)).rejects.toThrow('Error al obtener vehículos por tamaño: Error: Test error');
   });
 
   test('should get vehicles by color', async () => {
+    const [error, paginationDto] = PaginationDto.create(1, 1);
     const vehicleTest = new VehicleEntity({
       nickname: 'Color Nickname',
       img: 'Test image',
@@ -124,21 +175,24 @@ describe('Mongo Vehicle datasource', () => {
 
     await vehicleDatasource.createVehicle(vehicleTest);
 
-    const vehiclesValid = await vehicleDatasource.getVehiclesByColor('#000000');
+    const { vehicles } = await vehicleDatasource.getVehiclesByColor('#000000', paginationDto!);
 
-    expect(vehiclesValid.length).toBeGreaterThanOrEqual(1);
-    expect(vehiclesValid[0].params.category).toBe(ICategory.Car);
+    expect(error).toBeUndefined();
+    expect(vehicles.length).toBeGreaterThanOrEqual(1);
+    expect(vehicles[0].params.category).toBe(vehicleTest.params.category);
   });
 
   test('should throw an error if failed to get vehicles by color', async () => {
+    const [, paginationDto] = PaginationDto.create(1, 1);
     jest.spyOn(VehicleModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
 
-    await expect(vehicleDatasource.getVehiclesByColor('blue')).rejects.toThrow('Error al obtener vehículos por color: Error: Test error');
+    await expect(vehicleDatasource.getVehiclesByColor('blue', paginationDto!)).rejects.toThrow('Error al obtener vehículos por color: Error: Test error');
   });
 
   test('should get vehicles by color and size', async () => {
+    const [error, paginationDto] = PaginationDto.create(1, 1);
     const vehicleTest = new VehicleEntity({
       nickname: 'Color Large Nickname',
       img: 'Test image',
@@ -150,22 +204,25 @@ describe('Mongo Vehicle datasource', () => {
 
     await vehicleDatasource.createVehicle(vehicleTest);
 
-    const vehicles = await vehicleDatasource.getVehiclesByColorAndSize('#000000', IVehicleSize.Large);
+    const { vehicles } = await vehicleDatasource.getVehiclesByColorAndSize('#000000', IVehicleSize.Large, paginationDto!);
 
+    expect(error).toBeUndefined();
     expect(vehicles.length).toBeGreaterThanOrEqual(1);
     expect(vehicles[0].params.category).toBe(ICategory.Car);
   });
 
   test('should throw an error if failed to get vehicles by color and size', async () => {
+    const [, paginationDto] = PaginationDto.create(1, 1);
     const color = 'blue';
     jest.spyOn(VehicleModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
 
-    await expect(vehicleDatasource.getVehiclesByColorAndSize(color, IVehicleSize.Large)).rejects.toThrow('Error al obtener vehículos por color y tamaño: Error: Test error');
+    await expect(vehicleDatasource.getVehiclesByColorAndSize(color, IVehicleSize.Large, paginationDto!)).rejects.toThrow('Error al obtener vehículos por color y tamaño: Error: Test error');
   });
 
   test('should get vehicles by status', async () => {
+    const [error, paginationDto] = PaginationDto.create(1, 1);
     const vehicleTest = new VehicleEntity({
       nickname: 'Status Nickname',
       img: 'Test image',
@@ -177,18 +234,20 @@ describe('Mongo Vehicle datasource', () => {
 
     await vehicleDatasource.createVehicle(vehicleTest);
 
-    const vehicles = await vehicleDatasource.getVehiclesByStatus(IStatus.Active);
+    const { vehicles } = await vehicleDatasource.getVehiclesByStatus(IStatus.Active, paginationDto!);
 
+    expect(error).toBeUndefined();
     expect(vehicles.length).toBeGreaterThanOrEqual(1);
     expect(vehicles[0].params.category).toBe(ICategory.Car);
   });
 
   test('should throw an error if failed to get vehicles by size', async () => {
+    const [, paginationDto] = PaginationDto.create(1, 1);
     jest.spyOn(VehicleModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
 
-    await expect(vehicleDatasource.getVehiclesByStatus(IStatus.Active)).rejects.toThrow('Error al obtener vehículos por estado: Error: Test error');
+    await expect(vehicleDatasource.getVehiclesByStatus(IStatus.Active, paginationDto!)).rejects.toThrow('Error al obtener vehículos por estado: Error: Test error');
   });
 
   test('should update vehicle', async () => {
