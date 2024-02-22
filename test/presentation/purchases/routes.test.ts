@@ -43,21 +43,20 @@ describe('Purchases routes testing', () => {
       .get('/api/purchases')
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(1);
-    expect(body[0].price).toBe(testPurchase.price);
+    expect(body).toBeInstanceOf(Object);
+    expect(body.purchases.length).toBe(1);
+    expect(body.purchases[0].price).toBe(testPurchase.price);
   });
 
   test('should get purchase /api/purchases/:id', async () => {
     await PurchaseModel.create(testPurchase);
 
     const { body } = await request(testServer.app)
-      .get('/api/purchases')
+      .get(`/api/purchases/${testPurchase._id}`)
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(1);
-    expect(body[0].price).toBe(testPurchase.price);
+    expect(body).toBeInstanceOf(Object);
+    expect(body.price).toBe(testPurchase.price);
   });
 
   test('should get purchases by day /api/purchases/dates/day/:day/:month/:year', async () => {
@@ -69,9 +68,9 @@ describe('Purchases routes testing', () => {
       .get(`/api/purchases/dates/day/${dateSplit[1]}/${dateSplit[0]}/${dateSplit[2]}`)
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(1);
-    expect(body[0].price).toBe(testPurchase.price);
+    expect(body).toBeInstanceOf(Object);
+    expect(body.purchases.length).toBe(1);
+    expect(body.purchases[0].price).toBe(testPurchase.price);
   });
 
   test('should get purchases by month /api/purchases/dates/month/:month/:year', async () => {
@@ -83,9 +82,9 @@ describe('Purchases routes testing', () => {
       .get(`/api/purchases/dates/month/${dateSplit[0]}/${dateSplit[2]}`)
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(1);
-    expect(body[0].price).toBe(testPurchase.price);
+    expect(body).toBeInstanceOf(Object);
+    expect(body.purchases.length).toBe(1);
+    expect(body.purchases[0].price).toBe(testPurchase.price);
   });
 
   test('should get purchases by period /api/purchases/dates/period/:starting/:ending', async () => {
@@ -95,9 +94,9 @@ describe('Purchases routes testing', () => {
       .get('/api/purchases/dates/period/01-12-2019/31-01-2020')
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(1);
-    expect(body[0].price).toBe(testPurchase.price);
+    expect(body).toBeInstanceOf(Object);
+    expect(body.purchases.length).toBe(1);
+    expect(body.purchases[0].price).toBe(testPurchase.price);
   });
 
   test('should update purchase /api/purchases/:id', async () => {
