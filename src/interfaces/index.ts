@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { RentalEntity } from '../domain/entities/rental.entity';
-import { PurchaseEntity } from '../domain/entities/purchase.entity';
 import { ProductEntity } from '../domain/entities/product.entity';
+import { PurchaseEntity } from '../domain/entities/purchase.entity';
+import { RentalEntity } from '../domain/entities/rental.entity';
+import { UserEntity } from '../domain/entities/user.entity';
 
 export enum ICategory {
   Car   = 'car',
@@ -91,6 +92,15 @@ export interface IUser {
   name:     string;
   role:     IUserRole;
   status:   IStatus;
+}
+
+export interface UserQueryResult {
+  page:  number;
+  limit: number;
+  total: number;
+  next:  string | null;
+  prev:  string | null;
+  users: UserEntity[];
 }
 
 export interface IVehicle {
