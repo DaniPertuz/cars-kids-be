@@ -1,8 +1,9 @@
 import { ProductModel } from '../../database/models';
 import { ProductDatasource } from '../../domain/datasources/product.datasource';
+import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 import { ProductEntity } from '../../domain/entities/product.entity';
 import { CustomError } from '../../domain/errors';
-import { IStatus } from '../../interfaces';
+import { IStatus, ProductQueryResult } from '../../interfaces';
 
 export class MongoProductDatasource implements ProductDatasource {
   async createProduct(product: ProductEntity): Promise<ProductEntity> {
@@ -15,9 +16,26 @@ export class MongoProductDatasource implements ProductDatasource {
     }
   }
 
-  async getAllProducts(): Promise<ProductEntity[]> {
+  async getAllProducts(paginationDto: PaginationDto): Promise<ProductQueryResult> {
     try {
-      return (await ProductModel.find({})).map(ProductEntity.fromObject);
+      const { page, limit } = paginationDto;
+
+      const [total, products] = await Promise.all([
+        ProductModel.countDocuments(),
+        ProductModel.find({})
+          .sort({ name: 1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+      ]);
+
+      return {
+        page,
+        limit,
+        total,
+        next: ((page * limit) < total) ? `/products?page=${(page + 1)}&limit=${limit}` : null,
+        prev: (page - 1 > 0) ? `/products?page=${(page - 1)}&limit=${limit}` : null,
+        products: products.map(ProductEntity.fromObject)
+      };
     } catch (error) {
       throw CustomError.serverError(`Error al obtener todos los productos: ${error}`);
     }
