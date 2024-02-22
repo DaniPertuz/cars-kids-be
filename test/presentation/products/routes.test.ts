@@ -75,10 +75,10 @@ describe('Products routes testing', () => {
       .get('/api/products')
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(2);
-    expect(body[0].name).toBe(testActiveProduct.name);
-    expect(body[1].name).toBe(testInactiveProduct.name);
+    expect(body).toBeInstanceOf(Object);
+    expect(body.products.length).toBe(2);
+    expect(body.products[0].name).toBe(testActiveProduct.name);
+    expect(body.products[1].name).toBe(testInactiveProduct.name);
 
     await ProductModel.findOneAndDelete({ name: testActiveProduct.name });
     await ProductModel.findOneAndDelete({ name: testInactiveProduct.name });

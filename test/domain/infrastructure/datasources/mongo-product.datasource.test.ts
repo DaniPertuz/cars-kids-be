@@ -1,5 +1,6 @@
 import { connect, disconnect } from '../../../../src/database';
 import { ProductModel } from '../../../../src/database/models';
+import { PaginationDto } from '../../../../src/domain/dtos/shared/pagination.dto';
 import { ProductEntity } from '../../../../src/domain/entities/product.entity';
 import { MongoProductDatasource } from '../../../../src/infrastructure/datasources/mongo-product.datasource';
 import { IStatus } from '../../../../src/interfaces';
@@ -12,26 +13,26 @@ describe('Mongo Product datasource', () => {
     await connect();
   });
 
-    const testProduct = new ProductEntity({
-      name: 'Test Product',
-      cost: 8000,
-      price: 10000,
-      status: IStatus.Active
-    });
+  const testProduct = new ProductEntity({
+    name: 'Test Product',
+    cost: 8000,
+    price: 10000,
+    status: IStatus.Active
+  });
 
-    const activeProduct = new ProductEntity({
-      name: 'Active Product',
-      cost: 8000,
-      price: 10000,
-      status: IStatus.Active
-    });
+  const activeProduct = new ProductEntity({
+    name: 'Active Product',
+    cost: 8000,
+    price: 10000,
+    status: IStatus.Active
+  });
 
-    const inactiveProduct = new ProductEntity({
-      name: 'Inactive Product',
-      cost: 8000,
-      price: 10000,
-      status: IStatus.Inactive
-    });
+  const inactiveProduct = new ProductEntity({
+    name: 'Inactive Product',
+    cost: 8000,
+    price: 10000,
+    status: IStatus.Inactive
+  });
 
   afterAll(async () => {
     await ProductModel.deleteMany();
@@ -59,22 +60,37 @@ describe('Mongo Product datasource', () => {
   test('should get all products', async () => {
     await productDatasource.createProduct(activeProduct);
     await productDatasource.createProduct(inactiveProduct);
-
-    const products = await productDatasource.getAllProducts();
-
-    expect(products.length).toBeGreaterThanOrEqual(2);
-    expect(products[0].params.name).toBe(activeProduct.params.name);
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+    
+    const pagination1 = await productDatasource.getAllProducts(paginationDto1!);
+    
+    expect(error1).toBeUndefined();
+    expect(pagination1.products.length).toBe(1);
+    expect(pagination1.products[0].params.name).toBe(activeProduct.params.name);
+    expect(pagination1.next).toBe(`/products?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+    
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+    
+    const pagination2 = await productDatasource.getAllProducts(paginationDto2!);
+    
+    expect(error2).toBeUndefined();
+    expect(pagination2.products.length).toBe(1);
+    expect(pagination2.products[0].params.name).toBe(inactiveProduct.params.name);
+    expect(pagination2.prev).toBe(`/products?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
 
     await ProductModel.findOneAndDelete({ name: activeProduct.params.name });
     await ProductModel.findOneAndDelete({ name: inactiveProduct.params.name });
   });
 
   test('should throw an error if failed to get all products', async () => {
+    const [, paginationDto] = PaginationDto.create(1, 1);
     jest.spyOn(ProductModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
 
-    await expect(productDatasource.getAllProducts()).rejects.toThrow('Error al obtener todos los productos: Error: Test error');
+    await expect(productDatasource.getAllProducts(paginationDto!)).rejects.toThrow('Error al obtener todos los productos: Error: Test error');
   });
 
   test('should get product by name', async () => {
