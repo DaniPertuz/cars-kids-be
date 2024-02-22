@@ -1,13 +1,14 @@
 import { UserDatasource } from '../../domain/datasources/user.datasource';
+import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repository/user.repository';
-import { IUserRole } from '../../interfaces';
+import { IUserRole, UserQueryResult } from '../../interfaces';
 
 export class UserRepositoryImpl implements UserRepository {
   constructor(private readonly userDatasource: UserDatasource) { }
 
-  getUsers(): Promise<UserEntity[]> {
-    return this.userDatasource.getUsers();
+  getUsers(paginationDto: PaginationDto): Promise<UserQueryResult> {
+    return this.userDatasource.getUsers(paginationDto);
   }
 
   updateUserRole(email: string, role: IUserRole): Promise<UserEntity | null> {
