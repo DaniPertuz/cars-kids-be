@@ -12,7 +12,7 @@ export class RentalsController {
   );
 
   public getRentals = async (req: Request, res: Response) => {
-    const { page = 1, limit = 5 } = req.query;
+    const { page = 1, limit = 10 } = req.query;
 
     const [error, paginationDto] = PaginationDto.create(+page, +limit);
 
