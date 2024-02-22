@@ -50,12 +50,68 @@ describe('Vehicles routes testing', () => {
       .get('/api/vehicles')
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(2);
-    expect(body[0].nickname).toBe('Test Name');
+    expect(body).toBeInstanceOf(Object);
+    expect(body.vehicles.length).toBe(2);
+    expect(body.vehicles[0].nickname).toBe('Test Name');
   });
 
-  test('should return a new Vehicle api/vehicles', async () => {
+  test('should return Vehicles by color api/vehicles/color', async () => {
+    await VehicleModel.create(vehicle1);
+    await VehicleModel.create(vehicle2);
+
+    const { body } = await request(testServer.app)
+      .get('/api/vehicles/color')
+      .send({ color: vehicle1.color })
+      .expect(200);
+
+    expect(body).toBeInstanceOf(Object);
+    expect(body.vehicles.length).toBe(2);
+    expect(body.vehicles[0].nickname).toBe('Test Name');
+  });
+
+  test('should return Vehicles by size api/vehicles/size', async () => {
+    await VehicleModel.create(vehicle1);
+    await VehicleModel.create(vehicle2);
+
+    const { body } = await request(testServer.app)
+      .get('/api/vehicles/size')
+      .send({ size: vehicle1.size })
+      .expect(200);
+
+    expect(body).toBeInstanceOf(Object);
+    expect(body.vehicles.length).toBe(1);
+    expect(body.vehicles[0].nickname).toBe('Test Name');
+  });
+
+  test('should return Vehicles by color and size api/vehicles/props', async () => {
+    await VehicleModel.create(vehicle1);
+    await VehicleModel.create(vehicle2);
+
+    const { body } = await request(testServer.app)
+      .get('/api/vehicles/size')
+      .send({ color: vehicle1.color, size: vehicle1.size })
+      .expect(200);
+
+    expect(body).toBeInstanceOf(Object);
+    expect(body.vehicles.length).toBe(1);
+    expect(body.vehicles[0].nickname).toBe('Test Name');
+  });
+
+  test('should return Vehicles by status api/vehicles/status', async () => {
+    await VehicleModel.create(vehicle1);
+    await VehicleModel.create(vehicle2);
+
+    const { body } = await request(testServer.app)
+      .get('/api/vehicles/status')
+      .send({ status: IStatus.Active })
+      .expect(200);
+
+    expect(body).toBeInstanceOf(Object);
+    expect(body.vehicles.length).toBe(2);
+    expect(body.vehicles[0].nickname).toBe('Test Name');
+  });
+
+  test('should create a new Vehicle api/vehicles', async () => {
     const { body } = await request(testServer.app)
       .post('/api/vehicles')
       .send(vehicle1);
