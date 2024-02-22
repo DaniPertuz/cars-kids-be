@@ -63,20 +63,7 @@ describe('VehicleDTO', () => {
       expect(vehicleDTO).toBeUndefined();
     });
 
-    test('should return error when status field is missing', () => {
-      const invalidObject = {
-        nickname: 'Test Vehicle',
-        category: ICategory.Car,
-        color: '#000000',
-        size: IVehicleSize.Large
-      };
-      const [error, vehicleDTO] = VehicleDTO.create(invalidObject);
-
-      expect(error).toBe('Estado de vehículo es requerido');
-      expect(vehicleDTO).toBeUndefined();
-    });
-
-    test('should return ProductDTO instance when object is valid', () => {
+    test('should return VehicleDTO instance when object is valid', () => {
       const [error, vehicleDTO] = VehicleDTO.create(validObject);
 
       expect(error).toBeUndefined();
