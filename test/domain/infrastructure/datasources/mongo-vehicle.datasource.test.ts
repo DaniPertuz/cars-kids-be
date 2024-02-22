@@ -92,8 +92,8 @@ describe('Mongo Vehicle datasource', () => {
     expect(pagination2.next).toBeNull();
     expect(error2).toBeUndefined();
 
-    await VehicleModel.findOneAndDelete({ nickname: 'Test Name 1' });
-    await VehicleModel.findOneAndDelete({ nickname: 'Test Name 2' });
+    await VehicleModel.findOneAndDelete({ nickname: 'Testing Name 1' });
+    await VehicleModel.findOneAndDelete({ nickname: 'Testing Name 2' });
   });
 
   test('should throw an error if failed to get vehicles', async () => {
