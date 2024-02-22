@@ -3,6 +3,7 @@ import { ProductEntity } from '../domain/entities/product.entity';
 import { PurchaseEntity } from '../domain/entities/purchase.entity';
 import { RentalEntity } from '../domain/entities/rental.entity';
 import { UserEntity } from '../domain/entities/user.entity';
+import { VehicleEntity } from '../domain/entities/vehicle.entity';
 
 export enum ICategory {
   Car   = 'car',
@@ -111,6 +112,15 @@ export interface IVehicle {
   img?:     string;
   size:     IVehicleSize;
   status:   IStatus;
+}
+
+export interface VehicleQueryResult {
+  page:     number;
+  limit:    number;
+  total:    number;
+  next:     string | null;
+  prev:     string | null;
+  vehicles: VehicleEntity[];
 }
 
 export interface ServerOptions {
