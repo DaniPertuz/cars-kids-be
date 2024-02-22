@@ -45,9 +45,9 @@ describe('Users routes testing', () => {
       .set('Authorization', 'Bearer mock-token-here')
       .expect(200);
 
-    expect(body).toBeInstanceOf(Array);
-    expect(body.length).toBe(1);
-    expect(body[0].name).toBe('Test User');
+    expect(body).toBeInstanceOf(Object);
+    expect(body.users.length).toBe(1);
+    expect(body.users[0].name).toBe('Test User');
 
     await UserModel.findOneAndDelete({ email: 'test1@test.com' });
   });
