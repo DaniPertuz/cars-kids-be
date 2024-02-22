@@ -85,7 +85,7 @@ describe('Mongo Rental datasource', () => {
   });
 
   test('should getRentals throw an error', async () => {
-    const [error, paginationDto] = PaginationDto.create();
+    const [, paginationDto] = PaginationDto.create();
     jest.spyOn(RentalModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
@@ -135,7 +135,7 @@ describe('Mongo Rental datasource', () => {
   });
 
   test('should getRentalsByDay throw an error', async () => {
-    const [error, paginationDto] = PaginationDto.create();
+    const [, paginationDto] = PaginationDto.create();
     jest.spyOn(RentalModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
@@ -176,13 +176,14 @@ describe('Mongo Rental datasource', () => {
 
     const { rentals } = await rentalDatasource.getRentalsByMonth('01', '2023', paginationDto!);
 
+    expect(error).toBeUndefined();
     expect(rentals.length).toBeGreaterThanOrEqual(1);
 
     await RentalModel.findOneAndDelete({ client: rentalDB.params.client });
   });
 
   test('should getRentalsByMonth throw an error', async () => {
-    const [error, paginationDto] = PaginationDto.create();
+    const [, paginationDto] = PaginationDto.create();
     jest.spyOn(RentalModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
@@ -225,13 +226,14 @@ describe('Mongo Rental datasource', () => {
 
     const { rentals } = await rentalDatasource.getRentalsByPeriod(starting, ending, paginationDto!);
 
+    expect(error).toBeUndefined();
     expect(rentals).toHaveLength(1);
 
     await RentalModel.findOneAndDelete({ client: rentalDB.params.client });
   });
 
   test('should throw an error when querying within the specified period', async () => {
-    const [error, paginationDto] = PaginationDto.create();
+    const [, paginationDto] = PaginationDto.create();
     jest.spyOn(RentalModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
