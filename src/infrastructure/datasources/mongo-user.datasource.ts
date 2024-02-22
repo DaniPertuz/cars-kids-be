@@ -28,11 +28,7 @@ export class MongoUserDatasource implements UserDatasource {
         users: users.map(UserEntity.fromObject)
       };
     } catch (error: any) {
-      if (error instanceof Error) {
-        throw CustomError.serverError(`Error al eliminar usuario: ${error.message}`);
-      } else {
-        throw CustomError.serverError(`Error al eliminar usuario: ${error}`);
-      }
+      throw CustomError.serverError(`Error al obtener usuarios: ${error}`);
     }
   }
 
