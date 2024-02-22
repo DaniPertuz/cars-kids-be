@@ -3,6 +3,7 @@ import { MongoUserDatasource } from '../../infrastructure/datasources/mongo-user
 import { UserRepositoryImpl } from '../../infrastructure/repositories/user-impl.repository';
 import { IStatus, IUserRole } from '../../interfaces';
 import User from '../../database/models/user';
+import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 
 export class UsersController {
   readonly userRepo = new UserRepositoryImpl(
@@ -10,9 +11,24 @@ export class UsersController {
   );
 
   public getUsers = async (req: Request, res: Response) => {
-    const users = (await this.userRepo.getUsers()).map(user => user.params);
+    const { page = 1, limit = 10 } = req.query;
 
-    return res.json(users);
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
+    
+    if (error) return res.status(400).json({ error });
+    
+    const users = await this.userRepo.getUsers(paginationDto!);
+
+    const { page: productPage, limit: limitPage, total, next, prev, users: data } = users;
+
+    return res.json({
+      page: productPage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      users: data.map(user => user.params)
+    });
   };
 
   public updateUserRole = async (req: Request, res: Response) => {
