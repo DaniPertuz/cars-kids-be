@@ -1,10 +1,10 @@
 import { UserDatasource } from '../../../src/domain/datasources/user.datasource';
 import { UserEntity } from '../../../src/domain/entities/user.entity';
-import { IUserRole } from '../../../src/interfaces';
+import { IUserRole, UserQueryResult } from '../../../src/interfaces';
 
 describe('User datasource', () => {
   class MockDatasource implements UserDatasource {
-    getUsers(): Promise<UserEntity[]> {
+    getUsers(): Promise<UserQueryResult> {
       throw new Error('Method not implemented.');
     }
     updateUserRole(email: string, role: IUserRole): Promise<UserEntity | null> {
