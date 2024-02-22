@@ -1,7 +1,10 @@
 import { connect, disconnect } from '../../../../src/database';
-import { PurchaseModel } from '../../../../src/database/models';
+import { ProductModel, PurchaseModel } from '../../../../src/database/models';
+import { PaginationDto } from '../../../../src/domain/dtos/shared/pagination.dto';
+import { ProductEntity } from '../../../../src/domain/entities/product.entity';
 import { PurchaseEntity } from '../../../../src/domain/entities/purchase.entity';
 import { MongoPurchaseDatasource } from '../../../../src/infrastructure/datasources/mongo-purchase.datasource';
+import { IStatus } from '../../../../src/interfaces';
 
 describe('Mongo Purchase datasource', () => {
 
@@ -32,7 +35,7 @@ describe('Mongo Purchase datasource', () => {
 
     expect(purchaseDB).toBeInstanceOf(PurchaseEntity);
 
-    await PurchaseModel.findOneAndDelete({ product: purchaseDB.params.product });
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
   });
 
   test('should throw CustomError.serverError when PurchaseModel.create throws an error', async () => {
@@ -42,33 +45,63 @@ describe('Mongo Purchase datasource', () => {
   });
 
   test('should get all purchases', async () => {
-    const purchaseDB = await purchaseDatasource.createPurchase(purchase);
+    await purchaseDatasource.createPurchase(purchase);
+    const [error, paginationDto] = PaginationDto.create(1, 1);
 
-    const purchases = await purchaseDatasource.getAllPurchases();
+    const { purchases, prev, next } = await purchaseDatasource.getAllPurchases(paginationDto!);
 
+    expect(error).toBeUndefined();
     expect(purchases.length).toBeGreaterThanOrEqual(1);
     expect(purchases[0].params.price).toBe(purchase.params.price);
+    expect(prev).toBeNull();
+    expect(next).toBeNull();
 
-    await PurchaseModel.findOneAndDelete({ product: purchaseDB.params.product });
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
+  });
+
+  test('should return null if the product is inactive', async () => {
+    const testProduct = new ProductEntity({
+      _id: '25cda7f409d585a843271d25',
+      name: 'Inactive Product',
+      cost: 8000,
+      price: 10000,
+      status: IStatus.Inactive
+    });
+
+    await ProductModel.create(testProduct.params);
+
+    const testPurchase = new PurchaseEntity({
+      product: '25cda7f409d585a843271d25',
+      quantity: 1,
+      price: 10000,
+      purchaseDate: '01-01-2020'
+    });
+
+    const purchaseDB = await purchaseDatasource.createPurchase(testPurchase);
+
+    expect(purchaseDB).toBeNull();
+
+    await ProductModel.findByIdAndDelete(testProduct.params._id);
   });
 
   test('should getAllPurchases throw an error', async () => {
+    const [, paginationDto] = PaginationDto.create();
     jest.spyOn(PurchaseModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
 
-    await expect(purchaseDatasource.getAllPurchases()).rejects.toThrow('Error al obtener compras: Error: Test error');
+    await expect(purchaseDatasource.getAllPurchases(paginationDto!)).rejects.toThrow('Error al obtener compras: Error: Test error');
   });
 
   test('should return the purchase corresponding to the provided ID', async () => {
     const purchaseId = '1';
-    const mockPurchase = { id: purchaseId };
+    const mockPurchase = { _id: purchaseId };
     jest.spyOn(PurchaseModel, 'findById').mockResolvedValueOnce(mockPurchase);
 
     const result = await purchaseDatasource.getPurchase(purchaseId);
 
     expect(result).toBeDefined();
-    // expect(result?.id).toBe(purchaseId); // Verificar que el ID del alquiler es el esperado
+    expect(result?.params._id).toBe(purchaseId);
   });
 
   test('should throw an error when getting a purchase', async () => {
@@ -90,16 +123,49 @@ describe('Mongo Purchase datasource', () => {
   });
 
   test('should get purchases by day', async () => {
-    const purchaseDB = await purchaseDatasource.createPurchase(purchase);
+    await purchaseDatasource.createPurchase(purchase);
+    const [error, paginationDto] = PaginationDto.create(1, 1);
 
-    const purchases = await purchaseDatasource.getPurchasesByDay('01', '01', '2020');
+    const { purchases, prev, next } = await purchaseDatasource.getPurchasesByDay('01', '01', '2020', paginationDto!);
 
-    expect(purchases.length).toBeGreaterThanOrEqual(1);
+    expect(error).toBeUndefined();
+    expect(purchases.length).toBe(1);
+    expect(purchases[0].params.price).toBe(purchase.params.price);
+    expect(prev).toBeNull();
+    expect(next).toBeNull();
 
-    await PurchaseModel.findOneAndDelete({ product: purchaseDB.params.product });
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
+  });
+
+  test('should get purchases by day (more than one)', async () => {
+    await purchaseDatasource.createPurchase(purchase);
+    await purchaseDatasource.createPurchase(purchase);
+
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+
+    const pagination1 = await purchaseDatasource.getPurchasesByDay('01', '01', '2020', paginationDto1!);
+
+    expect(error1).toBeUndefined();
+    expect(pagination1.purchases.length).toBeGreaterThanOrEqual(1);
+    expect(pagination1.next).toBe(`/purchases?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+    expect(error1).toBeUndefined();
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await purchaseDatasource.getPurchasesByDay('01', '01', '2020', paginationDto2!);
+
+    expect(error2).toBeUndefined();
+    expect(pagination2.purchases.length).toBeGreaterThanOrEqual(1);
+    expect(pagination2.prev).toBe(`/purchases?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
+
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
   });
 
   test('should getPurchasesByDay throw an error', async () => {
+    const [, paginationDto] = PaginationDto.create();
     jest.spyOn(PurchaseModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
@@ -108,20 +174,52 @@ describe('Mongo Purchase datasource', () => {
     const month = '1';
     const year = '2020';
 
-    await expect(purchaseDatasource.getPurchasesByDay(day, month, year)).rejects.toThrow('Error al obtener compras por día: Error: Test error');
+    await expect(purchaseDatasource.getPurchasesByDay(day, month, year, paginationDto!)).rejects.toThrow('Error al obtener compras por día: Error: Test error');
   });
 
   test('should get purchases by month', async () => {
-    const purchaseDB = await purchaseDatasource.createPurchase(purchase);
+    await purchaseDatasource.createPurchase(purchase);
+    const [error, paginationDto] = PaginationDto.create(1, 1);
 
-    const purchases = await purchaseDatasource.getPurchasesByMonth('01', '2020');
+    const { purchases, prev, next } = await purchaseDatasource.getPurchasesByMonth('01', '2020', paginationDto!);
 
+    expect(error).toBeUndefined();
     expect(purchases.length).toBeGreaterThanOrEqual(1);
+    expect(purchases[0].params.price).toBe(purchase.params.price);
+    expect(prev).toBeNull();
+    expect(next).toBeNull();
 
-    await PurchaseModel.findOneAndDelete({ product: purchaseDB.params.product });
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
+  });
+
+  test('should get purchases by month (more than one)', async () => {
+    await purchaseDatasource.createPurchase(purchase);
+    await purchaseDatasource.createPurchase(purchase);
+
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+
+    const pagination1 = await purchaseDatasource.getPurchasesByMonth('01', '2020', paginationDto1!);
+
+    expect(error1).toBeUndefined();
+    expect(pagination1.purchases.length).toBeGreaterThanOrEqual(1);
+    expect(pagination1.next).toBe(`/purchases?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await purchaseDatasource.getPurchasesByMonth('01', '2020', paginationDto2!);
+
+    expect(error2).toBeUndefined();
+    expect(pagination2.purchases.length).toBeGreaterThanOrEqual(1);
+    expect(pagination2.prev).toBe(`/purchases?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
+
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
   });
 
   test('should getPurchasesByMonth throw an error', async () => {
+    const [, paginationDto] = PaginationDto.create();
     jest.spyOn(PurchaseModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
@@ -129,23 +227,57 @@ describe('Mongo Purchase datasource', () => {
     const month = '1';
     const year = '2020';
 
-    await expect(purchaseDatasource.getPurchasesByMonth(month, year)).rejects.toThrow('Error al obtener las compras por mes: Error: Test error');
+    await expect(purchaseDatasource.getPurchasesByMonth(month, year, paginationDto!)).rejects.toThrow('Error al obtener las compras por mes: Error: Test error');
   });
 
   test('should get purchases within the specified period', async () => {
-    const purchaseDB = await purchaseDatasource.createPurchase(purchase);
+    await purchaseDatasource.createPurchase(purchase);
+    const [error, paginationDto] = PaginationDto.create(1, 1);
 
     const starting = '10-11-2019';
     const ending = '01-02-2020';
 
-    const result = await purchaseDatasource.getPurchasesByPeriod(starting, ending);
+    const { purchases, prev, next } = await purchaseDatasource.getPurchasesByPeriod(starting, ending, paginationDto!);
 
-    expect(result).toHaveLength(1);
+    expect(error).toBeUndefined();
+    expect(purchases.length).toBeGreaterThanOrEqual(1);
+    expect(purchases[0].params.price).toBe(purchase.params.price);
+    expect(prev).toBeNull();
+    expect(next).toBeNull();
 
-    await PurchaseModel.findOneAndDelete({ product: purchaseDB.params.product });
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
+  });
+
+  test('should get purchases within the specified period (more than one)', async () => {
+    await purchaseDatasource.createPurchase(purchase);
+    await purchaseDatasource.createPurchase(purchase);
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+
+    const starting = '10-11-2019';
+    const ending = '01-02-2020';
+
+    const pagination1 = await purchaseDatasource.getPurchasesByPeriod(starting, ending, paginationDto1!);
+
+    expect(error1).toBeUndefined();
+    expect(pagination1.purchases.length).toBeGreaterThanOrEqual(1);
+    expect(pagination1.next).toBe(`/purchases?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await purchaseDatasource.getPurchasesByPeriod(starting, ending, paginationDto2!);
+
+    expect(error2).toBeUndefined();
+    expect(pagination2.purchases.length).toBeGreaterThanOrEqual(1);
+    expect(pagination2.prev).toBe(`/purchases?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
+
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
   });
 
   test('should throw an error when querying within the specified period', async () => {
+    const [, paginationDto] = PaginationDto.create();
     jest.spyOn(PurchaseModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
     });
@@ -153,7 +285,7 @@ describe('Mongo Purchase datasource', () => {
     const starting = '10-11-2022';
     const ending = '01-02-2023';
 
-    await expect(purchaseDatasource.getPurchasesByPeriod(starting, ending)).rejects.toThrow('Error al obtener las compras por periodo: Error: Test error');
+    await expect(purchaseDatasource.getPurchasesByPeriod(starting, ending, paginationDto!)).rejects.toThrow('Error al obtener las compras por periodo: Error: Test error');
   });
 
   test('should return null when no purchase is found for the provided ID', async () => {
