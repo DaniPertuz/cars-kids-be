@@ -4,6 +4,7 @@ import { MongoVehicleDatasource } from '../../infrastructure/datasources/mongo-v
 import { VehicleRepositoryImpl } from '../../infrastructure/repositories/vehicle-impl.repository';
 import { IStatus, IVehicle, IVehicleSize } from '../../interfaces';
 import { VehicleDTO } from '../../domain/dtos/vehicle';
+import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 
 export class VehiclesController {
   readonly vehicleRepo = new VehicleRepositoryImpl(
@@ -11,9 +12,24 @@ export class VehiclesController {
   );
 
   public getVehicles = async (req: Request, res: Response) => {
-    const vehicles = (await this.vehicleRepo.getVehicles()).map(vehicle => vehicle.params);
+    const { page = 1, limit = 10 } = req.query;
 
-    return res.json(vehicles);
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
+
+    if (error) return res.status(400).json({ error });
+
+    const vehicles = await this.vehicleRepo.getVehicles(paginationDto!);
+
+    const { page: vehiclePage, limit: limitPage, total, next, prev, vehicles: data } = vehicles;
+
+    return res.json({
+      page: vehiclePage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      vehicles: data.map(vehicle => vehicle.params)
+    });
   };
 
   public getVehicleByNickname = async (req: Request, res: Response) => {
@@ -26,46 +42,102 @@ export class VehiclesController {
 
   public getVehiclesByColor = async (req: Request, res: Response) => {
     const { color } = req.body;
+    const { page = 1, limit = 10 } = req.query;
 
-    const vehicles = (await this.vehicleRepo.getVehiclesByColor(color)).map(vehicle => vehicle.params);
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
 
-    return (vehicles) ? res.json(vehicles) : res.status(404).json({ error: 'No se encontraron vehículos con este color' });
+    if (error) return res.status(400).json({ error });
+
+    const vehicles = await this.vehicleRepo.getVehiclesByColor(color, paginationDto!);
+
+    const { page: vehiclePage, limit: limitPage, total, next, prev, vehicles: data } = vehicles;
+
+    return res.json({
+      page: vehiclePage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      vehicles: data.map(vehicle => vehicle.params)
+    });
   };
 
   public getVehiclesByColorAndSize = async (req: Request, res: Response) => {
     const { color, size } = req.body;
+    const { page = 1, limit = 10 } = req.query;
+
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
+
+    if (error) return res.status(400).json({ error });
 
     if (!(Object.values(IVehicleSize).includes(size as IVehicleSize))) {
       return res.status(400).json({ error: 'Color válido pero tamaño de vehículo no válido' });
     }
 
-    const vehicles = (await this.vehicleRepo.getVehiclesByColorAndSize(color, size as IVehicleSize)).map(vehicle => vehicle.params);
+    const vehicles = await this.vehicleRepo.getVehiclesByColorAndSize(color, size as IVehicleSize, paginationDto!);
 
-    return (vehicles) ? res.json(vehicles) : res.status(404).json({ error: 'No se encontraron vehículos con este color y tamaño' });
+    const { page: vehiclePage, limit: limitPage, total, next, prev, vehicles: data } = vehicles;
+
+    return res.json({
+      page: vehiclePage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      vehicles: data.map(vehicle => vehicle.params)
+    });
   };
 
   public getVehiclesBySize = async (req: Request, res: Response) => {
     const { size } = req.body;
+    const { page = 1, limit = 10 } = req.query;
+
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
+
+    if (error) return res.status(400).json({ error });
 
     if (!(Object.values(IVehicleSize).includes(size as IVehicleSize))) {
       return res.status(400).json({ error: 'Tamaño de vehículo no válido' });
     }
 
-    const vehicles = (await this.vehicleRepo.getVehiclesBySize(size)).map(vehicle => vehicle.params);
+    const vehicles = await this.vehicleRepo.getVehiclesBySize(size, paginationDto!);
 
-    return (vehicles) ? res.json(vehicles) : res.status(404).json({ error: 'No se encontraron vehículos con este tamaño' });
+    const { page: vehiclePage, limit: limitPage, total, next, prev, vehicles: data } = vehicles;
+
+    return res.json({
+      page: vehiclePage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      vehicles: data.map(vehicle => vehicle.params)
+    });
   };
 
   public getVehiclesByStatus = async (req: Request, res: Response) => {
     const { status } = req.body;
+    const { page = 1, limit = 10 } = req.query;
+
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
+
+    if (error) return res.status(400).json({ error });
 
     if (!(Object.values(IStatus).includes(status as IStatus))) {
       return res.status(400).json({ error: 'Estado de vehículo no válido' });
     }
 
-    const vehicles = (await this.vehicleRepo.getVehiclesByStatus(status as IStatus)).map(vehicle => vehicle.params);
+    const vehicles = await this.vehicleRepo.getVehiclesByStatus(status as IStatus, paginationDto!);
 
-    return (vehicles) ? res.json(vehicles) : res.status(404).json({ error: 'No se encontraron vehículos con este estado' });
+    const { page: vehiclePage, limit: limitPage, total, next, prev, vehicles: data } = vehicles;
+
+    return res.json({
+      page: vehiclePage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      vehicles: data.map(vehicle => vehicle.params)
+    });
   };
 
   public createVehicle = async (req: Request, res: Response) => {
