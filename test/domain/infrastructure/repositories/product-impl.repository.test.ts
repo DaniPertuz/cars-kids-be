@@ -11,7 +11,6 @@ describe('Product repository implementation', () => {
   const mockProductDatasource: MockProductDatasource = {
     createProduct: jest.fn(),
     getProduct: jest.fn(),
-    getActiveProducts: jest.fn(),
     getAllProducts: jest.fn(),
     updateProduct: jest.fn(),
     deleteProduct: jest.fn()
@@ -33,7 +32,6 @@ describe('Product repository implementation', () => {
   const testCases = [
     { method: 'createProduct', args: [product], },
     { method: 'getProduct', args: [product] },
-    { method: 'getActiveProducts', args: [] },
     { method: 'getAllProducts', args: [] },
     { method: 'updateProduct', args: ['d34a2daad17250e579833f0e'] },
     { method: 'deleteProduct', args: ['d34a2daad17250e579833f0e'] },

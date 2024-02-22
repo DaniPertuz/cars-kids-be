@@ -6,9 +6,6 @@ describe('Product datasource', () => {
     createProduct(product: ProductEntity): Promise<ProductEntity> {
       throw new Error('Method not implemented.');
     }
-    getActiveProducts(): Promise<ProductEntity[]> {
-      throw new Error('Method not implemented.');
-    }
     getAllProducts(): Promise<ProductEntity[]> {
       throw new Error('Method not implemented.');
     }
@@ -29,7 +26,6 @@ describe('Product datasource', () => {
     expect(mockDatasource).toBeInstanceOf(MockDatasource);
     expect(typeof mockDatasource.createProduct).toBe('function');
     expect(typeof mockDatasource.getProduct).toBe('function');
-    expect(typeof mockDatasource.getActiveProducts).toBe('function');
     expect(typeof mockDatasource.getAllProducts).toBe('function');
     expect(typeof mockDatasource.updateProduct).toBe('function');
     expect(typeof mockDatasource.deleteProduct).toBe('function');

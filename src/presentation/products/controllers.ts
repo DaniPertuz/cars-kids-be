@@ -10,12 +10,6 @@ export class ProductsController {
     new MongoProductDatasource()
   );
 
-  public getActiveProducts = async (req: Request, res: Response) => {
-    const vehicles = (await this.productRepo.getActiveProducts()).map(vehicle => vehicle.params);
-
-    return res.json(vehicles);
-  };
-
   public getAllProducts = async (req: Request, res: Response) => {
     const vehicles = (await this.productRepo.getAllProducts()).map(vehicle => vehicle.params);
 

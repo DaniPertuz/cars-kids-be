@@ -77,27 +77,6 @@ describe('Mongo Product datasource', () => {
     await expect(productDatasource.getAllProducts()).rejects.toThrow('Error al obtener todos los productos: Error: Test error');
   });
 
-  test('should get active products', async () => {
-    await productDatasource.createProduct(activeProduct);
-    await productDatasource.createProduct(inactiveProduct);
-
-    const products = await productDatasource.getActiveProducts();
-
-    expect(products.length).toBeGreaterThanOrEqual(1);
-    expect(products[0].params.name).toBe(activeProduct.params.name);
-
-    await ProductModel.findOneAndDelete({ name: activeProduct.params.name });
-    await ProductModel.findOneAndDelete({ name: inactiveProduct.params.name });
-  });
-
-  test('should throw an error if failed to get active products', async () => {
-    jest.spyOn(ProductModel, 'find').mockImplementationOnce(() => {
-      throw new Error('Test error');
-    });
-
-    await expect(productDatasource.getActiveProducts()).rejects.toThrow('Error al obtener todos los productos activos: Error: Test error');
-  });
-
   test('should get product by name', async () => {
     const productTest = new ProductEntity({
       name: 'Testing Product',

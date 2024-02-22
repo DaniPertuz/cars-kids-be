@@ -9,10 +9,6 @@ export class ProductRepositoryImpl implements ProductRepository {
     return this.productDatasource.createProduct(product);
   }
 
-  getActiveProducts(): Promise<ProductEntity[]> {
-    return this.productDatasource.getActiveProducts();
-  }
-
   getAllProducts(): Promise<ProductEntity[]> {
     return this.productDatasource.getAllProducts();
   }

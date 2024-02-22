@@ -15,14 +15,6 @@ export class MongoProductDatasource implements ProductDatasource {
     }
   }
 
-  async getActiveProducts(): Promise<ProductEntity[]> {
-    try {
-      return (await ProductModel.find({ status: IStatus.Active })).map(ProductEntity.fromObject);
-    } catch (error) {
-      throw CustomError.serverError(`Error al obtener todos los productos activos: ${error}`);
-    }
-  }
-
   async getAllProducts(): Promise<ProductEntity[]> {
     try {
       return (await ProductModel.find({})).map(ProductEntity.fromObject);
