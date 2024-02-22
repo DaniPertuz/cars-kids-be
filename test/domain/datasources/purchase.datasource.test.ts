@@ -1,21 +1,23 @@
 import { PurchaseDatasource } from '../../../src/domain/datasources/purchase.datasource';
+import { PaginationDto } from '../../../src/domain/dtos/shared/pagination.dto';
 import { PurchaseEntity } from '../../../src/domain/entities/purchase.entity';
+import { PurchaseQueryResult } from '../../../src/interfaces';
 
 describe('Purchase datasource', () => {
   class MockDatasource implements PurchaseDatasource {
-    createPurchase(purchase: PurchaseEntity): Promise<PurchaseEntity> {
+    createPurchase(purchase: PurchaseEntity): Promise<PurchaseEntity | null> {
       throw new Error('Method not implemented.');
     }
-    getAllPurchases(): Promise<PurchaseEntity[]> {
+    getAllPurchases(paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
       throw new Error('Method not implemented.');
     }
-    getPurchasesByDay(day: string, month: string, year: string): Promise<PurchaseEntity[]> {
+    getPurchasesByDay(day: string, month: string, year: string, paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
       throw new Error('Method not implemented.');
     }
-    getPurchasesByMonth(month: string, year: string): Promise<PurchaseEntity[]> {
+    getPurchasesByMonth(month: string, year: string, paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
       throw new Error('Method not implemented.');
     }
-    getPurchasesByPeriod(starting: string, ending: string): Promise<PurchaseEntity[]> {
+    getPurchasesByPeriod(starting: string, ending: string, paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
       throw new Error('Method not implemented.');
     }
     getPurchase(id: string): Promise<PurchaseEntity | null> {
