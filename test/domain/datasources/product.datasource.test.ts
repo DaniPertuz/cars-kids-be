@@ -1,12 +1,13 @@
 import { ProductDatasource } from '../../../src/domain/datasources/product.datasource';
 import { ProductEntity } from '../../../src/domain/entities/product.entity';
+import { ProductQueryResult } from '../../../src/interfaces';
 
 describe('Product datasource', () => {
   class MockDatasource implements ProductDatasource {
     createProduct(product: ProductEntity): Promise<ProductEntity> {
       throw new Error('Method not implemented.');
     }
-    getAllProducts(): Promise<ProductEntity[]> {
+    getAllProducts(): Promise<ProductQueryResult> {
       throw new Error('Method not implemented.');
     }
     getProduct(name: string): Promise<ProductEntity | null> {
