@@ -20,20 +20,19 @@ describe('Mongo Vehicle datasource', () => {
 
   beforeAll(async () => {
     await connect();
+    await VehicleModel.deleteMany();
   });
 
   afterAll(async () => {
-    await VehicleModel.deleteMany();
     await disconnect();
   });
 
   test('should create a vehicle', async () => {
-
     const vehicleDB = await vehicleDatasource.createVehicle(vehicle);
 
     expect(vehicleDB).toBeInstanceOf(VehicleEntity);
 
-    await VehicleModel.findOneAndDelete({ nickname: vehicleDB.params.nickname });
+    await VehicleModel.findOneAndDelete({ nickname: 'Test Name' });
   });
 
   test('should throw an error if failed to create a vehicle', async () => {
@@ -52,7 +51,7 @@ describe('Mongo Vehicle datasource', () => {
     expect(vehicles.length).toBeGreaterThanOrEqual(1);
     expect(vehicles[0].params.category).toBe(ICategory.Car);
 
-    await VehicleModel.findOneAndDelete({ nickname: vehicle.params.nickname });
+    await VehicleModel.findOneAndDelete({ nickname: 'Test Name' });
   });
 
   test('should getVehicles generate prev and next URLs', async () => {
