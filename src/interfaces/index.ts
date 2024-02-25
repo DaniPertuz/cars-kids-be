@@ -56,6 +56,7 @@ export interface IPurchase {
   quantity:     number;
   price:        number;
   purchaseDate: string;
+  user:         string;
 }
 
 export interface PurchaseQueryResult {
@@ -75,6 +76,7 @@ export interface IRental {
   vehicle:    string;
   payment:    IPayment;
   amount:     number;
+  user:       string;
   exception?: string; 
 }
 
