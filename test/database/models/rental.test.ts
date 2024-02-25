@@ -14,7 +14,7 @@ describe('Rental model', () => {
 
   test('should return RentalModel', async () => {
     const vehicleData = {
-      nickname: 'Test Nickname',
+      nickname: 'Testing Nickname',
       img: 'Test image',
       category: ICategory.Car,
       color: '#000000',
@@ -33,14 +33,23 @@ describe('Rental model', () => {
       vehicle: vehicleID,
       payment: IPayment.Cash,
       amount: 100000,
+      user: 'd4ba2daad17250e579833f0e',
       exception: ''
     };
 
     const rental = await RentalModel.create(rentalData);
 
-    expect(rental.toJSON()).toEqual(expect.objectContaining(rentalData));
+    expect(rental.toJSON()).toEqual(expect.objectContaining({
+      client: 'Test Client',
+      time: 15,
+      date: new Date('2000-11-10T05:00:00.000Z'),
+      vehicle: vehicleID,
+      payment: IPayment.Cash,
+      amount: 100000,
+      exception: ''
+    }));
 
-    await RentalModel.findOneAndDelete({ client: rental.client });
+    await RentalModel.findOneAndDelete({ client: 'Test Client' });
     await VehicleModel.findByIdAndDelete(vehicleID);
   });
 
@@ -60,6 +69,7 @@ describe('Rental model', () => {
         }
       },
       amount: { type: Number, required: true },
+      user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
       exception: { type: String, required: false },
     };
 

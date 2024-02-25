@@ -7,7 +7,8 @@ describe('PurchaseDTO', () => {
     price: 10000,
     purchaseDate: '2020-12-10',
     quantity: 1,
-    product: 'productID'
+    product: 'productID',
+    user: 'd4ba2daad17250e579833f0e'
   };
 
   describe('create', () => {
@@ -15,7 +16,8 @@ describe('PurchaseDTO', () => {
       const invalidObject = {
         purchaseDate: '2020-12-10',
         quantity: 1,
-        product: 'productID'
+        product: 'productID',
+        user: 'd4ba2daad17250e579833f0e'
       };
 
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
@@ -28,7 +30,8 @@ describe('PurchaseDTO', () => {
       const invalidObject = {
         price: 10000,
         quantity: 1,
-        product: 'productID'
+        product: 'productID',
+        user: 'd4ba2daad17250e579833f0e'
       };
 
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
@@ -41,25 +44,41 @@ describe('PurchaseDTO', () => {
       const invalidObject = {
         price: 10000,
         purchaseDate: '2020-12-10',
-        product: 'productID'
+        product: 'productID',
+        user: 'd4ba2daad17250e579833f0e'
       };
-
+      
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
-
+      
       expect(error).toBe('Cantidad de items comprados es requerida');
       expect(purchaseDTO).toBeUndefined();
     });
-
+    
     test('should return error when product field is missing', () => {
       const invalidObject = {
         price: 10000,
         purchaseDate: '2020-12-10',
         quantity: 1,
+        user: 'd4ba2daad17250e579833f0e'
+      };
+      
+      const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
+      
+      expect(error).toBe('ID de producto es requerido');
+      expect(purchaseDTO).toBeUndefined();
+    });
+    
+    test('should return error when user field is missing', () => {
+      const invalidObject = {
+        price: 10000,
+        product: 'productID',
+        purchaseDate: '2020-12-10',
+        quantity: 1
       };
 
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
 
-      expect(error).toBe('ID de producto es requerido');
+      expect(error).toBe('Usuario es requerido');
       expect(purchaseDTO).toBeUndefined();
     });
 
@@ -77,7 +96,8 @@ describe('PurchaseDTO', () => {
         price: 10000,
         purchaseDate: '2020-12-10',
         quantity: 1,
-        product: 'productID'
+        product: 'productID',
+        user: 'd4ba2daad17250e579833f0e'
       };
 
       const [error, purchaseDTO] = PurchaseDTO.update(invalidObject);

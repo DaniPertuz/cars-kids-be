@@ -11,6 +11,7 @@ describe('RentalDTO', () => {
     vehicle: '15c42daad17250e579833f0e',
     payment: IPayment.Cash,
     amount: 10000,
+    user: 'd4ba2daad17250e579833f0e',
     exception: ''
   };
 
@@ -21,11 +22,12 @@ describe('RentalDTO', () => {
         date: '01-24-2023',
         vehicle: '15c42daad17250e579833f0e',
         payment: IPayment.Cash,
+        user: 'd4ba2daad17250e579833f0e',
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
 
-      expect(error).toBeTruthy();
+      expect(error).toBe('Nombre de cliente es requerido');
     });
 
     test('should return error when time field is missing', () => {
@@ -34,11 +36,12 @@ describe('RentalDTO', () => {
         date: '01-24-2023',
         vehicle: '15c42daad17250e579833f0e',
         payment: IPayment.Cash,
+        user: 'd4ba2daad17250e579833f0e',
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
 
-      expect(error).toBeTruthy();
+      expect(error).toBe('Tiempo es requerido');
     });
 
     test('should return error when date field is missing', () => {
@@ -47,11 +50,12 @@ describe('RentalDTO', () => {
         time: 15,
         vehicle: '15c42daad17250e579833f0e',
         payment: IPayment.Cash,
+        user: 'd4ba2daad17250e579833f0e',
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
 
-      expect(error).toBeTruthy();
+      expect(error).toBe('Fecha es requerida');
     });
 
     test('should return error when vehicle field is missing', () => {
@@ -60,11 +64,12 @@ describe('RentalDTO', () => {
         time: 15,
         date: '01-24-2023',
         payment: IPayment.Cash,
+        user: 'd4ba2daad17250e579833f0e',
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
 
-      expect(error).toBeTruthy();
+      expect(error).toBe('Vehículo es requerido');
     });
 
     test('should return error when payment field is missing', () => {
@@ -73,11 +78,12 @@ describe('RentalDTO', () => {
         time: 15,
         date: '01-24-2023',
         vehicle: '15c42daad17250e579833f0e',
+        user: 'd4ba2daad17250e579833f0e',
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
 
-      expect(error).toBeTruthy();
+      expect(error).toBe('Tipo de pago es requerido');
     });
 
     test('should return error when amount field is missing', () => {
@@ -86,11 +92,26 @@ describe('RentalDTO', () => {
         time: 15,
         date: '01-24-2023',
         vehicle: '15c42daad17250e579833f0e',
+        user: 'd4ba2daad17250e579833f0e',
         payment: IPayment.Cash
       };
       const [error] = RentalDTO.create(invalidObject);
 
-      expect(error).toBeTruthy();
+      expect(error).toBe('Monto es requerido');
+    });
+
+    test('should return error when user field is missing', () => {
+      const invalidObject = {
+        client: 'NN Test',
+        time: 15,
+        date: '01-24-2023',
+        vehicle: '15c42daad17250e579833f0e',
+        payment: IPayment.Cash,
+        amount: 10000
+      };
+      const [error] = RentalDTO.create(invalidObject);
+
+      expect(error).toBe('Usuario es requerido');
     });
 
     test('should return RentalDTO instance when object is valid', () => {
@@ -109,6 +130,7 @@ describe('RentalDTO', () => {
         vehicle: '15c42daad17250e579833f0e',
         payment: IPayment.Cash,
         amount: 10000,
+        user: 'd4ba2daad17250e579833f0e',
         exception: ''
       };
 

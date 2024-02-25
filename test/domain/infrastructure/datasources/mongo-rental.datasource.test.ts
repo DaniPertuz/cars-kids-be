@@ -16,6 +16,7 @@ describe('Mongo Rental datasource', () => {
     vehicle: '15c42daad17250e579833f0e',
     payment: IPayment.Cash,
     amount: 10000,
+    user: 'd4ba2daad17250e579833f0e',
     exception: ''
   });
 
@@ -53,7 +54,7 @@ describe('Mongo Rental datasource', () => {
     const { rentals, prev, next } = await rentalDatasource.getRentals(paginationDto!);
 
     expect(rentals.length).toBeGreaterThanOrEqual(1);
-    expect(rentals[0].params.client).toBe('NN Test');
+    expect(rentals[0].params.client).toBe(rental.params.client);
     expect(prev).toBeNull();
     expect(next).toBeNull();
     expect(error).toBeUndefined();
@@ -279,6 +280,7 @@ describe('Mongo Rental datasource', () => {
       vehicle: '15c42daad17250e579833f0e',
       payment: IPayment.Cash,
       amount: 10000,
+      user: 'd4b22daad17250e579833f0e',
       exception: 'Exception'
     });
 

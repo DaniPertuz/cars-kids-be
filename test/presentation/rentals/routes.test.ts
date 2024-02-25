@@ -24,6 +24,7 @@ describe('Rentals routes testing', () => {
     vehicle: '15c42daad17250e579833f0e',
     payment: IPayment.Cash,
     amount: 10000,
+    user: 'd4ba2daad17250e579833f0e',
     exception: ''
   };
 
@@ -109,6 +110,7 @@ describe('Rentals routes testing', () => {
       vehicle: '15c42daad17250e579833f0e',
       payment: IPayment.Cash,
       amount: 10000,
+      user: 'd4ba2daad17250e579833f0e',
       exception: ''
     }));
   });

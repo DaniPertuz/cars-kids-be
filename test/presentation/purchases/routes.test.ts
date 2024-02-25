@@ -20,7 +20,8 @@ describe('Purchases routes testing', () => {
     product: '65cec1ef73d47156e24f0c32',
     quantity: 1,
     price: 10000,
-    purchaseDate: '01-01-2020'
+    purchaseDate: '01-01-2020',
+    user: 'd4ba2daad17250e579833f0e'
   };
 
   test('should create a purchase /api/purchases', async () => {
@@ -110,7 +111,8 @@ describe('Purchases routes testing', () => {
     expect(body).toEqual(expect.objectContaining({
       quantity: 2,
       price: 20000,
-      purchaseDate: new Date('01-01-2020').toISOString()
+      purchaseDate: new Date('01-01-2020').toISOString(),
+      user: 'd4ba2daad17250e579833f0e'
     }));
   });
 

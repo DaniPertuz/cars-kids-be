@@ -9,31 +9,33 @@ describe('Rental entity', () => {
     vehicle: 'd3ba2daad17250e579833f0e',
     payment: IPayment.Cash,
     amount: 10000,
+    user: 'd4ba2daad17250e579833f0e',
     exception: 'Test exception'
   };
 
   test('should create a RentalEntity instance', () => {
-    const user = new RentalEntity(data);
+    const rental = new RentalEntity(data);
 
-    expect(user).toBeInstanceOf(RentalEntity);
-    expect(user.params.client).toBe(data.client);
-    expect(user.params.time).toBe(data.time);
-    expect(user.params.date).toBe(data.date);
-    expect(user.params.vehicle).toBe(data.vehicle);
-    expect(user.params.payment).toBe(data.payment);
-    expect(user.params.amount).toBe(data.amount);
-    expect(user.params.exception).toBe(data.exception);
+    expect(rental).toBeInstanceOf(RentalEntity);
+    expect(rental.params.client).toBe(data.client);
+    expect(rental.params.time).toBe(data.time);
+    expect(rental.params.date).toBe(data.date);
+    expect(rental.params.vehicle).toBe(data.vehicle);
+    expect(rental.params.payment).toBe(data.payment);
+    expect(rental.params.amount).toBe(data.amount);
+    expect(rental.params.exception).toBe(data.exception);
   });
 
   test('should create a RentalEntity from object', () => {
-    const user = RentalEntity.fromObject(data);
+    const rental = RentalEntity.fromObject(data);
     
-    expect(user).toBeInstanceOf(RentalEntity);
-    expect(typeof user.params.time).toBe('number');
-    expect(typeof user.params.date).toBe('string');
-    expect(typeof user.params.vehicle).toBe('string');
-    expect(typeof user.params.payment).toBe('string');
-    expect(typeof user.params.amount).toBe('number');
-    expect(typeof user.params.exception).toBe('string');
+    expect(rental).toBeInstanceOf(RentalEntity);
+    expect(typeof rental.params.time).toBe('number');
+    expect(typeof rental.params.date).toBe('string');
+    expect(typeof rental.params.vehicle).toBe('string');
+    expect(typeof rental.params.payment).toBe('string');
+    expect(typeof rental.params.amount).toBe('number');
+    expect(typeof rental.params.user).toBe('string');
+    expect(typeof rental.params.exception).toBe('string');
   });
 });

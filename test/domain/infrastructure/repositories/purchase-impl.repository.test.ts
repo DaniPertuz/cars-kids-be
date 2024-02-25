@@ -25,7 +25,8 @@ describe('Purchase repository implementation', () => {
     product: '65cec1ef73d47156e24f0ccc',
     quantity: 1,
     price: 10000,
-    purchaseDate: '01-01-2020'
+    purchaseDate: '01-01-2020',
+    user: 'd4ba2daad17250e579833f0e',
   });
 
   beforeEach(() => {

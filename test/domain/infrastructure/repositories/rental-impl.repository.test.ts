@@ -28,6 +28,7 @@ describe('Rental repository implementation', () => {
     vehicle: 'd3ba2daad17250e579833f0e',
     payment: IPayment.Cash,
     amount: 10000,
+    user: 'd4ba2daad17250e579833f0e',
     exception: 'Test exception'
   });
 

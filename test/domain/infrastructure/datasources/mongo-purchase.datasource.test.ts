@@ -14,7 +14,8 @@ describe('Mongo Purchase datasource', () => {
     product: '65cec1ef73d47156e24f0c32',
     quantity: 1,
     price: 10000,
-    purchaseDate: '01-01-2020'
+    purchaseDate: '01-01-2020',
+    user: 'd4ba2daad17250e579833f0e'
   });
 
   beforeAll(async () => {
@@ -46,16 +47,29 @@ describe('Mongo Purchase datasource', () => {
 
   test('should get all purchases', async () => {
     await purchaseDatasource.createPurchase(purchase);
-    const [error, paginationDto] = PaginationDto.create(1, 1);
+    await purchaseDatasource.createPurchase(purchase);
 
-    const { purchases, prev, next } = await purchaseDatasource.getAllPurchases(paginationDto!);
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
 
-    expect(error).toBeUndefined();
-    expect(purchases.length).toBeGreaterThanOrEqual(1);
-    expect(purchases[0].params.price).toBe(purchase.params.price);
-    expect(prev).toBeNull();
-    expect(next).toBeNull();
+    const pagination1 = await purchaseDatasource.getAllPurchases(paginationDto1!);
 
+    expect(error1).toBeUndefined();
+    expect(pagination1.purchases.length).toBe(1);
+    expect(pagination1.purchases[0].params.price).toBe(purchase.params.price);
+    expect(pagination1.prev).toBeNull();
+    expect(pagination1.next).toBe(`/purchases?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await purchaseDatasource.getAllPurchases(paginationDto2!);
+
+    expect(error2).toBeUndefined();
+    expect(pagination2.purchases.length).toBe(1);
+    expect(pagination2.purchases[0].params.price).toBe(purchase.params.price);
+    expect(pagination2.prev).toBe(`/purchases?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
+
+    await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
     await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
   });
 
@@ -74,7 +88,8 @@ describe('Mongo Purchase datasource', () => {
       product: '25cda7f409d585a843271d25',
       quantity: 1,
       price: 10000,
-      purchaseDate: '01-01-2020'
+      purchaseDate: '01-01-2020',
+      user: 'd4ba2daad17250e579833f0e'
     });
 
     const purchaseDB = await purchaseDatasource.createPurchase(testPurchase);
@@ -288,6 +303,23 @@ describe('Mongo Purchase datasource', () => {
     await expect(purchaseDatasource.getPurchasesByPeriod(starting, ending, paginationDto!)).rejects.toThrow('Error al obtener las compras por periodo: Error: Test error');
   });
 
+  test('should return updated purchase when purchaseData is valid', async () => {
+    const validPurchase: PurchaseEntity = new PurchaseEntity({
+      product: '25cda7f409d585a843271d25',
+      quantity: 1,
+      price: 10000,
+      purchaseDate: '01-01-2020',
+      user: 'd4ba2daad17250e579833f0e'
+    });
+    const validId = 'validPurchaseId';
+
+    jest.spyOn(PurchaseModel, 'findByIdAndUpdate').mockResolvedValueOnce(validPurchase.params);
+
+    const updatedPurchase = await purchaseDatasource.updatePurchase(validId, validPurchase);
+
+    expect(updatedPurchase).toBeInstanceOf(PurchaseEntity);
+  });
+
   test('should return null when no purchase is found for the provided ID', async () => {
     jest.spyOn(PurchaseModel, 'findByIdAndUpdate').mockResolvedValueOnce(null);
 
@@ -321,6 +353,24 @@ describe('Mongo Purchase datasource', () => {
     await purchaseDatasource.deletePurchase(purchaseId);
 
     expect(PurchaseModel.findByIdAndDelete).toHaveBeenCalledWith(purchaseId, { "new": true });
+  });
+
+  test('should return deleted purchase when purchase is valid', async () => {
+    const validId = 'validPurchaseId';
+
+    const validPurchase = {
+      _id: validId,
+      product: '25cda7f409d585a843271d25',
+      quantity: 1,
+      price: 10000,
+      purchaseDate: '01-01-2020',
+      user: 'd4ba2daad17250e579833f0e'
+    };
+    jest.spyOn(PurchaseModel, 'findByIdAndDelete').mockResolvedValueOnce(validPurchase);
+
+    const deletedPurchase = await purchaseDatasource.deletePurchase(validId);
+
+    expect(deletedPurchase).toBeInstanceOf(PurchaseEntity);
   });
 
   test('should throw an error when deleting a purchase', async () => {

@@ -14,29 +14,34 @@ describe('Purchase model', () => {
 
   test('should return PurchaseModel', async () => {
     const productData = {
-      name: 'Test Product',
+      name: 'Purchase Product',
       cost: 8000,
       price: 10000,
       status: IStatus.Active
     };
 
     const product = await ProductModel.create(productData);
-
     const productId = product._id;
-    
+
     const purchaseData = {
       product: productId,
       quantity: 1,
       price: 10000,
-      purchaseDate: new Date('2000-11-10T05:00:00.000Z')
+      purchaseDate: '2000-11-10T05:00:00.000Z',
+      user: '65dba23a1e356e83da7c2e1a'
     };
 
     const purchase = await PurchaseModel.create(purchaseData);
 
-    expect(purchase.toJSON()).toEqual(expect.objectContaining(purchaseData));
+    expect(purchase.toJSON()).toEqual(expect.objectContaining({
+      product: productId,
+      quantity: 1,
+      price: 10000,
+      purchaseDate: new Date('2000-11-10T05:00:00.000Z')
+    }));
 
     await PurchaseModel.findOneAndDelete({ purchaseDate: purchase.purchaseDate });
-    await ProductModel.findByIdAndDelete(productId);
+    await ProductModel.findOneAndDelete({ name: 'Purchase Product' });
   });
 
   test('should return the schema object', () => {
@@ -44,7 +49,8 @@ describe('Purchase model', () => {
       product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
       quantity: { type: Number, required: true },
       price: { type: Number, required: true },
-      purchaseDate: { type: Date, required: true }
+      purchaseDate: { type: Date, required: true },
+      user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
     };
 
     const schema = PurchaseModel.schema.obj;
