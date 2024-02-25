@@ -7,14 +7,15 @@ const rentalSchema = new Schema({
   date:      { type: Date, required: true },
   vehicle:   { type: Schema.Types.ObjectId, ref: 'Vehicle', required: true },
   payment:   { type: String,
-               enum: {
-                values: ['cash', 'nequi', 'bancolombia', 'daviplata'],
-                message: '{VALUE} no es un medio de pago válido',
-                default: 'cash',
-                required: true
-               }
-             },
+    enum: {
+      values: ['cash', 'nequi', 'bancolombia', 'daviplata'],
+      message: '{VALUE} no es un medio de pago válido',
+      default: 'cash',
+      required: true
+    }
+  },
   amount:    { type: Number, required: true },
+  user:      { type: Schema.Types.ObjectId, ref: 'User', required: true },
   exception: { type: String, required: false }
 }, {
   versionKey: false
