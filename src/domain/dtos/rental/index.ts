@@ -1,4 +1,5 @@
 import { IRental } from '../../../interfaces';
+import { Validators } from '../../../plugins/validators';
 
 export class RentalDTO {
   private constructor(public params: IRental) { }
@@ -13,6 +14,7 @@ export class RentalDTO {
     if (!payment) return ['Tipo de pago es requerido'];
     if (!amount) return ['Monto es requerido'];
     if (!user) return ['Usuario es requerido'];
+    if (!Validators.isMongoID(user)) return ['Invalid User ID'];
 
     return [undefined, new RentalDTO({ client, time, date, vehicle, payment, amount, user })];
   }
