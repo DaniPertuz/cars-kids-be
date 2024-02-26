@@ -82,6 +82,22 @@ describe('PurchaseDTO', () => {
       expect(purchaseDTO).toBeUndefined();
     });
 
+    test('should return error for invalid user ID', () => {
+      const invalidUserId = 'invalidUserId';
+      const invalidPurchase = {
+          price: 15000,
+          product: 'validProductId',
+          purchaseDate: new Date(),
+          quantity: 2,
+          user: invalidUserId
+      };
+  
+      const [error, purchaseDTO] = PurchaseDTO.create(invalidPurchase);
+  
+      expect(error).toBe('Invalid User ID');
+      expect(purchaseDTO).toBeUndefined();
+  });
+
     test('should return ProductDTO instance when object is valid', () => {
       const [error, purchaseDTO] = PurchaseDTO.create(validObject);
 

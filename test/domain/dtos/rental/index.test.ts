@@ -114,6 +114,24 @@ describe('RentalDTO', () => {
       expect(error).toBe('Usuario es requerido');
     });
 
+    test('should return error for invalid user ID', () => {
+      const invalidUserId = 'invalidUserId';
+      const invalidRental = {
+        client: 'NN Test',
+        time: 15,
+        date: '01-24-2023',
+        vehicle: '15c42daad17250e579833f0e',
+        payment: IPayment.Cash,
+        amount: 10000,
+        user: invalidUserId
+      };
+  
+      const [error, rentalDTO] = RentalDTO.create(invalidRental);
+  
+      expect(error).toBe('Invalid User ID');
+      expect(rentalDTO).toBeUndefined();
+  });
+
     test('should return RentalDTO instance when object is valid', () => {
       const [, rentalDTO] = RentalDTO.create(validObject);
 
