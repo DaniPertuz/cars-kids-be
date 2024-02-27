@@ -73,6 +73,28 @@ describe('Mongo Purchase datasource', () => {
     await PurchaseModel.findOneAndDelete({ product: purchase.params.product });
   });
 
+  test('should return correct sum if there are valid results', async () => {
+    const aggregateSpy = jest.spyOn(PurchaseModel, 'aggregate');
+    aggregateSpy.mockResolvedValue([{ sum: 100 }]);
+
+    const result = await purchaseDatasource.getPurchasesByQuery({}, { page: 1, limit: 10 });
+
+    expect(result.sum).toBe(100);
+
+    aggregateSpy.mockRestore();
+  });
+
+  test('should return 0 if there are no results in sum', async () => {
+    const aggregateSpy = jest.spyOn(PurchaseModel, 'aggregate');
+    aggregateSpy.mockResolvedValue([]);
+
+    const result = await purchaseDatasource.getPurchasesByQuery({}, { page: 1, limit: 10 });
+
+    expect(result.sum).toBe(0);
+
+    aggregateSpy.mockRestore();
+  });
+
   test('should return null if the product is inactive', async () => {
     const testProduct = new ProductEntity({
       _id: '25cda7f409d585a843271d25',

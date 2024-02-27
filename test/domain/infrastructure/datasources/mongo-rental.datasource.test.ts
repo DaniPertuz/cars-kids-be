@@ -85,6 +85,28 @@ describe('Mongo Rental datasource', () => {
     await RentalModel.findOneAndDelete({ client: 'NN Test' });
   });
 
+  test('should return correct sum if there are valid results', async () => {
+    const aggregateSpy = jest.spyOn(RentalModel, 'aggregate');
+    aggregateSpy.mockResolvedValue([{ sum: 100 }]);
+
+    const result = await rentalDatasource.getRentalsByQuery({}, { page: 1, limit: 10 });
+
+    expect(result.sum).toBe(100);
+
+    aggregateSpy.mockRestore();
+  });
+
+  test('should return 0 if there are no results in sum', async () => {
+    const aggregateSpy = jest.spyOn(RentalModel, 'aggregate');
+    aggregateSpy.mockResolvedValue([]);
+
+    const result = await rentalDatasource.getRentalsByQuery({}, { page: 1, limit: 10 });
+
+    expect(result.sum).toBe(0);
+
+    aggregateSpy.mockRestore();
+  });
+
   test('should getRentals throw an error', async () => {
     const [, paginationDto] = PaginationDto.create();
     jest.spyOn(RentalModel, 'find').mockImplementationOnce(() => {
