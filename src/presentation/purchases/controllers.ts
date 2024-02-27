@@ -19,12 +19,13 @@ export class PurchasesController {
 
     const purchases = await this.purchaseRepo.getAllPurchases(paginationDto!);
 
-    const { page: purchasePage, limit: limitPage, total, next, prev, purchases: data } = purchases;
+    const { page: purchasePage, limit: limitPage, total, sum, next, prev, purchases: data } = purchases;
 
     return res.json({
       page: purchasePage,
       limit: limitPage,
       total,
+      sum,
       next,
       prev,
       purchases: data.map(rental => rental.params)
@@ -49,12 +50,13 @@ export class PurchasesController {
 
     const purchases = await this.purchaseRepo.getPurchasesByDay(day, month, year, paginationDto!);
 
-    const { page: purchasePage, limit: limitPage, total, next, prev, purchases: data } = purchases;
+    const { page: purchasePage, limit: limitPage, total, sum, next, prev, purchases: data } = purchases;
 
     return res.json({
       page: purchasePage,
       limit: limitPage,
       total,
+      sum,
       next,
       prev,
       purchases: data.map(purchase => purchase.params)
@@ -71,12 +73,13 @@ export class PurchasesController {
 
     const purchases = await this.purchaseRepo.getPurchasesByMonth(month, year, paginationDto!);
 
-    const { page: purchasePage, limit: limitPage, total, next, prev, purchases: data } = purchases;
+    const { page: purchasePage, limit: limitPage, total, sum, next, prev, purchases: data } = purchases;
 
     return res.json({
       page: purchasePage,
       limit: limitPage,
       total,
+      sum,
       next,
       prev,
       purchases: data.map(purchase => purchase.params)
@@ -93,12 +96,13 @@ export class PurchasesController {
 
     const purchases = await this.purchaseRepo.getPurchasesByPeriod(starting, ending, paginationDto!);
 
-    const { page: purchasePage, limit: limitPage, total, next, prev, purchases: data } = purchases;
+    const { page: purchasePage, limit: limitPage, total, sum, next, prev, purchases: data } = purchases;
 
     return res.json({
       page: purchasePage,
       limit: limitPage,
       total,
+      sum,
       next,
       prev,
       purchases: data.map(purchase => purchase.params)

@@ -20,12 +20,13 @@ export class RentalsController {
 
     const rentals = await this.rentalRepo.getRentals(paginationDto!);
 
-    const { page: rentalPage, limit: limitPage, total, next, prev, rentals: data } = rentals;
+    const { page: rentalPage, limit: limitPage, total, sum, next, prev, rentals: data } = rentals;
 
     return res.json({
       page: rentalPage,
       limit: limitPage,
       total,
+      sum,
       next,
       prev,
       rentals: data.map(rental => rental.params)
@@ -50,12 +51,13 @@ export class RentalsController {
 
     const rentals = await this.rentalRepo.getRentalsByDay(day, month, year, paginationDto!);
 
-    const { page: rentalPage, limit: limitPage, total, next, prev, rentals: data } = rentals;
+    const { page: rentalPage, limit: limitPage, total, sum, next, prev, rentals: data } = rentals;
 
     return res.json({
       page: rentalPage,
       limit: limitPage,
       total,
+      sum,
       next,
       prev,
       rentals: data.map(rental => rental.params)
@@ -72,12 +74,13 @@ export class RentalsController {
 
     const rentals = await this.rentalRepo.getRentalsByMonth(month, year, paginationDto!);
 
-    const { page: rentalPage, limit: limitPage, total, next, prev, rentals: data } = rentals;
+    const { page: rentalPage, limit: limitPage, total, sum, next, prev, rentals: data } = rentals;
 
     return res.json({
       page: rentalPage,
       limit: limitPage,
       total,
+      sum,
       next,
       prev,
       rentals: data.map(rental => rental.params)
@@ -94,12 +97,13 @@ export class RentalsController {
 
     const rentals = await this.rentalRepo.getRentalsByPeriod(starting, ending, paginationDto!);
 
-    const { page: rentalPage, limit: limitPage, total, next, prev, rentals: data } = rentals;
+    const { page: rentalPage, limit: limitPage, total, sum, next, prev, rentals: data } = rentals;
 
     return res.json({
       page: rentalPage,
       limit: limitPage,
       total,
+      sum,
       next,
       prev,
       rentals: data.map(rental => rental.params)
