@@ -63,6 +63,7 @@ export interface PurchaseQueryResult {
   page:      number;
   limit:     number;
   total:     number;
+  sum:       number;
   next:      string | null;
   prev:      string | null;
   purchases: PurchaseEntity[];
@@ -83,6 +84,7 @@ export interface IRental {
 export interface RentalQueryResult {
   page:    number;
   limit:   number;
+  sum:     number;
   total:   number;
   next:    string | null;
   prev:    string | null;
