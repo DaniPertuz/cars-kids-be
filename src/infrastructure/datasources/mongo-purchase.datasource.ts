@@ -18,27 +18,49 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
     }
   }
 
+  public async getPurchasesByQuery(query: any, paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
+    const { page, limit } = paginationDto;
+
+    const [total, sum, purchases] = await Promise.all([
+      PurchaseModel.countDocuments(query),
+      PurchaseModel.aggregate([
+        {
+          $match: query
+        },
+        {
+          $group: {
+            _id: null,
+            sum: { $sum: '$price' }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            sum: 1
+          }
+        }
+      ]),
+      PurchaseModel.find(query)
+        .populate('product', '-_id name')
+        .sort({ purchaseDate: 1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+    ]);
+
+    return {
+      page,
+      limit,
+      total,
+      sum: sum.length > 0 ? sum[0].sum : 0,
+      next: ((page * limit) < total) ? `/purchases?page=${(page + 1)}&limit=${limit}` : null,
+      prev: (page - 1 > 0) ? `/purchases?page=${(page - 1)}&limit=${limit}` : null,
+      purchases: purchases.map(PurchaseEntity.fromObject)
+    };
+  }
+
   async getAllPurchases(paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
     try {
-      const { page, limit } = paginationDto;
-
-      const [total, purchases] = await Promise.all([
-        PurchaseModel.countDocuments(),
-        PurchaseModel.find({})
-          .populate('product', '-_id name')
-          .sort({ purchaseDate: 1 })
-          .skip((page - 1) * limit)
-          .limit(limit)
-      ]);
-
-      return {
-        page,
-        limit,
-        total,
-        next: ((page * limit) < total) ? `/purchases?page=${(page + 1)}&limit=${limit}` : null,
-        prev: (page - 1 > 0) ? `/purchases?page=${(page - 1)}&limit=${limit}` : null,
-        purchases: purchases.map(PurchaseEntity.fromObject)
-      };
+      return await this.getPurchasesByQuery({}, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener compras: ${error}`);
     }
@@ -46,7 +68,6 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
 
   async getPurchasesByDay(day: string, month: string, year: string, paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
     try {
-      const { page, limit } = paginationDto;
       const dayNumber = parseInt(day, 10);
       const monthNumber = parseInt(month, 10);
       const yearNumber = parseInt(year, 10);
@@ -66,23 +87,7 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
         }
       };
 
-      const [total, purchases] = await Promise.all([
-        PurchaseModel.countDocuments(query),
-        PurchaseModel.find(query)
-          .populate('product', '-_id name')
-          .sort({ purchaseDate: 1 })
-          .skip((page - 1) * limit)
-          .limit(limit)
-      ]);
-
-      return {
-        page,
-        limit,
-        total,
-        next: ((page * limit) < total) ? `/purchases?page=${(page + 1)}&limit=${limit}` : null,
-        prev: (page - 1 > 0) ? `/purchases?page=${(page - 1)}&limit=${limit}` : null,
-        purchases: purchases.map(PurchaseEntity.fromObject)
-      };
+      return await this.getPurchasesByQuery(query, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener compras por día: ${error}`);
     }
@@ -90,7 +95,6 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
 
   async getPurchasesByMonth(month: string, year: string, paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
     try {
-      const { page, limit } = paginationDto;
       const monthNumber = new Date(`${month} 1, ${year}`).getMonth() + 1;
       const firstDayOfMonth = new Date(Number(year), monthNumber - 1, 1);
       const lastDayOfMonth = new Date(Number(year), monthNumber, 0);
@@ -102,23 +106,7 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
         }
       };
 
-      const [total, purchases] = await Promise.all([
-        PurchaseModel.countDocuments(query),
-        PurchaseModel.find(query)
-          .populate('product', '-_id name')
-          .sort({ purchaseDate: 1 })
-          .skip((page - 1) * limit)
-          .limit(limit)
-      ]);
-
-      return {
-        page,
-        limit,
-        total,
-        next: ((page * limit) < total) ? `/purchases?page=${(page + 1)}&limit=${limit}` : null,
-        prev: (page - 1 > 0) ? `/purchases?page=${(page - 1)}&limit=${limit}` : null,
-        purchases: purchases.map(PurchaseEntity.fromObject)
-      };
+      return await this.getPurchasesByQuery(query, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener las compras por mes: ${error}`);
     }
@@ -126,7 +114,6 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
 
   async getPurchasesByPeriod(starting: string, ending: string, paginationDto: PaginationDto): Promise<PurchaseQueryResult> {
     try {
-      const { page, limit } = paginationDto;
       const startingDateParts = starting.split('-').map(Number);
       const endingDateParts = ending.split('-').map(Number);
       const startDate = new Date(startingDateParts[2], startingDateParts[1] - 1, startingDateParts[0]);
@@ -139,23 +126,7 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
         }
       };
 
-      const [total, purchases] = await Promise.all([
-        PurchaseModel.countDocuments(query),
-        PurchaseModel.find(query)
-          .populate('product', '-_id name')
-          .sort({ purchaseDate: 1 })
-          .skip((page - 1) * limit)
-          .limit(limit)
-      ]);
-
-      return {
-        page,
-        limit,
-        total,
-        next: ((page * limit) < total) ? `/purchases?page=${(page + 1)}&limit=${limit}` : null,
-        prev: (page - 1 > 0) ? `/purchases?page=${(page - 1)}&limit=${limit}` : null,
-        purchases: purchases.map(PurchaseEntity.fromObject)
-      };
+      return await this.getPurchasesByQuery(query, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener las compras por periodo: ${error}`);
     }

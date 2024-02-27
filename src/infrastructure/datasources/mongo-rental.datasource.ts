@@ -9,8 +9,25 @@ export class MongoRentalDatasource implements RentalDatasource {
   public async getRentalsByQuery(query: any, paginationDto: PaginationDto): Promise<RentalQueryResult> {
     const { page, limit } = paginationDto;
 
-    const [total, rentals] = await Promise.all([
-      RentalModel.countDocuments(),
+    const [total, sum, rentals] = await Promise.all([
+      RentalModel.countDocuments(query),
+      RentalModel.aggregate([
+        {
+          $match: query
+        },
+        {
+          $group: {
+            _id: null,
+            sum: { $sum: '$amount' }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            sum: 1
+          }
+        }
+      ]),
       RentalModel.find(query)
         .populate('vehicle', '-createdAt -updatedAt')
         .sort({ date: 1 })
@@ -21,6 +38,7 @@ export class MongoRentalDatasource implements RentalDatasource {
     return {
       page,
       limit,
+      sum: sum.length > 0 ? sum[0].sum : 0,
       total,
       next: ((page * limit) < total) ? `/rentals?page=${(page + 1)}&limit=${limit}` : null,
       prev: (page - 1 > 0) ? `/rentals?page=${(page - 1)}&limit=${limit}` : null,
@@ -56,7 +74,6 @@ export class MongoRentalDatasource implements RentalDatasource {
 
   async getRentalsByDay(day: string, month: string, year: string, paginationDto: PaginationDto): Promise<RentalQueryResult> {
     try {
-      const { page, limit } = paginationDto;
       const dayNumber = parseInt(day, 10);
       const monthNumber = parseInt(month, 10);
       const yearNumber = parseInt(year, 10);
@@ -76,23 +93,7 @@ export class MongoRentalDatasource implements RentalDatasource {
         }
       };
 
-      const [total, rentals] = await Promise.all([
-        RentalModel.countDocuments(query),
-        RentalModel.find(query)
-          .populate('vehicle', '-createdAt -updatedAt')
-          .sort({ date: 1 })
-          .skip((page - 1) * limit)
-          .limit(limit)
-      ]);
-
-      return {
-        page,
-        limit,
-        total,
-        next: ((page * limit) < total) ? `/rentals?page=${(page + 1)}&limit=${limit}` : null,
-        prev: (page - 1 > 0) ? `/rentals?page=${(page - 1)}&limit=${limit}` : null,
-        rentals: rentals.map(RentalEntity.fromObject)
-      };
+      return await this.getRentalsByQuery(query, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener los alquileres por día: ${error}`);
     }
@@ -100,7 +101,6 @@ export class MongoRentalDatasource implements RentalDatasource {
 
   async getRentalsByMonth(month: string, year: string, paginationDto: PaginationDto): Promise<RentalQueryResult> {
     try {
-      const { page, limit } = paginationDto;
       const monthNumber = new Date(`${month} 1, ${year}`).getMonth() + 1;
       const firstDayOfMonth = new Date(Number(year), monthNumber - 1, 1);
       const lastDayOfMonth = new Date(Number(year), monthNumber, 0);
@@ -112,23 +112,7 @@ export class MongoRentalDatasource implements RentalDatasource {
         }
       };
 
-      const [total, rentals] = await Promise.all([
-        RentalModel.countDocuments(query),
-        RentalModel.find(query)
-          .populate('vehicle', '-createdAt -updatedAt')
-          .sort({ date: 1 })
-          .skip((page - 1) * limit)
-          .limit(limit)
-      ]);
-
-      return {
-        page,
-        limit,
-        total,
-        next: ((page * limit) < total) ? `/rentals?page=${(page + 1)}&limit=${limit}` : null,
-        prev: (page - 1 > 0) ? `/rentals?page=${(page - 1)}&limit=${limit}` : null,
-        rentals: rentals.map(RentalEntity.fromObject)
-      };
+      return await this.getRentalsByQuery(query, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener los alquileres por mes: ${error}`);
     }
@@ -136,34 +120,19 @@ export class MongoRentalDatasource implements RentalDatasource {
 
   async getRentalsByPeriod(starting: string, ending: string, paginationDto: PaginationDto): Promise<RentalQueryResult> {
     try {
-      const { page, limit } = paginationDto;
       const startingDateParts = starting.split('-').map(Number);
       const endingDateParts = ending.split('-').map(Number);
       const startDate = new Date(startingDateParts[2], startingDateParts[1] - 1, startingDateParts[0]);
       const endDate = new Date(endingDateParts[2], endingDateParts[1] - 1, endingDateParts[0]);
 
-      const [total, rentals] = await Promise.all([
-        RentalModel.countDocuments(),
-        RentalModel.find({
-          date: {
-            $gte: startDate,
-            $lt: endDate
-          }
-        })
-          .populate('vehicle', '-createdAt -updatedAt')
-          .sort({ date: 1 })
-          .skip((page - 1) * limit)
-          .limit(limit)
-      ]);
-
-      return {
-        page,
-        limit,
-        total,
-        next: ((page * limit) < total) ? `/rentals?page=${(page + 1)}&limit=${limit}` : null,
-        prev: (page - 1 > 0) ? `/rentals?page=${(page - 1)}&limit=${limit}` : null,
-        rentals: rentals.map(RentalEntity.fromObject)
+      const query = {
+        date: {
+          $gte: startDate,
+          $lt: endDate
+        }
       };
+
+      return await this.getRentalsByQuery(query, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener los alquileres por periodo: ${error}`);
     }
