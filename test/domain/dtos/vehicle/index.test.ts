@@ -1,5 +1,5 @@
 import { ICategory, IStatus, IVehicle, IVehicleSize } from '../../../../src/interfaces';
-import { VehicleDTO } from '../../../../src/domain/dtos/vehicle/index';
+import { VehicleDTO } from '../../../../src/domain/dtos/vehicle';
 
 describe('VehicleDTO', () => {
   const validObject: IVehicle = {
