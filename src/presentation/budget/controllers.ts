@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import { MongoBudgetDatasource } from '../../infrastructure/datasources/mongo-budget.datasource';
 import { BudgetRepositoryImpl } from '../../infrastructure/repositories/budget-impl.repository';
 import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
-import { IStatus } from '../../interfaces';
 import { BudgetEntity } from '../../domain/entities/budget.entity';
+import { BudgetDTO } from '../../domain/dtos/budget';
+import { IStatus } from '../../interfaces';
 
 export class BudgetController {
   readonly budgetRepo = new BudgetRepositoryImpl(
@@ -41,7 +42,7 @@ export class BudgetController {
 
   public getBudgetsByDay = async (req: Request, res: Response) => {
     const { day, month, year } = req.params;
-    const { page = 1, limit = 5 } = req.query;
+    const { page = 1, limit = 10 } = req.query;
 
     const [error, paginationDto] = PaginationDto.create(+page, +limit);
 
@@ -63,7 +64,7 @@ export class BudgetController {
 
   public getBudgetsByMonth = async (req: Request, res: Response) => {
     const { month, year } = req.params;
-    const { page = 1, limit = 5 } = req.query;
+    const { page = 1, limit = 10 } = req.query;
 
     const [error, paginationDto] = PaginationDto.create(+page, +limit);
 
@@ -85,7 +86,7 @@ export class BudgetController {
 
   public getBudgetsByPeriod = async (req: Request, res: Response) => {
     const { starting, ending } = req.params;
-    const { page = 1, limit = 5 } = req.query;
+    const { page = 1, limit = 10 } = req.query;
 
     const [error, paginationDto] = PaginationDto.create(+page, +limit);
 
@@ -106,26 +107,30 @@ export class BudgetController {
   };
 
   public createBudget = async (req: Request, res: Response) => {
-    const budget = req.body as BudgetEntity;
+    const [error, budgetDTO] = BudgetDTO.create(req.body);
 
-    const rentalData: BudgetEntity = BudgetEntity.fromObject(budget!.params);
+    if (error) return res.status(400).json({ error });
 
-    const rental = (await this.budgetRepo.createBudget(rentalData)).params;
+    const budgetData: BudgetEntity = BudgetEntity.fromObject(budgetDTO!.params);
 
-    return res.json(rental);
+    const budget = (await this.budgetRepo.createBudget(budgetData)).params;
+
+    return res.json(budget);
   };
 
   public updateBudget = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const budget = req.body as BudgetEntity;
+    const [error, budgetDTO] = BudgetDTO.create(req.body);
 
+    if (error) return res.status(400).json({ error });
+    
     const budgetDB = await this.budgetRepo.getBudget(id);
 
     if (!budgetDB) {
-      return res.status(404).json({ error: 'Presupuesto no encontrado' });
+      return res.status(404).json({ error: 'Presupuesto no encontrado' });    
     }
 
-    const updatedBudgetEntity = BudgetEntity.fromObject(budget?.params!);
+    const updatedBudgetEntity = BudgetEntity.fromObject(budgetDTO?.params!);
 
     const updatedBudget = await this.budgetRepo.updateBudget(id, updatedBudgetEntity);
 
