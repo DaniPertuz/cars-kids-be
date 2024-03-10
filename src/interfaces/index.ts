@@ -33,6 +33,14 @@ export enum IVehicleSize {
   Large  = 'L'
 }
 
+export interface IBudget {
+  id?:      string;
+  base:     number;
+  expenses: number;
+  loans:    number;
+  date:     string;
+}
+
 export interface IProduct {
   _id?:   string;
   name:   string;
