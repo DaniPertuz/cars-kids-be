@@ -47,22 +47,13 @@ export class MongoBudgetDatasource implements BudgetDatasource {
   async getBudgetsByDay(day: string, month: string, year: string, paginationDto: PaginationDto): Promise<BudgetQueryResult> {
     try {
       const dayNumber = parseInt(day, 10);
-      const monthNumber = parseInt(month, 10);
+      const monthNumber = parseInt(month, 10) - 1;
       const yearNumber = parseInt(year, 10);
 
-      const selectedDate = new Date(yearNumber, monthNumber - 1, dayNumber);
-
-      const startOfDay = new Date(selectedDate);
-      startOfDay.setHours(0, 0, 0, 0);
-
-      const endOfDay = new Date(selectedDate);
-      endOfDay.setHours(23, 59, 59, 999);
+      const selectedDate = new Date(Date.UTC(yearNumber, monthNumber, dayNumber));
 
       const query = {
-        date: {
-          $gte: startOfDay,
-          $lt: endOfDay
-        }
+        date: { $eq: selectedDate }
       };
 
       return await this.getBudgetsByQuery(query, paginationDto);
