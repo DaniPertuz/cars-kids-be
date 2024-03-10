@@ -5,12 +5,14 @@ import { RentalsRoutes } from './rentals/routes';
 import { UsersRoutes } from './users/routes';
 import { VehiclesRoutes } from './vehicles/routes';
 import { PurchasesRoutes } from './purchases/routes';
+import { BudgetRoutes } from './budget/routes';
 
 export class AppRoutes {
   static get routes(): Router {
     const router = Router();
 
     router.use('/api/auth', AuthRoutes.routes);
+    router.use('/api/budgets', BudgetRoutes.routes);
     router.use('/api/purchases', PurchasesRoutes.routes);
     router.use('/api/products', ProductsRoutes.routes);
     router.use('/api/rentals', RentalsRoutes.routes);
