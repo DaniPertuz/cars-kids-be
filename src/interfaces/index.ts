@@ -1,10 +1,5 @@
 import { Router } from 'express';
-import { ProductEntity } from '../domain/entities/product.entity';
-import { PurchaseEntity } from '../domain/entities/purchase.entity';
-import { RentalEntity } from '../domain/entities/rental.entity';
-import { UserEntity } from '../domain/entities/user.entity';
-import { VehicleEntity } from '../domain/entities/vehicle.entity';
-import { BudgetEntity } from '../domain/entities/budget.entity';
+import { BudgetEntity, ProductEntity, PurchaseEntity, RentalEntity, UserEntity, VehicleEntity } from '../domain/entities';
 
 export enum ICategory {
   Car   = 'car',
