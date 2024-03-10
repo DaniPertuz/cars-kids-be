@@ -34,7 +34,7 @@ export enum IVehicleSize {
 }
 
 export interface IBudget {
-  id?:      string;
+  _id?:     string;
   base:     number;
   expenses: number;
   loans:    number;
