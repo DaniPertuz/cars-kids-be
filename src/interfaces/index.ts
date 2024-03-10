@@ -4,6 +4,7 @@ import { PurchaseEntity } from '../domain/entities/purchase.entity';
 import { RentalEntity } from '../domain/entities/rental.entity';
 import { UserEntity } from '../domain/entities/user.entity';
 import { VehicleEntity } from '../domain/entities/vehicle.entity';
+import { BudgetEntity } from '../domain/entities/budget.entity';
 
 export enum ICategory {
   Car   = 'car',
@@ -39,6 +40,15 @@ export interface IBudget {
   expenses: number;
   loans:    number;
   date:     string;
+}
+
+export interface BudgetQueryResult {
+  page:      number;
+  limit:     number;
+  total:     number;
+  next:      string | null;
+  prev:      string | null;
+  budgets:   BudgetEntity[];
 }
 
 export interface IProduct {
