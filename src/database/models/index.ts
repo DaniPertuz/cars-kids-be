@@ -1,3 +1,4 @@
+export { default as BudgetModel } from './budget';
 export { default as ProductModel } from './product';
 export { default as PurchaseModel } from './purchase';
 export { default as RentalModel } from './rental';
