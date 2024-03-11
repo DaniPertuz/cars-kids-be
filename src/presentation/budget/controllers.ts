@@ -37,7 +37,7 @@ export class BudgetController {
 
     const budget = await this.budgetRepo.getBudget(id);
 
-    return (budget) ? res.json(budget.params) : res.status(404).json({ error: `Budget with ID ${id} not found` });
+    return (budget) ? res.json(budget.params) : res.status(404).json({ error: `Presupuesto con ID ${id} no encontrado` });
   };
 
   public getBudgetsByDay = async (req: Request, res: Response) => {
@@ -122,7 +122,7 @@ export class BudgetController {
     const { id } = req.params;
     const [error, budgetDTO] = BudgetDTO.create(req.body);
 
-    if (error) return res.status(400).json({ error });
+    if (error) return res.status(404).json({ error });
     
     const budgetDB = await this.budgetRepo.getBudget(id);
 
@@ -139,6 +139,12 @@ export class BudgetController {
 
   public deleteBudget = async (req: Request, res: Response) => {
     const { id } = req.params;
+    
+    const budgetDB = await this.budgetRepo.getBudget(id);
+
+    if (!budgetDB) {
+      return res.status(404).json({ error: 'Presupuesto no encontrado' });    
+    }
 
     await this.budgetRepo.deleteBudget(id);
 
