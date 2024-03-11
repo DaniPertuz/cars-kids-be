@@ -40,7 +40,7 @@ export class MongoBudgetDatasource implements BudgetDatasource {
     try {
       return await this.getBudgetsByQuery({}, paginationDto);
     } catch (error) {
-      throw CustomError.serverError(`Error al obtener presupuesto: ${error}`);
+      throw CustomError.serverError(`Error al obtener presupuestos: ${error}`);
     }
   }
 
@@ -97,7 +97,7 @@ export class MongoBudgetDatasource implements BudgetDatasource {
 
       return await this.getBudgetsByQuery(query, paginationDto);
     } catch (error) {
-      throw CustomError.serverError(`Error al obtener los alquileres por periodo: ${error}`);
+      throw CustomError.serverError(`Error al obtener los presupuestos por periodo: ${error}`);
     }
   }
 
