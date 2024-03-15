@@ -6,10 +6,11 @@ export class UsersRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const { getUsers, updateUserRole, deactivateUser } = new UsersController();
+    const { getUsers, updateUserPassword, updateUserRole, deactivateUser } = new UsersController();
 
     router.get('/', [AuthMiddleware.validateJWT], getUsers);
-    router.put('/', [AuthMiddleware.validateJWT], updateUserRole);
+    router.put('/password', updateUserPassword);
+    router.put('/role', [AuthMiddleware.validateJWT], updateUserRole);
     router.delete('/', [AuthMiddleware.validateJWT], deactivateUser);
 
     return router;
