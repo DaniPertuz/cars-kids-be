@@ -86,7 +86,6 @@ describe('Users routes testing', () => {
 
     const { body } = await request(testServer.app)
       .put('/api/users/password')
-      .set('Authorization', 'Bearer mock-token-here')
       .send({ email: 'test1@test.com', password: 'test-pass1' })
       .expect(200);
 
