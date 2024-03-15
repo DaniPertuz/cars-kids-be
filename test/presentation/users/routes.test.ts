@@ -100,6 +100,15 @@ describe('Users routes testing', () => {
     await UserModel.findOneAndDelete({ email: 'test1@test.com' });
   });
 
+  test('should return a not found request if email is not valid to update user password api/users/password', async () => {
+    const { body } = await request(testServer.app)
+      .put('/api/users/password')
+      .send({ email: 'testing-2@test.com', password: 'test-pass1' })
+      .expect(404);
+
+    expect(body).toEqual({ error: 'Usuario no encontrado' });
+  });
+
   test('should deactivate user api/users', async () => {
     await UserModel.create({
       name: 'Test User',
