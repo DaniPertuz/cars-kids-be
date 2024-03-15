@@ -52,11 +52,11 @@ describe('Users routes testing', () => {
     await UserModel.findOneAndDelete({ email: 'test1@test.com' });
   });
 
-  test('should update user role /api/users', async () => {
+  test('should update user role /api/users/role', async () => {
     await UserModel.create(testEditorUser);
 
     const { body } = await request(testServer.app)
-      .put('/api/users')
+      .put('/api/users/role')
       .set('Authorization', 'Bearer mock-token-here')
       .send({ email: 'test1@test.com', role: IUserRole.Admin })
       .expect(200);
@@ -73,12 +73,31 @@ describe('Users routes testing', () => {
 
   test('should return a bad request if a required field is not provided api/users', async () => {
     const { body } = await request(testServer.app)
-      .put('/api/users')
+      .put('/api/users/role')
       .set('Authorization', 'Bearer mock-token-here')
       .send({ email: 'test1@test.com', role: 'User' })
       .expect(400);
 
     expect(body).toEqual({ error: 'Rol de usuario no válido' });
+  });
+
+  test('should update user password /api/users/password', async () => {
+    await UserModel.create(testEditorUser);
+
+    const { body } = await request(testServer.app)
+      .put('/api/users/password')
+      .set('Authorization', 'Bearer mock-token-here')
+      .send({ email: 'test1@test.com', password: 'test-pass1' })
+      .expect(200);
+
+    expect(body).toEqual({
+      email: 'test1@test.com',
+      name: 'Test User',
+      role: 'editor',
+      status: 'active'
+    });
+
+    await UserModel.findOneAndDelete({ email: 'test1@test.com' });
   });
 
   test('should deactivate user api/users', async () => {
