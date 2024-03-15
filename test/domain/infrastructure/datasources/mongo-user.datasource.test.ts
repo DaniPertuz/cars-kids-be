@@ -37,7 +37,7 @@ describe('Mongo User datasource', () => {
     expect(pagination1.users[0].params.name).toBe(mockUser2.name);
     expect(pagination1.prev).toBeNull();
     expect(pagination1.next).toBe(`/users?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
-    
+
     const [error2, paginationDto2] = PaginationDto.create(2, 1);
     const pagination2 = await userDatasource.getUsers(paginationDto2!);
 
@@ -119,6 +119,55 @@ describe('Mongo User datasource', () => {
 
   test('should return null when user is not found', async () => {
     const updatedUser = await userDatasource.updateUserRole('nonexistent@example.com', IUserRole.Admin);
+
+    expect(updatedUser).toBeNull();
+  });
+
+  test('should update user password', async () => {
+    const updatedUserData = {
+      name: 'Updated User',
+      email: 'testing5@test.com',
+      password: 'test-pass',
+      role: IUserRole.Editor,
+      status: IStatus.Active
+    };
+
+    await UserModel.create(updatedUserData);
+
+    const updatedUser = await userDatasource.updateUserPassword('testing5@test.com', 'test-pass1');
+
+    expect(updatedUser?.params).toEqual(expect.objectContaining({
+      name: 'Updated User',
+      email: 'testing5@test.com',
+      role: IUserRole.Editor,
+      status: IStatus.Active
+    }));
+
+    await UserModel.findOneAndDelete({ email: 'testing5@test.com' });
+  });
+
+  test('should throw server error when an error occurs during update', async () => {
+    const updatedUserData = {
+      name: 'Updated User Error',
+      email: 'testing6@test.com',
+      password: 'test-pass',
+      role: IUserRole.Editor,
+      status: IStatus.Active
+    };
+
+    await UserModel.create(updatedUserData);
+
+    jest.spyOn(UserModel, 'findOneAndUpdate').mockImplementationOnce(() => {
+      throw new Error('Test error');
+    });
+
+    await expect(userDatasource.updateUserPassword('testing6@test.com', 'test-pass1')).rejects.toThrow('Error al actualizar contraseña de usuario: Error: Test error');
+
+    await UserModel.findOneAndDelete({ email: 'testing6@test.com' });
+  });
+
+  test('should return null when user is not found', async () => {
+    const updatedUser = await userDatasource.updateUserPassword('nonexistent@example.com', 'test-pass1');
 
     expect(updatedUser).toBeNull();
   });
