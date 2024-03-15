@@ -14,9 +14,9 @@ export class UsersController {
     const { page = 1, limit = 10 } = req.query;
 
     const [error, paginationDto] = PaginationDto.create(+page, +limit);
-    
+
     if (error) return res.status(400).json({ error });
-    
+
     const users = await this.userRepo.getUsers(paginationDto!);
 
     const { page: productPage, limit: limitPage, total, next, prev, users: data } = users;
@@ -29,6 +29,14 @@ export class UsersController {
       prev,
       users: data.map(user => user.params)
     });
+  };
+
+  public updateUserPassword = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    const user = await this.userRepo.updateUserPassword(email, password);
+
+    return res.json(user?.params);
   };
 
   public updateUserRole = async (req: Request, res: Response) => {

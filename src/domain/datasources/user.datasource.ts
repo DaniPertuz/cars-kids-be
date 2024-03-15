@@ -5,6 +5,7 @@ import { UserEntity } from '../entities/user.entity';
 export abstract class UserDatasource {
   // Admin actions
   abstract getUsers(paginationDto: PaginationDto): Promise<UserQueryResult>;
+  abstract updateUserPassword(email: string, password: string): Promise<UserEntity | null>;
   abstract updateUserRole(email: string, role: IUserRole): Promise<UserEntity | null>;
   abstract deactivateUser(email: string): Promise<void>;
 }

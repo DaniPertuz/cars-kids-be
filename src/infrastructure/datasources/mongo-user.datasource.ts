@@ -4,6 +4,7 @@ import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { CustomError } from '../../domain/errors';
 import { IStatus, IUserRole, UserQueryResult } from '../../interfaces';
+import { bcryptAdapter } from '../../plugins';
 
 export class MongoUserDatasource implements UserDatasource {
   async getUsers(paginationDto: PaginationDto): Promise<UserQueryResult> {
@@ -29,6 +30,17 @@ export class MongoUserDatasource implements UserDatasource {
       };
     } catch (error: any) {
       throw CustomError.serverError(`Error al obtener usuarios: ${error}`);
+    }
+  }
+
+  async updateUserPassword(email: string, password: string): Promise<UserEntity | null> {
+    try {
+      const hashedPassword = bcryptAdapter.hash(password);
+      const userData = await UserModel.findOneAndUpdate({ email }, { password: hashedPassword }, { new: true, projection: { password: 0 } });
+
+      return userData ? UserEntity.fromObject(userData) : null;
+    } catch (error: any) {
+      throw CustomError.serverError(`Error al actualizar contraseña de usuario: ${error}`);
     }
   }
 
