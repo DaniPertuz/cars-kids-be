@@ -33,6 +33,26 @@ export class MongoUserDatasource implements UserDatasource {
     }
   }
 
+  async updateUserName(email: string, name: string): Promise<UserEntity | null> {
+    try {
+      const userData = await UserModel.findOneAndUpdate({ email }, { name }, { new: true, projection: { password: 0 } });
+
+      return userData ? UserEntity.fromObject(userData) : null;
+    } catch (error: any) {
+      throw CustomError.serverError(`Error al actualizar nombre de usuario: ${error}`);
+    }
+  }
+
+  async updateUserEmail(email: string, newEmail: string): Promise<UserEntity | null> {
+    try {
+      const userData = await UserModel.findOneAndUpdate({ email }, { email: newEmail }, { new: true, projection: { password: 0 } });
+
+      return userData ? UserEntity.fromObject(userData) : null;
+    } catch (error: any) {
+      throw CustomError.serverError(`Error al actualizar email de usuario: ${error}`);
+    }
+  }
+
   async updateUserPassword(email: string, password: string): Promise<UserEntity | null> {
     try {
       const hashedPassword = bcryptAdapter.hash(password);

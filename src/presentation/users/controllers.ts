@@ -31,6 +31,30 @@ export class UsersController {
     });
   };
 
+  public updateUserName = async (req: Request, res: Response) => {
+    const { email, name } = req.body;
+
+    const userDB = await User.findOne({ email });
+
+    if (!userDB) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+    const user = await this.userRepo.updateUserName(email, name);
+
+    return res.json(user?.params);
+  };
+
+  public updateUserEmail = async (req: Request, res: Response) => {
+    const { email, newEmail } = req.body;
+
+    const userDB = await User.findOne({ email });
+
+    if (!userDB) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+    const user = await this.userRepo.updateUserEmail(email, newEmail);
+
+    return res.json(user?.params);
+  };
+
   public updateUserPassword = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
