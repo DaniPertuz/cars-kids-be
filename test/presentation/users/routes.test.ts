@@ -99,6 +99,42 @@ describe('Users routes testing', () => {
     await UserModel.findOneAndDelete({ email: 'test1@test.com' });
   });
 
+  test('should update user name /api/users/name', async () => {
+    await UserModel.create(testEditorUser);
+
+    const { body } = await request(testServer.app)
+      .put('/api/users/name')
+      .send({ email: 'test1@test.com', name: 'Test User Updated' })
+      .expect(200);
+
+    expect(body).toEqual({
+      email: 'test1@test.com',
+      name: 'Test User Updated',
+      role: 'editor',
+      status: 'active'
+    });
+
+    await UserModel.findOneAndDelete({ email: 'test1@test.com' });
+  });
+
+  test('should update user email /api/users/email', async () => {
+    await UserModel.create(testEditorUser);
+
+    const { body } = await request(testServer.app)
+      .put('/api/users/email')
+      .send({ email: 'test1@test.com', newEmail: 'test11@test.com' })
+      .expect(200);
+
+    expect(body).toEqual({
+      email: 'test11@test.com',
+      name: 'Test User',
+      role: 'editor',
+      status: 'active'
+    });
+
+    await UserModel.findOneAndDelete({ email: 'test11@test.com' });
+  });
+
   test('should return a not found request if email is not valid to update user password api/users/password', async () => {
     const { body } = await request(testServer.app)
       .put('/api/users/password')

@@ -7,6 +7,12 @@ describe('User datasource', () => {
     getUsers(): Promise<UserQueryResult> {
       throw new Error('Method not implemented.');
     }
+    updateUserName(email: string, name: string): Promise<UserEntity | null> {
+      throw new Error('Method not implemented.');
+    }
+    updateUserEmail(email: string, newEmail: string): Promise<UserEntity | null> {
+      throw new Error('Method not implemented.');
+    }
     updateUserPassword(email: string, password: string): Promise<UserEntity | null> {
       throw new Error('Method not implemented.');
     }
@@ -23,6 +29,8 @@ describe('User datasource', () => {
 
     expect(mockDatasource).toBeInstanceOf(MockDatasource);
     expect(typeof mockDatasource.getUsers).toBe('function');
+    expect(typeof mockDatasource.updateUserName).toBe('function');
+    expect(typeof mockDatasource.updateUserEmail).toBe('function');
     expect(typeof mockDatasource.updateUserPassword).toBe('function');
     expect(typeof mockDatasource.updateUserRole).toBe('function');
     expect(typeof mockDatasource.deactivateUser).toBe('function');

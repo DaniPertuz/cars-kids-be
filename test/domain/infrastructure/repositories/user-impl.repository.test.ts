@@ -9,6 +9,8 @@ type MockUserDatasource = UserDatasource & {
 describe('User repository implementation', () => {
   const mockUserDatasource: MockUserDatasource = {
     getUsers: jest.fn(),
+    updateUserName: jest.fn(),
+    updateUserEmail: jest.fn(),
     updateUserPassword: jest.fn(),
     updateUserRole: jest.fn(),
     deactivateUser: jest.fn()
@@ -22,6 +24,8 @@ describe('User repository implementation', () => {
 
   const testCases = [
     { method: 'getUsers', args: [], },
+    { method: 'updateUserName', args: ['test@test.com', 'Test Name'] },
+    { method: 'updateUserEmail', args: ['test@test.com', 'test1@test.com'] },
     { method: 'updateUserPassword', args: ['test@test.com', 'test-pass1'] },
     { method: 'updateUserRole', args: ['test@test.com', IUserRole.Editor] },
     { method: 'deactivateUser', args: ['test@test.com'] }

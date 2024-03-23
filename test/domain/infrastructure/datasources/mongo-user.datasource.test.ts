@@ -146,6 +146,52 @@ describe('Mongo User datasource', () => {
     await UserModel.findOneAndDelete({ email: 'testing5@test.com' });
   });
 
+  test('should update user name', async () => {
+    const updatedUserData = {
+      name: 'Updated User',
+      email: 'testing5@test.com',
+      password: 'test-pass',
+      role: IUserRole.Editor,
+      status: IStatus.Active
+    };
+
+    await UserModel.create(updatedUserData);
+
+    const updatedUser = await userDatasource.updateUserName('testing5@test.com', 'New Update');
+
+    expect(updatedUser?.params).toEqual(expect.objectContaining({
+      name: 'New Update',
+      email: 'testing5@test.com',
+      role: IUserRole.Editor,
+      status: IStatus.Active
+    }));
+
+    await UserModel.findOneAndDelete({ email: 'testing5@test.com' });
+  });
+
+  test('should update user email', async () => {
+    const updatedUserData = {
+      name: 'Updated User',
+      email: 'testing5@test.com',
+      password: 'test-pass',
+      role: IUserRole.Editor,
+      status: IStatus.Active
+    };
+
+    await UserModel.create(updatedUserData);
+
+    const updatedUser = await userDatasource.updateUserEmail('testing5@test.com', 'testing51@test.com');
+
+    expect(updatedUser?.params).toEqual(expect.objectContaining({
+      name: 'Updated User',
+      email: 'testing51@test.com',
+      role: IUserRole.Editor,
+      status: IStatus.Active
+    }));
+
+    await UserModel.findOneAndDelete({ email: 'testing51@test.com' });
+  });
+
   test('should throw server error when an error occurs during update', async () => {
     const updatedUserData = {
       name: 'Updated User Error',
