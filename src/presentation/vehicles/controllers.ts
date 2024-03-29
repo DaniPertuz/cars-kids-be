@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import Vehicle from '../../database/models/vehicle';
 import { VehicleEntity } from '../../domain/entities/vehicle.entity';
 import { MongoVehicleDatasource } from '../../infrastructure/datasources/mongo-vehicle.datasource';
 import { VehicleRepositoryImpl } from '../../infrastructure/repositories/vehicle-impl.repository';
@@ -141,9 +142,14 @@ export class VehiclesController {
   };
 
   public createVehicle = async (req: Request, res: Response) => {
+    const { nickname } = req.body;
     const [error, vehicleDto] = VehicleDTO.create(req.body);
 
     if (error) return res.status(400).json({ error });
+
+    const vehicleDB = await Vehicle.findOne({ nickname });
+
+    if (vehicleDB) return res.status(404).json({ error: 'Ya existe un vehículo con este nombre/apodo' });
 
     const vehicleData: VehicleEntity = VehicleEntity.fromObject(vehicleDto!.params);
 
