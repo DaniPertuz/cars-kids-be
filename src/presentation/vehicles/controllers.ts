@@ -116,7 +116,7 @@ export class VehiclesController {
   };
 
   public getVehiclesByStatus = async (req: Request, res: Response) => {
-    const { status } = req.body;
+    const { status } = req.params;
     const { page = 1, limit = 10 } = req.query;
 
     const [error, paginationDto] = PaginationDto.create(+page, +limit);

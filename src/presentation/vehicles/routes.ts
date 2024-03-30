@@ -11,7 +11,7 @@ export class VehiclesRoutes {
     router.get('/color', getVehiclesByColor);
     router.get('/size', getVehiclesBySize);
     router.get('/props', getVehiclesByColorAndSize);
-    router.get('/status', getVehiclesByStatus);
+    router.get('/status/:status', getVehiclesByStatus);
     router.get('/nickname/:nickname', getVehicleByNickname);
     router.post('/', createVehicle);
     router.put('/:nickname', updateVehicle);
