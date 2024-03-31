@@ -82,7 +82,24 @@ export class MongoVehicleDatasource implements VehicleDatasource {
 
   async getVehiclesByStatus(status: IStatus, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
     try {
-      return await this.getVehiclesByQuery({ status }, paginationDto);
+      const { page, limit } = paginationDto;
+
+      const [total, vehicles] = await Promise.all([
+        VehicleModel.countDocuments({ status }),
+        VehicleModel.find({ status })
+          .sort({ nickname: 1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+      ]);
+
+      return {
+        page,
+        limit,
+        total,
+        next: ((page * limit) < total) ? `/vehicles/status/${status}?page=${(page + 1)}&limit=${limit}` : null,
+        prev: (page - 1 > 0) ? `/vehicles/status/${status}?page=${(page - 1)}&limit=${limit}` : null,
+        vehicles: vehicles.map(VehicleEntity.fromObject)
+      };
     } catch (error) {
       throw CustomError.serverError(`Error al obtener vehículos por estado: ${error}`);
     }
