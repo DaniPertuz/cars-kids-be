@@ -12,7 +12,6 @@ export class MongoVehicleDatasource implements VehicleDatasource {
     const [total, vehicles] = await Promise.all([
       VehicleModel.countDocuments(query),
       VehicleModel.find(query)
-        .select('-status')
         .sort({ nickname: 1 })
         .skip((page - 1) * limit)
         .limit(limit)
