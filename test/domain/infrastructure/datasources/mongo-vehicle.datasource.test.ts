@@ -20,8 +20,11 @@ describe('Mongo Vehicle datasource', () => {
 
   beforeAll(async () => {
     await connect();
-    await VehicleModel.deleteMany();
   });
+
+  beforeEach(async () => {
+    await VehicleModel.deleteMany();
+  });  
 
   afterAll(async () => {
     await disconnect();
@@ -31,8 +34,6 @@ describe('Mongo Vehicle datasource', () => {
     const vehicleDB = await vehicleDatasource.createVehicle(vehicle);
 
     expect(vehicleDB).toBeInstanceOf(VehicleEntity);
-
-    await VehicleModel.findOneAndDelete({ nickname: 'Test Name' });
   });
 
   test('should throw an error if failed to create a vehicle', async () => {
@@ -50,8 +51,6 @@ describe('Mongo Vehicle datasource', () => {
     expect(error).toBeUndefined();
     expect(vehicles.length).toBeGreaterThanOrEqual(1);
     expect(vehicles[0].params.category).toBe(ICategory.Car);
-
-    await VehicleModel.findOneAndDelete({ nickname: 'Test Name' });
   });
 
   test('should getVehicles generate prev and next URLs', async () => {
@@ -90,9 +89,6 @@ describe('Mongo Vehicle datasource', () => {
     expect(pagination2.prev).toBe(`/vehicles?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
     expect(pagination2.next).toBeNull();
     expect(error2).toBeUndefined();
-
-    await VehicleModel.findOneAndDelete({ nickname: 'Testing Name 1' });
-    await VehicleModel.findOneAndDelete({ nickname: 'Testing Name 2' });
   });
 
   test('should throw an error if failed to get vehicles', async () => {
@@ -240,7 +236,45 @@ describe('Mongo Vehicle datasource', () => {
     expect(vehicles[0].params.category).toBe(ICategory.Car);
   });
 
-  test('should throw an error if failed to get vehicles by size', async () => {
+  test('should getVehiclesByStatus generate prev and next URLs', async () => {
+    const vehicle1 = new VehicleEntity({
+      nickname: 'Testing Name 1',
+      img: 'Test image',
+      category: ICategory.Car,
+      color: '#000000',
+      size: IVehicleSize.Large,
+      status: IStatus.Active
+    });
+
+    const vehicle2 = new VehicleEntity({
+      nickname: 'Testing Name 2',
+      img: 'Test image',
+      category: ICategory.Car,
+      color: '#000000',
+      size: IVehicleSize.Large,
+      status: IStatus.Active
+    });
+
+    await vehicleDatasource.createVehicle(vehicle1);
+    await vehicleDatasource.createVehicle(vehicle2);
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+
+    const pagination1 = await vehicleDatasource.getVehiclesByStatus(IStatus.Active, paginationDto1!);
+
+    expect(pagination1.next).toBe(`/vehicles/status/${IStatus.Active}?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+    expect(error1).toBeUndefined();
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await vehicleDatasource.getVehiclesByStatus(IStatus.Active, paginationDto2!);
+
+    expect(pagination2.prev).toBe(`/vehicles/status/${IStatus.Active}?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
+    expect(error2).toBeUndefined();
+  });
+
+  test('should throw an error if failed to get vehicles by status', async () => {
     const [, paginationDto] = PaginationDto.create(1, 1);
     jest.spyOn(VehicleModel, 'find').mockImplementationOnce(() => {
       throw new Error('Test error');
