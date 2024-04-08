@@ -166,6 +166,10 @@ export class VehiclesController {
 
     if (!vehicleDB) return res.status(404).json({ error: 'Vehículo no encontrado' });
 
+    const existingVehicle = await this.vehicleRepo.getVehicleByNickname(newNickname);
+
+    if (existingVehicle) return res.status(404).json({ error: 'Ya existe un vehículo con este nombre/apodo' });
+
     const updatedVehicleData: IVehicle = {
       nickname: newNickname,
       category,
