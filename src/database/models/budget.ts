@@ -5,6 +5,7 @@ const budgetSchema = new Schema({
   base:     { type: Number, required: true, default: 0 },
   expenses: { type: Number, required: true, default: 0 },
   loans:    { type: Number, required: true, default: 0 },
+  payroll:  { type: Number, required: true, default: 0 },
   date:     { type: Date, required: true }
 }, {
   versionKey: false

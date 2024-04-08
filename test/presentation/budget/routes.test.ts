@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { testServer } from '../../test-server';
-import { BudgetModel, ProductModel } from '../../../src/database/models';
+import { BudgetModel } from '../../../src/database/models';
 import { IStatus } from '../../../src/interfaces';
 
 describe('Budget routes testing', () => {
@@ -21,6 +21,7 @@ describe('Budget routes testing', () => {
     base: 100000,
     expenses: 0,
     loans: 0,
+    payroll: 0,
     date: new Date('01-01-2020').toISOString()
   };
 
@@ -29,6 +30,7 @@ describe('Budget routes testing', () => {
     base: 150000,
     expenses: 0,
     loans: 0,
+    payroll: 0,
     date: new Date('01-02-2020').toISOString()
   };
 
@@ -41,6 +43,7 @@ describe('Budget routes testing', () => {
       base: budgetOne.base,
       expenses: budgetOne.expenses,
       loans: budgetOne.loans,
+      payroll: budgetOne.payroll,
       date: new Date(budgetOne.date).toISOString()
     }));
 
