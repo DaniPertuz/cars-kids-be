@@ -3,7 +3,7 @@ import { MongoProductDatasource } from '../../infrastructure/datasources/mongo-p
 import { ProductRepositoryImpl } from '../../infrastructure/repositories/product-impl.repository';
 import { ProductDTO } from '../../domain/dtos/product';
 import { ProductEntity } from '../../domain/entities/product.entity';
-import { IProduct } from '../../interfaces';
+import { IProduct, IStatus } from '../../interfaces';
 import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 
 export class ProductsController {
@@ -19,6 +19,32 @@ export class ProductsController {
     if (error) return res.status(400).json({ error });
     
     const products = await this.productRepo.getAllProducts(paginationDto!);
+
+    const { page: productPage, limit: limitPage, total, next, prev, products: data } = products;
+
+    return res.json({
+      page: productPage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      products: data.map(product => product.params)
+    });
+  };
+
+  public getProductsByStatus = async (req: Request, res: Response) => {
+    const { status } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
+    
+    if (error) return res.status(400).json({ error });
+
+    if (!(Object.values(IStatus).includes(status as IStatus))) {
+      return res.status(400).json({ error: 'Estado de producto no válido' });
+    }
+
+    const products = await this.productRepo.getProductsByStatus(status as IStatus, paginationDto!);
 
     const { page: productPage, limit: limitPage, total, next, prev, products: data } = products;
 

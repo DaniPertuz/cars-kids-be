@@ -41,6 +41,31 @@ export class MongoProductDatasource implements ProductDatasource {
     }
   }
 
+  async getProductsByStatus(status: IStatus, paginationDto: PaginationDto): Promise<ProductQueryResult> {
+    try {
+      const { page, limit } = paginationDto;
+
+      const [total, products] = await Promise.all([
+        ProductModel.countDocuments({ status }),
+        ProductModel.find({ status })
+          .sort({ name: 1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+      ]);
+
+      return {
+        page,
+        limit,
+        total,
+        next: ((page * limit) < total) ? `/products/status/${status}?page=${(page + 1)}&limit=${limit}` : null,
+        prev: (page - 1 > 0) ? `/products/status/${status}?page=${(page - 1)}&limit=${limit}` : null,
+        products: products.map(ProductEntity.fromObject)
+      };
+    } catch (error) {
+      throw CustomError.serverError(`Error al obtener vehículos por estado: ${error}`);
+    }
+  }
+
   async getProduct(name: string): Promise<ProductEntity | null> {
     try {
       const productData = await ProductModel.findOne({ name });
