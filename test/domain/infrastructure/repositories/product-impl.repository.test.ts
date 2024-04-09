@@ -12,6 +12,7 @@ describe('Product repository implementation', () => {
     createProduct: jest.fn(),
     getProduct: jest.fn(),
     getAllProducts: jest.fn(),
+    getProductsByStatus: jest.fn(),
     updateProduct: jest.fn(),
     deleteProduct: jest.fn()
   };
@@ -33,6 +34,7 @@ describe('Product repository implementation', () => {
     { method: 'createProduct', args: [product], },
     { method: 'getProduct', args: [product] },
     { method: 'getAllProducts', args: [] },
+    { method: 'getProductsByStatus', args: ['Test Status' as IStatus] },
     { method: 'updateProduct', args: ['d34a2daad17250e579833f0e'] },
     { method: 'deleteProduct', args: ['d34a2daad17250e579833f0e'] },
   ];

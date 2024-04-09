@@ -84,6 +84,22 @@ describe('Products routes testing', () => {
     await ProductModel.findOneAndDelete({ name: testInactiveProduct.name });
   });
 
+  test('should return products by status api/products/status', async () => {
+    await ProductModel.create(testActiveProduct);
+    await ProductModel.create(testInactiveProduct);
+
+    const { body } = await request(testServer.app)
+      .get(`/api/products/status/${IStatus.Active}`)
+      .expect(200);
+
+    expect(body).toBeInstanceOf(Object);
+    expect(body.products.length).toBe(1);
+    expect(body.products[0].name).toBe('Active Product');
+
+    await ProductModel.findOneAndDelete({ name: testActiveProduct.name });
+    await ProductModel.findOneAndDelete({ name: testInactiveProduct.name });
+  });
+
   test('should get product /api/products/:name', async () => {
     await ProductModel.create(testActiveProduct);
 

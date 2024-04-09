@@ -27,6 +27,13 @@ describe('Mongo Product datasource', () => {
     status: IStatus.Active
   });
 
+  const activeProduct2 = new ProductEntity({
+    name: 'Active Product 2',
+    cost: 6000,
+    price: 8000,
+    status: IStatus.Active
+  });
+
   const inactiveProduct = new ProductEntity({
     name: 'Inactive Product',
     cost: 8000,
@@ -35,12 +42,12 @@ describe('Mongo Product datasource', () => {
   });
 
   afterAll(async () => {
-    await ProductModel.deleteMany();
     await disconnect();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     jest.clearAllMocks();
+    await ProductModel.deleteMany();
   });
 
   test('should create a product', async () => {
@@ -61,19 +68,19 @@ describe('Mongo Product datasource', () => {
     await productDatasource.createProduct(activeProduct);
     await productDatasource.createProduct(inactiveProduct);
     const [error1, paginationDto1] = PaginationDto.create(1, 1);
-    
+
     const pagination1 = await productDatasource.getAllProducts(paginationDto1!);
-    
+
     expect(error1).toBeUndefined();
     expect(pagination1.products.length).toBe(1);
     expect(pagination1.products[0].params.name).toBe(activeProduct.params.name);
     expect(pagination1.next).toBe(`/products?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
     expect(pagination1.prev).toBeNull();
-    
+
     const [error2, paginationDto2] = PaginationDto.create(2, 1);
-    
+
     const pagination2 = await productDatasource.getAllProducts(paginationDto2!);
-    
+
     expect(error2).toBeUndefined();
     expect(pagination2.products.length).toBe(1);
     expect(pagination2.products[0].params.name).toBe(inactiveProduct.params.name);
@@ -82,6 +89,49 @@ describe('Mongo Product datasource', () => {
 
     await ProductModel.findOneAndDelete({ name: activeProduct.params.name });
     await ProductModel.findOneAndDelete({ name: inactiveProduct.params.name });
+  });
+
+  test('should get products by status', async () => {
+    const [error, paginationDto] = PaginationDto.create(1, 1);
+    const productTest = new ProductEntity({
+      name: 'Status Name',
+      cost: 10000,
+      price: 12000,
+      status: IStatus.Active
+    });
+
+    await productDatasource.createProduct(productTest);
+
+    const { products } = await productDatasource.getProductsByStatus(IStatus.Active, paginationDto!);
+
+    expect(error).toBeUndefined();
+    expect(products.length).toBeGreaterThanOrEqual(1);
+    expect(products[0].params.name).toBe('Status Name');
+  });
+
+  test('should getProductsByStatus generate prev and next URLs', async () => {
+    await productDatasource.createProduct(activeProduct);
+    await productDatasource.createProduct(activeProduct2);
+    await productDatasource.createProduct(inactiveProduct);
+    const [error1, paginationDto1] = PaginationDto.create(1, 1);
+
+    const pagination1 = await productDatasource.getProductsByStatus(IStatus.Active, paginationDto1!);
+    
+    expect(error1).toBeUndefined();
+    expect(pagination1.products.length).toBe(1);
+    expect(pagination1.products[0].params.name).toBe(activeProduct.params.name);
+    expect(pagination1.next).toBe(`/products/status/${IStatus.Active}?page=${paginationDto1!.page + 1}&limit=${paginationDto1!.limit}`);
+    expect(pagination1.prev).toBeNull();
+
+    const [error2, paginationDto2] = PaginationDto.create(2, 1);
+
+    const pagination2 = await productDatasource.getProductsByStatus(IStatus.Active, paginationDto2!);
+
+    expect(error2).toBeUndefined();
+    expect(pagination2.products.length).toBe(1);
+    expect(pagination2.products[0].params.name).toBe(activeProduct2.params.name);
+    expect(pagination2.prev).toBe(`/products/status/${IStatus.Active}?page=${paginationDto2!.page - 1}&limit=${paginationDto2!.limit}`);
+    expect(pagination2.next).toBeNull();
   });
 
   test('should throw an error if failed to get all products', async () => {
