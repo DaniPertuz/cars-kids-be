@@ -102,8 +102,7 @@ describe('Vehicles routes testing', () => {
     await VehicleModel.create(vehicle2);
 
     const { body } = await request(testServer.app)
-      .get('/api/vehicles/status')
-      .send({ status: IStatus.Active })
+      .get(`/api/vehicles/status/${IStatus.Active}`)
       .expect(200);
 
     expect(body).toBeInstanceOf(Object);
