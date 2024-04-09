@@ -5,6 +5,7 @@ describe('Budget entity', () => {
     base: 100000,
     expenses: 0,
     loans: 0,
+    payroll: 20000,
     date: new Date().toISOString()
   };
 
@@ -15,6 +16,7 @@ describe('Budget entity', () => {
     expect(budget.params.base).toBe(data.base);
     expect(budget.params.expenses).toBe(data.expenses);
     expect(budget.params.loans).toBe(data.loans);
+    expect(budget.params.payroll).toBe(data.payroll);
     expect(budget.params.date).toBe(data.date);
   });
 });

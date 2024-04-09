@@ -13,6 +13,7 @@ describe('Mongo Budget datasource', () => {
     base: 100000,
     expenses: 0,
     loans: 0,
+    payroll: 20000,
     date: new Date(Date.UTC(2020, 0, 15)).toISOString()
   });
 
@@ -21,6 +22,7 @@ describe('Mongo Budget datasource', () => {
     base: 150000,
     expenses: 0,
     loans: 0,
+    payroll: 20000,
     date: new Date(Date.UTC(2020, 0, 16)).toISOString()
   });
 
@@ -91,6 +93,7 @@ describe('Mongo Budget datasource', () => {
       base: 100000,
       expenses: 0,
       loans: 0,
+      payroll: 20000,
       date: new Date(Date.UTC(2020, 1, 17)).toISOString()
     });
 
@@ -230,6 +233,7 @@ describe('Mongo Budget datasource', () => {
       base: 10000,
       expenses: 0,
       loans: 0,
+      payroll: 20000,
       date: '01-01-2020'
     });
     const validId = 'validBudgetId';

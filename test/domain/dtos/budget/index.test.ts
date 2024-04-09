@@ -6,6 +6,7 @@ describe('BudgetDTO', () => {
     base: 100000,
     expenses: 0,
     loans: 0,
+    payroll: 20000,
     date: new Date().toISOString()
   };
 

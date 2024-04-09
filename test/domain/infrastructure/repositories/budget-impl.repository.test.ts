@@ -24,6 +24,7 @@ describe('Budget repository implementation', () => {
     base: 100000,
     expenses: 0,
     loans: 0,
+    payroll: 20000,
     date: '01-01-2020'
   });
 
