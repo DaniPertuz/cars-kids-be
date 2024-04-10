@@ -90,6 +90,10 @@ export class ProductsController {
 
     if (!productDB) return res.status(404).json({ error: 'Producto no encontrado' });
 
+    const existingProduct = await this.productRepo.getProduct(newName);
+
+    if (existingProduct) return res.status(404).json({ error: 'Ya existe un producto con este nombre' });
+
     const updatedProductData: IProduct = {
       name: newName,
       cost,
