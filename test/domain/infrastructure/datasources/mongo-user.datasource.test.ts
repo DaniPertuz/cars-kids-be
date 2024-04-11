@@ -1,6 +1,7 @@
 import { connect, disconnect } from '../../../../src/database';
 import { UserModel } from '../../../../src/database/models';
 import { PaginationDto } from '../../../../src/domain/dtos/shared/pagination.dto';
+import { CustomError } from '../../../../src/domain/errors';
 import { MongoUserDatasource } from '../../../../src/infrastructure/datasources/mongo-user.datasource';
 import { IStatus, IUserRole } from '../../../../src/interfaces';
 
@@ -21,9 +22,9 @@ describe('Mongo User datasource', () => {
   });
 
   test('should get users', async () => {
-    const mockUser1 = { name: 'Admin 1', email: 'admin-test@test.com', password: 'pass-admin', role: IUserRole.Admin, status: IStatus.Active };
-    const mockUser2 = { name: 'Test 1', email: 'testing1@test.com', password: 'pass-test1', role: IUserRole.Editor, status: IStatus.Active };
-    const mockUser3 = { name: 'Test 2', email: 'testing2@test.com', password: 'pass-test2', role: IUserRole.Editor, status: IStatus.Active };
+    const mockUser1 = { name: 'Admin 1', img: 'Admin 1 image', email: 'admin-test@test.com', password: 'pass-admin', role: IUserRole.Admin, status: IStatus.Active };
+    const mockUser2 = { name: 'Test 1', img: 'Test 1 image', email: 'testing1@test.com', password: 'pass-test1', role: IUserRole.Editor, status: IStatus.Active };
+    const mockUser3 = { name: 'Test 2', img: 'Test 2 image', email: 'testing2@test.com', password: 'pass-test2', role: IUserRole.Editor, status: IStatus.Active };
 
     await UserModel.create(mockUser1);
     await UserModel.create(mockUser2);
@@ -62,6 +63,7 @@ describe('Mongo User datasource', () => {
     const [, paginationDto] = PaginationDto.create(1, 1);
     const updatedUserData = {
       name: 'User 4',
+      img: 'New Image',
       email: 'testing4@test.com',
       password: 'test-pass',
       role: IUserRole.Editor,
@@ -82,6 +84,7 @@ describe('Mongo User datasource', () => {
   test('should update user role', async () => {
     const updatedUserData = {
       name: 'Updated User',
+      img: 'New Image',
       email: 'testing5@test.com',
       password: 'test-pass',
       role: IUserRole.Editor,
@@ -100,6 +103,7 @@ describe('Mongo User datasource', () => {
   test('should throw server error when an error occurs during update', async () => {
     const updatedUserData = {
       name: 'Updated User Error',
+      img: 'New Image',
       email: 'testing6@test.com',
       password: 'test-pass',
       role: IUserRole.Editor,
@@ -126,6 +130,7 @@ describe('Mongo User datasource', () => {
   test('should update user password', async () => {
     const updatedUserData = {
       name: 'Updated User',
+      img: 'New Image',
       email: 'testing5@test.com',
       password: 'test-pass',
       role: IUserRole.Editor,
@@ -138,6 +143,7 @@ describe('Mongo User datasource', () => {
 
     expect(updatedUser?.params).toEqual(expect.objectContaining({
       name: 'Updated User',
+      img: 'New Image',
       email: 'testing5@test.com',
       role: IUserRole.Editor,
       status: IStatus.Active
@@ -149,6 +155,7 @@ describe('Mongo User datasource', () => {
   test('should update user name', async () => {
     const updatedUserData = {
       name: 'Updated User',
+      img: 'New Image',
       email: 'testing5@test.com',
       password: 'test-pass',
       role: IUserRole.Editor,
@@ -161,6 +168,7 @@ describe('Mongo User datasource', () => {
 
     expect(updatedUser?.params).toEqual(expect.objectContaining({
       name: 'New Update',
+      img: 'New Image',
       email: 'testing5@test.com',
       role: IUserRole.Editor,
       status: IStatus.Active
@@ -169,9 +177,60 @@ describe('Mongo User datasource', () => {
     await UserModel.findOneAndDelete({ email: 'testing5@test.com' });
   });
 
+  test('should throw a server error if the update name fails', async () => {
+    const mockUserData = {
+      email: 'test@test.com',
+      name: 'Test User'
+    };
+
+    const errorMessage = 'Database error';
+
+    jest.spyOn(UserModel, 'findOneAndUpdate').mockRejectedValueOnce(new Error(errorMessage));
+
+    await expect(userDatasource.updateUserName(mockUserData.email, mockUserData.name)).rejects.toThrow('Error al actualizar nombre de usuario: Error: Database error');
+  });
+
+  test('should update user image', async () => {
+    const updatedUserData = {
+      name: 'Updated User',
+      img: 'Updated image',
+      email: 'testing55@test.com',
+      password: 'test-pass',
+      role: IUserRole.Editor,
+      status: IStatus.Active
+    };
+
+    await UserModel.create(updatedUserData);
+
+    const updatedUser = await userDatasource.updateUserImage('testing55@test.com', 'New Image');
+
+    expect(updatedUser?.params).toEqual(expect.objectContaining({
+      name: 'Updated User',
+      img: 'New Image',
+      email: 'testing55@test.com',
+      role: IUserRole.Editor,
+      status: IStatus.Active
+    }));
+
+    await UserModel.findOneAndDelete({ email: 'testing55@test.com' });
+  });
+
+  test('should throw a server error if the update image fails', async () => {
+    const mockUserData = {
+      email: 'test@test.com'
+    };
+
+    const errorMessage = 'Database error';
+
+    jest.spyOn(UserModel, 'findOneAndUpdate').mockRejectedValueOnce(new Error(errorMessage));
+
+    await expect(userDatasource.updateUserImage(mockUserData.email, 'Test image.jpg')).rejects.toThrow('Error al actualizar imagen de usuario: Error: Database error');
+  });
+
   test('should update user email', async () => {
     const updatedUserData = {
       name: 'Updated User',
+      img: 'New Image',
       email: 'testing5@test.com',
       password: 'test-pass',
       role: IUserRole.Editor,
@@ -184,6 +243,7 @@ describe('Mongo User datasource', () => {
 
     expect(updatedUser?.params).toEqual(expect.objectContaining({
       name: 'Updated User',
+      img: 'New Image',
       email: 'testing51@test.com',
       role: IUserRole.Editor,
       status: IStatus.Active
@@ -192,9 +252,22 @@ describe('Mongo User datasource', () => {
     await UserModel.findOneAndDelete({ email: 'testing51@test.com' });
   });
 
+  test('should throw a server error if the update email fails', async () => {
+    const mockUserData = {
+      email: 'test@test.com'
+    };
+
+    const errorMessage = 'Database error';
+
+    jest.spyOn(UserModel, 'findOneAndUpdate').mockRejectedValueOnce(new Error(errorMessage));
+
+    await expect(userDatasource.updateUserEmail(mockUserData.email, 'new-email@test.com')).rejects.toThrow('Error al actualizar email de usuario: Error: Database error');
+  });
+
   test('should throw server error when an error occurs during update', async () => {
     const updatedUserData = {
       name: 'Updated User Error',
+      img: 'New Image',
       email: 'testing6@test.com',
       password: 'test-pass',
       role: IUserRole.Editor,

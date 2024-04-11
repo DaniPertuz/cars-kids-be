@@ -4,6 +4,7 @@ import { UserDTO } from '../../../../src/domain/dtos/user/index';
 describe('UserDTO', () => {
   const validObject: IUser = {
     name: 'Test User',
+    img: '',
     email: 'test-user-1@email.com',
     password: '123',
     role: IUserRole.Editor,

@@ -23,6 +23,7 @@ describe('AuthService', () => {
 
       UserModel.prototype.save = jest.fn().mockResolvedValueOnce({
         name: 'Test Register User',
+        img: '',
         email: 'testuser@test.com',
         password: 'hashedPassword',
         role: IUserRole.Editor,
@@ -34,6 +35,7 @@ describe('AuthService', () => {
       const registerUserDTO: RegisterUserDTO = {
         params: {
           name: 'Test Register User',
+          img: '',
           email: 'testuser@test.com',
           password: 'password',
           role: IUserRole.Editor,
@@ -50,6 +52,7 @@ describe('AuthService', () => {
         user: {
           email: 'testuser@test.com',
           name: 'Test Register User',
+          img: '',
           role: IUserRole.Editor,
           status: IStatus.Active
         },
@@ -66,6 +69,7 @@ describe('AuthService', () => {
 
       UserModel.prototype.save = jest.fn().mockResolvedValueOnce({
         name: 'Test Register User',
+        img: '',
         email: 'testuser@test.com',
         password: 'password',
         role: IUserRole.Editor,
@@ -75,6 +79,7 @@ describe('AuthService', () => {
       const result = await authService.registerUser({
         params: {
           name: 'Test Register User',
+          img: '',
           email: 'testuser@test.com',
           password: 'testPassword',
           role: IUserRole.Editor,
@@ -85,6 +90,7 @@ describe('AuthService', () => {
       expect(result).toEqual({
         user: {
           name: 'Test Register User',
+          img: '',
           email: 'testuser@test.com',
           role: IUserRole.Editor,
           status: IStatus.Active
@@ -100,6 +106,7 @@ describe('AuthService', () => {
     test('should throw an error if the email already exists', async () => {
       UserModel.findOne = jest.fn().mockResolvedValue({
         name: 'Test Register User',
+        img: '',
         email: 'testuser@test.com',
         password: 'password',
         role: IUserRole.Editor,
@@ -109,6 +116,7 @@ describe('AuthService', () => {
       const registerUserDTO: RegisterUserDTO = {
         params: {
           name: 'Test Register User',
+          img: '',
           email: 'testuser@test.com',
           password: 'password',
           role: IUserRole.Editor,
@@ -127,6 +135,7 @@ describe('AuthService', () => {
       await expect(authService.registerUser({
         params: {
           name: 'Test Register User',
+          img: '',
           email: 'testuser@test.com',
           password: await bcryptAdapter.hash('password'),
           role: IUserRole.Editor,
@@ -141,6 +150,7 @@ describe('AuthService', () => {
     test('should login a user with correct email and password', async () => {
       UserModel.findOne = jest.fn().mockResolvedValueOnce({
         name: 'Test Register User',
+        img: '',
         email: 'testuser@test.com',
         password: await bcryptAdapter.hash('password'),
         role: IUserRole.Editor,
@@ -163,6 +173,7 @@ describe('AuthService', () => {
       expect(result).toEqual({
         user: {
           name: 'Test Register User',
+          img: '',
           email: 'testuser@test.com',
           role: IUserRole.Editor,
           status: IStatus.Active

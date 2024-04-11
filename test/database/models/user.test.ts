@@ -14,6 +14,7 @@ describe('User model', () => {
   test('should return UserModel', async () => {
     const userData = {
       name: 'Test Name',
+      img: 'Test Image',
       email: 'test@testemail.com',
       password: '000000',
       role: IUserRole.Editor,
@@ -30,6 +31,7 @@ describe('User model', () => {
   test('should return the schema object', () => {
     const expectedSchema = {
       name: { type: String, required: true },
+      img: { type: String, required: true, default: '' },
       email: { type: String, required: true, unique: true },
       password: { type: String, required: true },
       role: {

@@ -10,6 +10,7 @@ describe('User repository implementation', () => {
   const mockUserDatasource: MockUserDatasource = {
     getUsers: jest.fn(),
     updateUserName: jest.fn(),
+    updateUserImage: jest.fn(),
     updateUserEmail: jest.fn(),
     updateUserPassword: jest.fn(),
     updateUserRole: jest.fn(),
@@ -25,6 +26,7 @@ describe('User repository implementation', () => {
   const testCases = [
     { method: 'getUsers', args: [], },
     { method: 'updateUserName', args: ['test@test.com', 'Test Name'] },
+    { method: 'updateUserImage', args: ['test@test.com', 'Test Image'] },
     { method: 'updateUserEmail', args: ['test@test.com', 'test1@test.com'] },
     { method: 'updateUserPassword', args: ['test@test.com', 'test-pass1'] },
     { method: 'updateUserRole', args: ['test@test.com', IUserRole.Editor] },

@@ -13,6 +13,7 @@ jest.mock('../../../src/plugins/jwt.adapter', () => ({
 describe('Users routes testing', () => {
   const testAdminUser = {
     name: 'Admin User',
+    img: 'User image',
     email: 'admin@test.com',
     password: '123',
     role: IUserRole.Admin,
@@ -21,6 +22,7 @@ describe('Users routes testing', () => {
 
   const testEditorUser = {
     name: 'Test User',
+    img: 'User image',
     email: 'test1@test.com',
     password: '123',
     role: IUserRole.Editor,
@@ -64,6 +66,7 @@ describe('Users routes testing', () => {
     expect(body).toEqual({
       email: 'test1@test.com',
       name: 'Test User',
+      img: 'User image',
       role: 'admin',
       status: 'active'
     });
@@ -92,6 +95,7 @@ describe('Users routes testing', () => {
     expect(body).toEqual({
       email: 'test1@test.com',
       name: 'Test User',
+      img: 'User image',
       role: 'editor',
       status: 'active'
     });
@@ -110,6 +114,26 @@ describe('Users routes testing', () => {
     expect(body).toEqual({
       email: 'test1@test.com',
       name: 'Test User Updated',
+      img: 'User image',
+      role: 'editor',
+      status: 'active'
+    });
+
+    await UserModel.findOneAndDelete({ email: 'test1@test.com' });
+  });
+
+  test('should update user image /api/users/image', async () => {
+    await UserModel.create(testEditorUser);
+
+    const { body } = await request(testServer.app)
+      .put('/api/users/image')
+      .send({ email: 'test1@test.com', img: 'Image link' })
+      .expect(200);
+
+    expect(body).toEqual({
+      email: 'test1@test.com',
+      name: 'Test User',
+      img: 'Image link',
       role: 'editor',
       status: 'active'
     });
@@ -128,6 +152,7 @@ describe('Users routes testing', () => {
     expect(body).toEqual({
       email: 'test11@test.com',
       name: 'Test User',
+      img: 'User image',
       role: 'editor',
       status: 'active'
     });
@@ -147,6 +172,7 @@ describe('Users routes testing', () => {
   test('should deactivate user api/users', async () => {
     await UserModel.create({
       name: 'Test User',
+      img: 'User image',
       email: 'testing1@test.com',
       password: '123',
       role: IUserRole.Editor,
@@ -167,6 +193,7 @@ describe('Users routes testing', () => {
   test('should return a not found request if email is not valid to deactivate user api/users', async () => {
     await UserModel.create({
       name: 'Test User',
+      img: 'Test Image',
       email: 'testing2@test.com',
       password: '123',
       role: IUserRole.Editor,
