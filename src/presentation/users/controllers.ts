@@ -55,6 +55,18 @@ export class UsersController {
     return res.json(user?.params);
   };
 
+  public updateUserImage = async (req: Request, res: Response) => {
+    const { email, img } = req.body;
+
+    const userDB = await User.findOne({ email });
+
+    if (!userDB) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+    const user = await this.userRepo.updateUserImage(email, img);
+
+    return res.json(user?.params);
+  };
+
   public updateUserPassword = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 

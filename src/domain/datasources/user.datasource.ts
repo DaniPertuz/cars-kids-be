@@ -4,6 +4,7 @@ import { UserEntity } from '../entities/user.entity';
 
 export abstract class UserDatasource {
   abstract updateUserName(email: string, name: string): Promise<UserEntity | null>;
+  abstract updateUserImage(email: string, img: string): Promise<UserEntity | null>;
   abstract updateUserEmail(email: string, newEmail: string): Promise<UserEntity | null>;
   abstract updateUserPassword(email: string, password: string): Promise<UserEntity | null>;
   // Admin actions

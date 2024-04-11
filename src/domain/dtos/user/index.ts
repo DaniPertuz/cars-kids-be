@@ -5,7 +5,7 @@ export class UserDTO {
   private constructor(public params: IUser) { }
 
   static create(object: { [key: string]: any; }): [string?, UserDTO?] {
-    const { email, password, name, role, status } = object;
+    const { email, password, name, img, role, status } = object;
 
     if (!email) return ['Email es requerido'];
     if (!password) return ['Contraseña es requerida'];
@@ -14,6 +14,6 @@ export class UserDTO {
     if (!role) return ['Rol es requerido'];
     if (!status) return ['Estado es requerido'];
 
-    return [undefined, new UserDTO({ email, password, name, role, status })];
+    return [undefined, new UserDTO({ email, password, name, img, role, status })];
   }
 }

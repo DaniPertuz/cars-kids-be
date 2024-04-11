@@ -43,6 +43,16 @@ export class MongoUserDatasource implements UserDatasource {
     }
   }
 
+  async updateUserImage(email: string, img: string): Promise<UserEntity | null> {
+    try {
+      const userData = await UserModel.findOneAndUpdate({ email }, { img }, { new: true, projection: { password: 0 } });
+
+      return userData ? UserEntity.fromObject(userData) : null;
+    } catch (error: any) {
+      throw CustomError.serverError(`Error al actualizar imagen de usuario: ${error}`);
+    }
+  }
+
   async updateUserEmail(email: string, newEmail: string): Promise<UserEntity | null> {
     try {
       const userData = await UserModel.findOneAndUpdate({ email }, { email: newEmail }, { new: true, projection: { password: 0 } });

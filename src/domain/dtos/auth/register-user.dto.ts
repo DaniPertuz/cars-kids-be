@@ -5,7 +5,7 @@ export class RegisterUserDTO {
   private constructor(public params: IUser) { }
 
   static create(object: IUser): [string?, RegisterUserDTO?] {
-    const { name, email, password, role, status = IStatus.Active } = object;
+    const { name, img, email, password, role, status = IStatus.Active } = object;
 
     if (!email) return ['Email es requerido'];
     if (!regularExps.email.test(email)) return ['Email no es válido'];
@@ -13,6 +13,6 @@ export class RegisterUserDTO {
     if (!name) return ['Nombre es requerido'];
     if (!role) return ['Rol es requerido'];
 
-    return [undefined, new RegisterUserDTO({ name, email, password, role, status })];
+    return [undefined, new RegisterUserDTO({ name, img, email, password, role, status })];
   }
 }
