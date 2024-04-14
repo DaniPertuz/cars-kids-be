@@ -30,7 +30,7 @@ describe('Vehicles routes testing', () => {
     img: 'Test image 2',
     category: ICategory.Car,
     color: '#000000',
-    size: IVehicleSize.Medium,
+    size: IVehicleSize.Small,
     status: IStatus.Active
   };
 
@@ -38,7 +38,7 @@ describe('Vehicles routes testing', () => {
     img: 'Test image 2',
     category: ICategory.Car,
     color: '#000000',
-    size: IVehicleSize.Medium,
+    size: IVehicleSize.Small,
     status: IStatus.Active
   };
 
@@ -80,7 +80,7 @@ describe('Vehicles routes testing', () => {
 
     expect(body).toBeInstanceOf(Object);
     expect(body.vehicles.length).toBe(2);
-    expect(body.vehicles[0].nickname).toBe('Test Name');
+    expect(body.vehicles[0].color).toBe('#000000');
   });
 
   test('should return Vehicles by size api/vehicles/size', async () => {
@@ -94,7 +94,7 @@ describe('Vehicles routes testing', () => {
 
     expect(body).toBeInstanceOf(Object);
     expect(body.vehicles.length).toBe(1);
-    expect(body.vehicles[0].nickname).toBe('Test Name');
+    expect(body.vehicles[0].size).toBe(IVehicleSize.Large);
   });
 
   test('should return Vehicles by color and size api/vehicles/props', async () => {
@@ -108,7 +108,8 @@ describe('Vehicles routes testing', () => {
 
     expect(body).toBeInstanceOf(Object);
     expect(body.vehicles.length).toBe(1);
-    expect(body.vehicles[0].nickname).toBe('Test Name');
+    expect(body.vehicles[0].color).toBe('#000000');
+    expect(body.vehicles[0].size).toBe(IVehicleSize.Large);
   });
 
   test('should return Vehicles by status api/vehicles/status', async () => {
@@ -121,7 +122,7 @@ describe('Vehicles routes testing', () => {
 
     expect(body).toBeInstanceOf(Object);
     expect(body.vehicles.length).toBe(2);
-    expect(body.vehicles[0].nickname).toBe('Test Name');
+    expect(body.vehicles[0].status).toBe(IStatus.Active);
   });
 
   test('should create a new Vehicle api/vehicles', async () => {
@@ -163,7 +164,7 @@ describe('Vehicles routes testing', () => {
       category: 'car',
       color: '#222222',
       img: 'Test image 2',
-      size: 'M',
+      size: 'S',
       status: 'active'
     }));
   });
