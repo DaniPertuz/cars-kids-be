@@ -1,7 +1,7 @@
 import { VehicleDatasource } from '../../../src/domain/datasources/vehicle.datasource';
 import { PaginationDto } from '../../../src/domain/dtos/shared/pagination.dto';
 import { VehicleEntity } from '../../../src/domain/entities/vehicle.entity';
-import { IVehicleSize, IStatus, VehicleQueryResult } from '../../../src/interfaces';
+import { IVehicleSize, IStatus, VehicleQueryResult, ICategory } from '../../../src/interfaces';
 
 describe('Vehicle datasource', () => {
   class MockDatasource implements VehicleDatasource {
@@ -12,6 +12,9 @@ describe('Vehicle datasource', () => {
       throw new Error('Method not implemented.');
     }
     getVehicles(paginationDto: PaginationDto): Promise<VehicleQueryResult> {
+      throw new Error('Method not implemented.');
+    }
+    getVehiclesByCategory(category: ICategory, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
       throw new Error('Method not implemented.');
     }
     getVehiclesByColor(color: string, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
@@ -41,6 +44,7 @@ describe('Vehicle datasource', () => {
     expect(typeof mockDatasource.createVehicle).toBe('function');
     expect(typeof mockDatasource.getVehicles).toBe('function');
     expect(typeof mockDatasource.getVehicleByNickname).toBe('function');
+    expect(typeof mockDatasource.getVehiclesByCategory).toBe('function');
     expect(typeof mockDatasource.getVehiclesByColor).toBe('function');
     expect(typeof mockDatasource.getVehiclesByColorAndSize).toBe('function');
     expect(typeof mockDatasource.getVehiclesBySize).toBe('function');

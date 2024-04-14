@@ -55,6 +55,20 @@ describe('Vehicles routes testing', () => {
     expect(body.vehicles[0].nickname).toBe('Test Name');
   });
 
+  test('should return Vehicles by category api/vehicles/category', async () => {
+    await VehicleModel.create(vehicle1);
+    await VehicleModel.create(vehicle2);
+
+    const { body } = await request(testServer.app)
+      .get('/api/vehicles/category')
+      .send({ category: ICategory.Car })
+      .expect(200);
+
+    expect(body).toBeInstanceOf(Object);
+    expect(body.vehicles.length).toBe(2);
+    expect(body.vehicles[0].category).toBe(ICategory.Car);
+  });
+
   test('should return Vehicles by color api/vehicles/color', async () => {
     await VehicleModel.create(vehicle1);
     await VehicleModel.create(vehicle2);

@@ -157,6 +157,35 @@ describe('Mongo Vehicle datasource', () => {
     await expect(vehicleDatasource.getVehiclesBySize(IVehicleSize.Large, paginationDto!)).rejects.toThrow('Error al obtener vehículos por tamaño: Error: Test error');
   });
 
+  test('should get vehicles by category', async () => {
+    const [error, paginationDto] = PaginationDto.create(1, 1);
+    const vehicleTest = new VehicleEntity({
+      nickname: 'Color Nickname',
+      img: 'Test image',
+      category: ICategory.Car,
+      color: '#000000',
+      size: IVehicleSize.Large,
+      status: IStatus.Active
+    });
+
+    await vehicleDatasource.createVehicle(vehicleTest);
+
+    const { vehicles } = await vehicleDatasource.getVehiclesByCategory(ICategory.Car, paginationDto!);
+
+    expect(error).toBeUndefined();
+    expect(vehicles.length).toBeGreaterThanOrEqual(1);
+    expect(vehicles[0].params.category).toBe(vehicleTest.params.category);
+  });
+
+  test('should throw an error if failed to get vehicles by category', async () => {
+    const [, paginationDto] = PaginationDto.create(1, 1);
+    jest.spyOn(VehicleModel, 'find').mockImplementationOnce(() => {
+      throw new Error('Test error');
+    });
+
+    await expect(vehicleDatasource.getVehiclesByCategory('blue' as ICategory, paginationDto!)).rejects.toThrow('Error al obtener vehículos por color: Error: Test error');
+  });
+
   test('should get vehicles by color', async () => {
     const [error, paginationDto] = PaginationDto.create(1, 1);
     const vehicleTest = new VehicleEntity({
