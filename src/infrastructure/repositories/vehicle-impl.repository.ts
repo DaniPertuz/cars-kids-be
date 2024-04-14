@@ -1,7 +1,7 @@
 import { VehicleDatasource } from '../../domain/datasources/vehicle.datasource';
 import { VehicleEntity } from '../../domain/entities/vehicle.entity';
 import { VehicleRepository } from '../../domain/repository/vehicle.repository';
-import { IVehicleSize, IStatus, VehicleQueryResult } from '../../interfaces';
+import { IVehicleSize, IStatus, VehicleQueryResult, ICategory } from '../../interfaces';
 import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 
 export class VehicleRepositoryImpl implements VehicleRepository {
@@ -17,6 +17,10 @@ export class VehicleRepositoryImpl implements VehicleRepository {
 
   getVehicles(paginationDto: PaginationDto): Promise<VehicleQueryResult> {
     return this.vehicleDatasource.getVehicles(paginationDto);
+  }
+
+  getVehiclesByCategory(category: ICategory, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
+    return this.vehicleDatasource.getVehiclesByCategory(category, paginationDto);
   }
 
   getVehiclesByColor(color: string, paginationDto: PaginationDto): Promise<VehicleQueryResult> {

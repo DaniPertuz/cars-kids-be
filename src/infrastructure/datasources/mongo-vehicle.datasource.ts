@@ -3,7 +3,7 @@ import { VehicleDatasource } from '../../domain/datasources/vehicle.datasource';
 import { PaginationDto } from '../../domain/dtos/shared/pagination.dto';
 import { VehicleEntity } from '../../domain/entities/vehicle.entity';
 import { CustomError } from '../../domain/errors';
-import { IVehicleSize, IStatus, VehicleQueryResult } from '../../interfaces';
+import { IVehicleSize, IStatus, VehicleQueryResult, ICategory } from '../../interfaces';
 
 export class MongoVehicleDatasource implements VehicleDatasource {
   public async getVehiclesByQuery(query: any, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
@@ -52,6 +52,14 @@ export class MongoVehicleDatasource implements VehicleDatasource {
       return await this.getVehiclesByQuery({}, paginationDto);
     } catch (error) {
       throw CustomError.serverError(`Error al obtener vehículos: ${error}`);
+    }
+  }
+
+  async getVehiclesByCategory(category: ICategory, paginationDto: PaginationDto): Promise<VehicleQueryResult> {
+    try {
+      return await this.getVehiclesByQuery({ category }, paginationDto);
+    } catch (error) {
+      throw CustomError.serverError(`Error al obtener vehículos por color: ${error}`);
     }
   }
 

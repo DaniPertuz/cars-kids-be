@@ -41,6 +41,28 @@ export class VehiclesController {
     return (vehicle) ? res.json(vehicle.params) : res.status(404).json({ error: `No se encontró vehículo con apodo ${nickname}` });
   };
 
+  public getVehiclesByCategory = async (req: Request, res: Response) => {
+    const { category } = req.body;
+    const { page = 1, limit = 10 } = req.query;
+
+    const [error, paginationDto] = PaginationDto.create(+page, +limit);
+
+    if (error) return res.status(400).json({ error });
+
+    const vehicles = await this.vehicleRepo.getVehiclesByCategory(category, paginationDto!);
+
+    const { page: vehiclePage, limit: limitPage, total, next, prev, vehicles: data } = vehicles;
+
+    return res.json({
+      page: vehiclePage,
+      limit: limitPage,
+      total,
+      next,
+      prev,
+      vehicles: data.map(vehicle => vehicle.params)
+    });
+  };
+
   public getVehiclesByColor = async (req: Request, res: Response) => {
     const { color } = req.body;
     const { page = 1, limit = 10 } = req.query;
