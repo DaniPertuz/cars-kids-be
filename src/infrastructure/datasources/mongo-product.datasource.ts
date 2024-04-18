@@ -62,7 +62,7 @@ export class MongoProductDatasource implements ProductDatasource {
         products: products.map(ProductEntity.fromObject)
       };
     } catch (error) {
-      throw CustomError.serverError(`Error al obtener vehículos por estado: ${error}`);
+      throw CustomError.serverError(`Error al obtener productos por estado: ${error}`);
     }
   }
 
