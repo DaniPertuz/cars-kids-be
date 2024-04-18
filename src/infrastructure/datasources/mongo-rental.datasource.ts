@@ -30,6 +30,7 @@ export class MongoRentalDatasource implements RentalDatasource {
       ]),
       RentalModel.find(query)
         .populate('vehicle', '-createdAt -updatedAt')
+        .populate('user', '-_id name')
         .sort({ date: 1 })
         .skip((page - 1) * limit)
         .limit(limit)
