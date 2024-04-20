@@ -31,7 +31,7 @@ describe('User model', () => {
   test('should return the schema object', () => {
     const expectedSchema = {
       name: { type: String, required: true },
-      img: { type: String, required: true, default: '' },
+      img: { type: String, required: false, default: '' },
       email: { type: String, required: true, unique: true },
       password: { type: String, required: true },
       role: {
