@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { PurchaseModel } from '../../../src/database/models';
 import { testServer } from '../../test-server';
+import { IPayment } from '../../../src/interfaces';
 
 describe('Purchases routes testing', () => {
   beforeAll(async () => {
@@ -20,6 +21,7 @@ describe('Purchases routes testing', () => {
     product: '65cec1ef73d47156e24f0c32',
     quantity: 1,
     price: 10000,
+    payment: IPayment.Cash,
     purchaseDate: '01-01-2020',
     user: 'd4ba2daad17250e579833f0e'
   };

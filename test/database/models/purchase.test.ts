@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
 import { connect, disconnect } from '../../../src/database';
 import { ProductModel, PurchaseModel } from '../../../src/database/models';
-import { IStatus } from '../../../src/interfaces';
+import { IPayment, IStatus } from '../../../src/interfaces';
 
 describe('Purchase model', () => {
   beforeAll(async () => {
@@ -17,6 +17,7 @@ describe('Purchase model', () => {
       name: 'Purchase Product',
       cost: 8000,
       price: 10000,
+      payment: IPayment.Cash,
       status: IStatus.Active
     };
 
@@ -27,6 +28,7 @@ describe('Purchase model', () => {
       product: productId,
       quantity: 1,
       price: 10000,
+      payment: IPayment.Cash,
       purchaseDate: '2000-11-10T05:00:00.000Z',
       user: '65dba23a1e356e83da7c2e1a'
     };
@@ -37,6 +39,7 @@ describe('Purchase model', () => {
       product: productId,
       quantity: 1,
       price: 10000,
+      payment: IPayment.Cash,
       purchaseDate: new Date('2000-11-10T05:00:00.000Z')
     }));
 
@@ -49,6 +52,15 @@ describe('Purchase model', () => {
       product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
       quantity: { type: Number, required: true },
       price: { type: Number, required: true },
+      payment: {
+        type: String,
+        enum: {
+          values: ['cash', 'nequi', 'bancolombia', 'daviplata'],
+          message: '{VALUE} no es un medio de pago válido',
+          default: 'cash',
+          required: true
+        }
+      },
       purchaseDate: { type: Date, required: true },
       user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
     };

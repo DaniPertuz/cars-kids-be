@@ -1,4 +1,4 @@
-import { IStatus } from '../../../../src/interfaces';
+import { IPayment, IStatus } from '../../../../src/interfaces';
 import { PurchaseDatasource } from '../../../../src/domain/datasources/purchase.datasource';
 import { PurchaseEntity } from '../../../../src/domain/entities/purchase.entity';
 import { PurchaseRepositoryImpl } from '../../../../src/infrastructure/repositories/purchase-impl.repository';
@@ -26,6 +26,7 @@ describe('Purchase repository implementation', () => {
     quantity: 1,
     price: 10000,
     purchaseDate: '01-01-2020',
+    payment: IPayment.Cash,
     user: 'd4ba2daad17250e579833f0e',
   });
 

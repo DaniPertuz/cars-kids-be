@@ -1,10 +1,12 @@
 import { PurchaseEntity } from '../../../src/domain/entities/purchase.entity';
+import { IPayment } from '../../../src/interfaces';
 
 describe('Purchase entity', () => {
   const data = {
     product: '65cec1ef73d47156e24f0c32',
     quantity: 1,
     price: 10000,
+    payment: IPayment.Cash,
     purchaseDate: '01-01-2020',
     user: 'd4ba2daad17250e579833f0e',
   };
@@ -17,6 +19,7 @@ describe('Purchase entity', () => {
     expect(purchase.params.quantity).toBe(data.quantity);
     expect(purchase.params.price).toBe(data.price);
     expect(purchase.params.purchaseDate).toBe(data.purchaseDate);
+    expect(purchase.params.payment).toBe(data.payment);
     expect(purchase.params.user).toBe(data.user);
   });
 

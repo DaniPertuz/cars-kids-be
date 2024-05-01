@@ -4,7 +4,7 @@ import { PaginationDto } from '../../../../src/domain/dtos/shared/pagination.dto
 import { ProductEntity } from '../../../../src/domain/entities/product.entity';
 import { PurchaseEntity } from '../../../../src/domain/entities/purchase.entity';
 import { MongoPurchaseDatasource } from '../../../../src/infrastructure/datasources/mongo-purchase.datasource';
-import { IStatus } from '../../../../src/interfaces';
+import { IPayment, IStatus } from '../../../../src/interfaces';
 
 describe('Mongo Purchase datasource', () => {
 
@@ -14,6 +14,7 @@ describe('Mongo Purchase datasource', () => {
     product: '65cec1ef73d47156e24f0c32',
     quantity: 1,
     price: 10000,
+    payment: IPayment.Cash,
     purchaseDate: '01-01-2020',
     user: 'd4ba2daad17250e579833f0e'
   });
@@ -110,6 +111,7 @@ describe('Mongo Purchase datasource', () => {
       product: '25cda7f409d585a843271d25',
       quantity: 1,
       price: 10000,
+      payment: IPayment.Cash,
       purchaseDate: '01-01-2020',
       user: 'd4ba2daad17250e579833f0e'
     });
@@ -330,6 +332,7 @@ describe('Mongo Purchase datasource', () => {
       product: '25cda7f409d585a843271d25',
       quantity: 1,
       price: 10000,
+      payment: IPayment.Cash,
       purchaseDate: '01-01-2020',
       user: 'd4ba2daad17250e579833f0e'
     });

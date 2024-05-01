@@ -1,5 +1,5 @@
 import { PurchaseDTO } from '../../../../src/domain/dtos/purchase';
-import { IPurchase } from '../../../../src/interfaces';
+import { IPayment, IPurchase } from '../../../../src/interfaces';
 
 describe('PurchaseDTO', () => {
   const validObject: IPurchase = {
@@ -7,6 +7,7 @@ describe('PurchaseDTO', () => {
     price: 10000,
     purchaseDate: '2020-12-10',
     quantity: 1,
+    payment: IPayment.Cash,
     product: 'productID',
     user: 'd4ba2daad17250e579833f0e'
   };
@@ -16,6 +17,7 @@ describe('PurchaseDTO', () => {
       const invalidObject = {
         purchaseDate: '2020-12-10',
         quantity: 1,
+        payment: IPayment.Cash,
         product: 'productID',
         user: 'd4ba2daad17250e579833f0e'
       };
@@ -30,6 +32,7 @@ describe('PurchaseDTO', () => {
       const invalidObject = {
         price: 10000,
         quantity: 1,
+        payment: IPayment.Cash,
         product: 'productID',
         user: 'd4ba2daad17250e579833f0e'
       };
@@ -44,36 +47,39 @@ describe('PurchaseDTO', () => {
       const invalidObject = {
         price: 10000,
         purchaseDate: '2020-12-10',
+        payment: IPayment.Cash,
         product: 'productID',
         user: 'd4ba2daad17250e579833f0e'
       };
-      
+
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
-      
+
       expect(error).toBe('Cantidad de items comprados es requerida');
       expect(purchaseDTO).toBeUndefined();
     });
-    
+
     test('should return error when product field is missing', () => {
       const invalidObject = {
         price: 10000,
         purchaseDate: '2020-12-10',
+        payment: IPayment.Cash,
         quantity: 1,
         user: 'd4ba2daad17250e579833f0e'
       };
-      
+
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
-      
+
       expect(error).toBe('ID de producto es requerido');
       expect(purchaseDTO).toBeUndefined();
     });
-    
+
     test('should return error when user field is missing', () => {
       const invalidObject = {
         price: 10000,
         product: 'productID',
         purchaseDate: '2020-12-10',
-        quantity: 1
+        quantity: 1,
+        payment: IPayment.Cash
       };
 
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
@@ -82,21 +88,37 @@ describe('PurchaseDTO', () => {
       expect(purchaseDTO).toBeUndefined();
     });
 
+    test('should return error when payment field is missing', () => {
+      const invalidObject = {
+        price: 10000,
+        product: 'productID',
+        purchaseDate: '2020-12-10',
+        quantity: 1,
+        user: 'd4ba2daad17250e579833f0e'
+      };
+
+      const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
+
+      expect(error).toBe('Forma de pago es requerida');
+      expect(purchaseDTO).toBeUndefined();
+    });
+
     test('should return error for invalid user ID', () => {
       const invalidUserId = 'invalidUserId';
       const invalidPurchase = {
-          price: 15000,
-          product: 'validProductId',
-          purchaseDate: new Date(),
-          quantity: 2,
-          user: invalidUserId
+        price: 15000,
+        product: 'validProductId',
+        purchaseDate: new Date(),
+        payment: IPayment.Cash,
+        quantity: 2,
+        user: invalidUserId
       };
-  
+
       const [error, purchaseDTO] = PurchaseDTO.create(invalidPurchase);
-  
+
       expect(error).toBe('Invalid User ID');
       expect(purchaseDTO).toBeUndefined();
-  });
+    });
 
     test('should return ProductDTO instance when object is valid', () => {
       const [error, purchaseDTO] = PurchaseDTO.create(validObject);
@@ -112,6 +134,7 @@ describe('PurchaseDTO', () => {
         price: 10000,
         purchaseDate: '2020-12-10',
         quantity: 1,
+        payment: IPayment.Cash,
         product: 'productID',
         user: 'd4ba2daad17250e579833f0e'
       };
