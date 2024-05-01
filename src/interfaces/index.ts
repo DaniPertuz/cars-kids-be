@@ -69,6 +69,7 @@ export interface IPurchase {
   product:      string;
   quantity:     number;
   price:        number;
+  payment:      IPayment;
   purchaseDate: string;
   user:         string;
 }
