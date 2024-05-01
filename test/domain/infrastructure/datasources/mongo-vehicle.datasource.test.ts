@@ -309,7 +309,7 @@ describe('Mongo Vehicle datasource', () => {
       throw new Error('Test error');
     });
 
-    await expect(vehicleDatasource.getVehiclesByStatus(IStatus.Active, paginationDto!)).rejects.toThrow('Error al obtener productos por estado: Error: Test error');
+    await expect(vehicleDatasource.getVehiclesByStatus(IStatus.Active, paginationDto!)).rejects.toThrow('Error al obtener vehículos por estado: Error: Test error');
   });
 
   test('should update vehicle', async () => {
