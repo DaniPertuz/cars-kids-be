@@ -86,6 +86,7 @@ export interface IPurchase {
   payment:      IPayment;
   purchaseDate: string;
   user:         string;
+  desk:         string;
 }
 
 export interface PurchaseQueryResult {
@@ -107,6 +108,7 @@ export interface IRental {
   payment:    IPayment;
   amount:     number;
   user:       string;
+  desk:       string;
   exception?: string; 
 }
 
