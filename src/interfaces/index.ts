@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { BudgetEntity, ProductEntity, PurchaseEntity, RentalEntity, UserEntity, VehicleEntity } from '../domain/entities';
+import { BudgetEntity, DeskEntity, ProductEntity, PurchaseEntity, RentalEntity, UserEntity, VehicleEntity } from '../domain/entities';
 
 export enum ICategory {
   Car   = 'car',
@@ -45,6 +45,20 @@ export interface BudgetQueryResult {
   next:      string | null;
   prev:      string | null;
   budgets:   BudgetEntity[];
+}
+
+export interface IDesk {
+  _id?: string;
+  name: string;
+}
+
+export interface DeskQueryResult {
+  page:  number;
+  limit: number;
+  total: number;
+  next:  string | null;
+  prev:  string | null;
+  desks: DeskEntity[];
 }
 
 export interface IProduct {
