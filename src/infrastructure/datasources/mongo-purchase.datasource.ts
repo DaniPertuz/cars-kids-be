@@ -43,6 +43,7 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
       PurchaseModel.find(query)
         .populate('product', '-_id name cost price')
         .populate('user', '-_id name')
+        .populate('desk', '-_id name')
         .sort({ purchaseDate: 1 })
         .skip((page - 1) * limit)
         .limit(limit)
