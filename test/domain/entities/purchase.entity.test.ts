@@ -9,6 +9,7 @@ describe('Purchase entity', () => {
     payment: IPayment.Cash,
     purchaseDate: '01-01-2020',
     user: 'd4ba2daad17250e579833f0e',
+    desk: 'd4ba2daad17250e579833f2e'
   };
 
   test('should create a PurchaseEntity instance', () => {
@@ -21,6 +22,7 @@ describe('Purchase entity', () => {
     expect(purchase.params.purchaseDate).toBe(data.purchaseDate);
     expect(purchase.params.payment).toBe(data.payment);
     expect(purchase.params.user).toBe(data.user);
+    expect(purchase.params.desk).toBe(data.desk);
   });
 
   test('should create a PurchaseEntity from object', () => {
@@ -32,5 +34,6 @@ describe('Purchase entity', () => {
     expect(typeof purchase.params.price).toBe('number');
     expect(typeof purchase.params.purchaseDate).toBe('string');
     expect(typeof purchase.params.user).toBe('string');
+    expect(typeof purchase.params.desk).toBe('string');
   });
 });

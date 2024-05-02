@@ -9,7 +9,8 @@ describe('PurchaseDTO', () => {
     quantity: 1,
     payment: IPayment.Cash,
     product: 'productID',
-    user: 'd4ba2daad17250e579833f0e'
+    user: 'd4ba2daad17250e579833f0e',
+    desk: 'd4ba2daad17250e579833f2e'
   };
 
   describe('create', () => {
@@ -19,7 +20,8 @@ describe('PurchaseDTO', () => {
         quantity: 1,
         payment: IPayment.Cash,
         product: 'productID',
-        user: 'd4ba2daad17250e579833f0e'
+        user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e'
       };
 
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
@@ -34,7 +36,8 @@ describe('PurchaseDTO', () => {
         quantity: 1,
         payment: IPayment.Cash,
         product: 'productID',
-        user: 'd4ba2daad17250e579833f0e'
+        user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e'
       };
 
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
@@ -49,7 +52,8 @@ describe('PurchaseDTO', () => {
         purchaseDate: '2020-12-10',
         payment: IPayment.Cash,
         product: 'productID',
-        user: 'd4ba2daad17250e579833f0e'
+        user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e'
       };
 
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
@@ -64,7 +68,8 @@ describe('PurchaseDTO', () => {
         purchaseDate: '2020-12-10',
         payment: IPayment.Cash,
         quantity: 1,
-        user: 'd4ba2daad17250e579833f0e'
+        user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e'
       };
 
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
@@ -73,11 +78,28 @@ describe('PurchaseDTO', () => {
       expect(purchaseDTO).toBeUndefined();
     });
 
+    test('should return error when desk field is missing', () => {
+      const invalidObject = {
+        price: 10000,
+        purchaseDate: '2020-12-10',
+        payment: IPayment.Cash,
+        quantity: 1,
+        product: 'productID',
+        user: 'd4ba2daad17250e579833f0e'
+      };
+
+      const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
+
+      expect(error).toBe('Puesto de trabajo es requerido');
+      expect(purchaseDTO).toBeUndefined();
+    });
+
     test('should return error when user field is missing', () => {
       const invalidObject = {
         price: 10000,
         product: 'productID',
         purchaseDate: '2020-12-10',
+        desk: 'd4ba2daad17250e579833f2e',
         quantity: 1,
         payment: IPayment.Cash
       };
@@ -94,7 +116,8 @@ describe('PurchaseDTO', () => {
         product: 'productID',
         purchaseDate: '2020-12-10',
         quantity: 1,
-        user: 'd4ba2daad17250e579833f0e'
+        user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e'
       };
 
       const [error, purchaseDTO] = PurchaseDTO.create(invalidObject);
@@ -111,7 +134,8 @@ describe('PurchaseDTO', () => {
         purchaseDate: new Date(),
         payment: IPayment.Cash,
         quantity: 2,
-        user: invalidUserId
+        user: invalidUserId,
+        desk: 'd4ba2daad17250e579833f2e'
       };
 
       const [error, purchaseDTO] = PurchaseDTO.create(invalidPurchase);

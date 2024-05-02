@@ -34,6 +34,7 @@ describe('Rental model', () => {
       payment: IPayment.Cash,
       amount: 100000,
       user: 'd4ba2daad17250e579833f0e',
+      desk: 'd4ba2daad17250e579833f1e',
       exception: ''
     };
 
@@ -70,7 +71,8 @@ describe('Rental model', () => {
       },
       amount: { type: Number, required: true },
       user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-      exception: { type: String, required: false },
+      desk: { type: Schema.Types.ObjectId, ref: 'Desk', required: true },
+      exception: { type: String, required: false }
     };
 
     const schema = RentalModel.schema.obj;

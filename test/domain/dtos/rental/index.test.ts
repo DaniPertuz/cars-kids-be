@@ -12,6 +12,7 @@ describe('RentalDTO', () => {
     payment: IPayment.Cash,
     amount: 10000,
     user: 'd4ba2daad17250e579833f0e',
+    desk: 'd4ba2daad17250e579833f2e',
     exception: ''
   };
 
@@ -23,6 +24,7 @@ describe('RentalDTO', () => {
         vehicle: '15c42daad17250e579833f0e',
         payment: IPayment.Cash,
         user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e',
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
@@ -37,6 +39,7 @@ describe('RentalDTO', () => {
         vehicle: '15c42daad17250e579833f0e',
         payment: IPayment.Cash,
         user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e',
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
@@ -51,6 +54,7 @@ describe('RentalDTO', () => {
         vehicle: '15c42daad17250e579833f0e',
         payment: IPayment.Cash,
         user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e',
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
@@ -65,6 +69,7 @@ describe('RentalDTO', () => {
         date: '01-24-2023',
         payment: IPayment.Cash,
         user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e',
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
@@ -79,6 +84,7 @@ describe('RentalDTO', () => {
         date: '01-24-2023',
         vehicle: '15c42daad17250e579833f0e',
         user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e',
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
@@ -93,6 +99,7 @@ describe('RentalDTO', () => {
         date: '01-24-2023',
         vehicle: '15c42daad17250e579833f0e',
         user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e',
         payment: IPayment.Cash
       };
       const [error] = RentalDTO.create(invalidObject);
@@ -106,12 +113,28 @@ describe('RentalDTO', () => {
         time: 15,
         date: '01-24-2023',
         vehicle: '15c42daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e',
         payment: IPayment.Cash,
         amount: 10000
       };
       const [error] = RentalDTO.create(invalidObject);
 
       expect(error).toBe('Usuario es requerido');
+    });
+    
+    test('should return error when desk field is missing', () => {
+      const invalidObject = {
+        client: 'NN Test',
+        time: 15,
+        date: '01-24-2023',
+        vehicle: '15c42daad17250e579833f0e',
+        user: 'd4ba2daad17250e579833f0e',
+        payment: IPayment.Cash,
+        amount: 10000
+      };
+      const [error] = RentalDTO.create(invalidObject);
+
+      expect(error).toBe('Puesto de trabajo es requerido');
     });
 
     test('should return error for invalid user ID', () => {
@@ -121,6 +144,7 @@ describe('RentalDTO', () => {
         time: 15,
         date: '01-24-2023',
         vehicle: '15c42daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e',
         payment: IPayment.Cash,
         amount: 10000,
         user: invalidUserId
@@ -149,6 +173,7 @@ describe('RentalDTO', () => {
         payment: IPayment.Cash,
         amount: 10000,
         user: 'd4ba2daad17250e579833f0e',
+        desk: 'd4ba2daad17250e579833f2e',
         exception: ''
       };
 

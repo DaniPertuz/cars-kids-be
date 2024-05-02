@@ -30,7 +30,8 @@ describe('Purchase model', () => {
       price: 10000,
       payment: IPayment.Cash,
       purchaseDate: '2000-11-10T05:00:00.000Z',
-      user: '65dba23a1e356e83da7c2e1a'
+      user: '65dba23a1e356e83da7c2e1a',
+      desk: '65dba23a1e356e83da7c2e1d'
     };
 
     const purchase = await PurchaseModel.create(purchaseData);
@@ -62,7 +63,8 @@ describe('Purchase model', () => {
         }
       },
       purchaseDate: { type: Date, required: true },
-      user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+      user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+      desk: { type: Schema.Types.ObjectId, ref: 'Desk', required: true }
     };
 
     const schema = PurchaseModel.schema.obj;

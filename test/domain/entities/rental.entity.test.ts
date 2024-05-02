@@ -10,6 +10,7 @@ describe('Rental entity', () => {
     payment: IPayment.Cash,
     amount: 10000,
     user: 'd4ba2daad17250e579833f0e',
+    desk: 'd4ba2daad17250e579833f2e',
     exception: 'Test exception'
   };
 
@@ -23,6 +24,7 @@ describe('Rental entity', () => {
     expect(rental.params.vehicle).toBe(data.vehicle);
     expect(rental.params.payment).toBe(data.payment);
     expect(rental.params.amount).toBe(data.amount);
+    expect(rental.params.desk).toBe(data.desk);
     expect(rental.params.exception).toBe(data.exception);
   });
 
@@ -36,6 +38,7 @@ describe('Rental entity', () => {
     expect(typeof rental.params.payment).toBe('string');
     expect(typeof rental.params.amount).toBe('number');
     expect(typeof rental.params.user).toBe('string');
+    expect(typeof rental.params.desk).toBe('string');
     expect(typeof rental.params.exception).toBe('string');
   });
 });

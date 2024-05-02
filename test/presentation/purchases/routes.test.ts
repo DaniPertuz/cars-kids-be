@@ -23,7 +23,8 @@ describe('Purchases routes testing', () => {
     price: 10000,
     payment: IPayment.Cash,
     purchaseDate: '01-01-2020',
-    user: 'd4ba2daad17250e579833f0e'
+    user: 'd4ba2daad17250e579833f0e',
+    desk: 'd4ba2daad17250e579833f2e'
   };
 
   test('should create a purchase /api/purchases', async () => {

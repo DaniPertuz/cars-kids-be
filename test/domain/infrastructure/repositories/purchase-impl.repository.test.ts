@@ -28,6 +28,7 @@ describe('Purchase repository implementation', () => {
     purchaseDate: '01-01-2020',
     payment: IPayment.Cash,
     user: 'd4ba2daad17250e579833f0e',
+    desk: 'd4ba2daad17250e579833f2e'
   });
 
   beforeEach(() => {

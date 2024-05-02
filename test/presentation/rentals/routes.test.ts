@@ -25,6 +25,7 @@ describe('Rentals routes testing', () => {
     payment: IPayment.Cash,
     amount: 10000,
     user: 'd4ba2daad17250e579833f0e',
+    desk: 'd4ba2daad17250e579833f2e',
     exception: ''
   };
 

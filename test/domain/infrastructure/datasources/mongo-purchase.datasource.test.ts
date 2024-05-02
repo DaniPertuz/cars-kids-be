@@ -16,7 +16,8 @@ describe('Mongo Purchase datasource', () => {
     price: 10000,
     payment: IPayment.Cash,
     purchaseDate: '01-01-2020',
-    user: 'd4ba2daad17250e579833f0e'
+    user: 'd4ba2daad17250e579833f0e',
+    desk: 'd4ba2daad17250e579833f2e'
   });
 
   beforeAll(async () => {
@@ -113,7 +114,8 @@ describe('Mongo Purchase datasource', () => {
       price: 10000,
       payment: IPayment.Cash,
       purchaseDate: '01-01-2020',
-      user: 'd4ba2daad17250e579833f0e'
+      user: 'd4ba2daad17250e579833f0e',
+      desk: 'd4ba2daad17250e579833f2e',
     });
 
     const purchaseDB = await purchaseDatasource.createPurchase(testPurchase);
@@ -334,7 +336,8 @@ describe('Mongo Purchase datasource', () => {
       price: 10000,
       payment: IPayment.Cash,
       purchaseDate: '01-01-2020',
-      user: 'd4ba2daad17250e579833f0e'
+      user: 'd4ba2daad17250e579833f0e',
+      desk: 'd4ba2daad17250e579833f2e'
     });
     const validId = 'validPurchaseId';
 
@@ -389,7 +392,8 @@ describe('Mongo Purchase datasource', () => {
       quantity: 1,
       price: 10000,
       purchaseDate: '01-01-2020',
-      user: 'd4ba2daad17250e579833f0e'
+      user: 'd4ba2daad17250e579833f0e',
+      desk: 'd4ba2daad17250e579833f2e'
     };
     jest.spyOn(PurchaseModel, 'findByIdAndDelete').mockResolvedValueOnce(validPurchase);
 
