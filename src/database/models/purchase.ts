@@ -14,7 +14,8 @@ const purchaseSchema = new Schema({
                   }
   },
   purchaseDate: { type: Date, required: true },
-  user:         { type: Schema.Types.ObjectId, ref: 'User', required: true }
+  user:         { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  desk:         { type: Schema.Types.ObjectId, ref: 'Desk', required: true }
 }, {
   versionKey: false
 });

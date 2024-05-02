@@ -16,6 +16,7 @@ const rentalSchema = new Schema({
   },
   amount:    { type: Number, required: true },
   user:      { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  desk:      { type: Schema.Types.ObjectId, ref: 'Desk', required: true },
   exception: { type: String, required: false }
 }, {
   versionKey: false
