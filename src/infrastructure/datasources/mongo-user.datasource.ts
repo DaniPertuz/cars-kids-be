@@ -33,6 +33,33 @@ export class MongoUserDatasource implements UserDatasource {
     }
   }
 
+
+  async getUsersByStatus(status: IStatus, paginationDto: PaginationDto): Promise<UserQueryResult> {
+    try {
+      const { page, limit } = paginationDto;
+
+      const [total, users] = await Promise.all([
+        UserModel.countDocuments({ status }),
+        UserModel.find({ status })
+          .select('-password')
+          .sort({ name: 1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+      ]);
+
+      return {
+        page,
+        limit,
+        total,
+        next: ((page * limit) < total) ? `/users/status/${status}?page=${(page + 1)}&limit=${limit}` : null,
+        prev: (page - 1 > 0) ? `/users/status/${status}?page=${(page - 1)}&limit=${limit}` : null,
+        users: users.map(UserEntity.fromObject)
+      };
+    } catch (error: any) {
+      throw CustomError.serverError(`Error al obtener usuarios: ${error}`);
+    }
+  }
+
   async updateUserName(email: string, name: string): Promise<UserEntity | null> {
     try {
       const userData = await UserModel.findOneAndUpdate({ email }, { name }, { new: true, projection: { password: 0 } });
