@@ -15,7 +15,7 @@ export class MongoUserDatasource implements UserDatasource {
         UserModel.countDocuments({ role: IUserRole.Editor }),
         UserModel.find({ role: IUserRole.Editor })
           .select('-password')
-          .sort({ name: 1 })
+          .sort({ status: 1, name: 1, email: 1 })
           .skip((page - 1) * limit)
           .limit(limit)
       ]);
@@ -42,7 +42,7 @@ export class MongoUserDatasource implements UserDatasource {
         UserModel.countDocuments({ status }),
         UserModel.find({ status })
           .select('-password')
-          .sort({ name: 1 })
+          .sort({ name: 1, email: 1 })
           .skip((page - 1) * limit)
           .limit(limit)
       ]);
