@@ -6,7 +6,7 @@ export class UsersRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const { getUsers, getUsersByStatus, updateUserName, updateUserImage, updateUserEmail, updateUserPassword, updateUserRole, deactivateUser } = new UsersController();
+    const { getUsers, getUsersByStatus, updateUserName, updateUserImage, updateUserEmail, updateUserPassword, updateUserRole, updateUserStatus, deactivateUser } = new UsersController();
 
     router.get('/', [AuthMiddleware.validateJWT], getUsers);
     router.get('/status/:status', [AuthMiddleware.validateJWT], getUsersByStatus);
@@ -15,6 +15,7 @@ export class UsersRoutes {
     router.put('/email', updateUserEmail);
     router.put('/password', updateUserPassword);
     router.put('/role', [AuthMiddleware.validateJWT], updateUserRole);
+    router.put('/status', [AuthMiddleware.validateJWT], updateUserStatus);
     router.delete('/', [AuthMiddleware.validateJWT], deactivateUser);
 
     return router;

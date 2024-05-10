@@ -31,6 +31,10 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userDatasource.updateUserPassword(email, password);
   }
 
+  updateUserStatus(email: string, status: IStatus): Promise<UserEntity | null> {
+    return this.userDatasource.updateUserStatus(email, status);
+  }
+
   updateUserRole(email: string, role: IUserRole): Promise<UserEntity | null> {
     return this.userDatasource.updateUserRole(email, role);
   }

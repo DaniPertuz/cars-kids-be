@@ -7,6 +7,7 @@ export abstract class UserDatasource {
   abstract updateUserImage(email: string, img: string): Promise<UserEntity | null>;
   abstract updateUserEmail(email: string, newEmail: string): Promise<UserEntity | null>;
   abstract updateUserPassword(email: string, password: string): Promise<UserEntity | null>;
+  abstract updateUserStatus(email: string, status: IStatus): Promise<UserEntity | null>;
   // Admin actions
   abstract getUsers(paginationDto: PaginationDto): Promise<UserQueryResult>;
   abstract getUsersByStatus(status: IStatus, paginationDto: PaginationDto): Promise<UserQueryResult>;

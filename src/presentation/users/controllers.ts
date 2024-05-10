@@ -111,6 +111,16 @@ export class UsersController {
     return res.json(user?.params);
   };
 
+  public updateUserStatus = async (req: Request, res: Response) => {
+    const { email, status } = req.body;
+
+    if (!(Object.values(IStatus).includes(status))) return res.status(400).json({ error: 'Estado de usuario no válido' });
+
+    const user = await this.userRepo.updateUserStatus(email, status as IStatus);
+
+    return res.json(user?.params);
+  };
+
   public deactivateUser = async (req: Request, res: Response) => {
     const { email } = req.body;
 

@@ -111,6 +111,16 @@ export class MongoUserDatasource implements UserDatasource {
     }
   }
 
+  async updateUserStatus(email: string, status: IStatus): Promise<UserEntity | null> {
+    try {
+      const userData = await UserModel.findOneAndUpdate({ email }, { status }, { new: true, projection: { password: 0 } });
+
+      return userData ? UserEntity.fromObject(userData) : null;
+    } catch (error: any) {
+      throw CustomError.serverError(`Error al actualizar estado de usuario: ${error}`);
+    }
+  }
+
   async deactivateUser(email: string): Promise<void> {
     try {
       await UserModel.findOneAndUpdate({ email }, { status: IStatus.Inactive }, { new: true });
