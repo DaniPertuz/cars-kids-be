@@ -160,6 +160,26 @@ describe('Users routes testing', () => {
     await UserModel.findOneAndDelete({ email: 'test11@test.com' });
   });
 
+  test('should update user status /api/users/status', async () => {
+    await UserModel.create(testEditorUser);
+
+    const { body } = await request(testServer.app)
+      .put('/api/users/status')
+      .set('Authorization', 'Bearer mock-token-here')
+      .send({ email: 'test1@test.com', status: IStatus.Inactive })
+      .expect(200);
+
+    expect(body).toEqual({
+      email: 'test1@test.com',
+      name: 'Test User',
+      img: 'User image',
+      role: 'editor',
+      status: 'inactive'
+    });
+
+    await UserModel.findOneAndDelete({ email: 'test11@test.com' });
+  });
+
   test('should return a not found request if email is not valid to update user password api/users/password', async () => {
     const { body } = await request(testServer.app)
       .put('/api/users/password')
