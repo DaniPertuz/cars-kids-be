@@ -1,7 +1,6 @@
 import { connect, disconnect } from '../../../../src/database';
 import { UserModel } from '../../../../src/database/models';
 import { PaginationDto } from '../../../../src/domain/dtos/shared/pagination.dto';
-import { CustomError } from '../../../../src/domain/errors';
 import { MongoUserDatasource } from '../../../../src/infrastructure/datasources/mongo-user.datasource';
 import { IStatus, IUserRole } from '../../../../src/interfaces';
 
@@ -225,6 +224,43 @@ describe('Mongo User datasource', () => {
     jest.spyOn(UserModel, 'findOneAndUpdate').mockRejectedValueOnce(new Error(errorMessage));
 
     await expect(userDatasource.updateUserImage(mockUserData.email, 'Test image.jpg')).rejects.toThrow('Error al actualizar imagen de usuario: Error: Database error');
+  });
+
+  test('should update user status', async () => {
+    const updatedUserData = {
+      name: 'Updated User',
+      img: 'Updated image',
+      email: 'testing55@test.com',
+      password: 'test-pass',
+      role: IUserRole.Editor,
+      status: IStatus.Inactive
+    };
+
+    await UserModel.create(updatedUserData);
+
+    const updatedUser = await userDatasource.updateUserStatus('testing55@test.com', IStatus.Active);
+
+    expect(updatedUser?.params).toEqual(expect.objectContaining({
+      name: 'Updated User',
+      img: 'Updated image',
+      email: 'testing55@test.com',
+      role: IUserRole.Editor,
+      status: IStatus.Active
+    }));
+
+    await UserModel.findOneAndDelete({ email: 'testing55@test.com' });
+  });
+
+  test('should throw a server error if the update image fails', async () => {
+    const mockUserData = {
+      email: 'test@test.com'
+    };
+
+    const errorMessage = 'Database error';
+
+    jest.spyOn(UserModel, 'findOneAndUpdate').mockRejectedValueOnce(new Error(errorMessage));
+
+    await expect(userDatasource.updateUserStatus(mockUserData.email, IStatus.Active)).rejects.toThrow('Error al actualizar estado de usuario: Error: Database error');
   });
 
   test('should update user email', async () => {
