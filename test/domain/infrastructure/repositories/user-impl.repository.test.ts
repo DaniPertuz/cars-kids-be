@@ -1,4 +1,4 @@
-import { IUserRole } from '../../../../src/interfaces';
+import { IStatus, IUserRole } from '../../../../src/interfaces';
 import { UserDatasource } from '../../../../src/domain/datasources/user.datasource';
 import { UserRepositoryImpl } from '../../../../src/infrastructure/repositories/user-impl.repository';
 
@@ -14,6 +14,7 @@ describe('User repository implementation', () => {
     updateUserEmail: jest.fn(),
     updateUserPassword: jest.fn(),
     updateUserRole: jest.fn(),
+    updateUserStatus: jest.fn(),
     deactivateUser: jest.fn()
   };
 
@@ -30,6 +31,7 @@ describe('User repository implementation', () => {
     { method: 'updateUserEmail', args: ['test@test.com', 'test1@test.com'] },
     { method: 'updateUserPassword', args: ['test@test.com', 'test-pass1'] },
     { method: 'updateUserRole', args: ['test@test.com', IUserRole.Editor] },
+    { method: 'updateUserStatus', args: ['test@test.com', IStatus.Active] },
     { method: 'deactivateUser', args: ['test@test.com'] }
   ];
 

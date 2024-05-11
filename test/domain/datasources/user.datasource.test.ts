@@ -1,6 +1,6 @@
 import { UserDatasource } from '../../../src/domain/datasources/user.datasource';
 import { UserEntity } from '../../../src/domain/entities/user.entity';
-import { IUserRole, UserQueryResult } from '../../../src/interfaces';
+import { IStatus, IUserRole, UserQueryResult } from '../../../src/interfaces';
 
 describe('User datasource', () => {
   class MockDatasource implements UserDatasource {
@@ -22,6 +22,9 @@ describe('User datasource', () => {
     updateUserRole(email: string, role: IUserRole): Promise<UserEntity | null> {
       throw new Error('Method not implemented.');
     }
+    updateUserStatus(email: string, status: IStatus): Promise<UserEntity | null> {
+      throw new Error('Method not implemented.');
+    }
     deactivateUser(email: string): Promise<void> {
       throw new Error('Method not implemented.');
     }
@@ -37,6 +40,7 @@ describe('User datasource', () => {
     expect(typeof mockDatasource.updateUserEmail).toBe('function');
     expect(typeof mockDatasource.updateUserPassword).toBe('function');
     expect(typeof mockDatasource.updateUserRole).toBe('function');
+    expect(typeof mockDatasource.updateUserStatus).toBe('function');
     expect(typeof mockDatasource.deactivateUser).toBe('function');
   });
 });
