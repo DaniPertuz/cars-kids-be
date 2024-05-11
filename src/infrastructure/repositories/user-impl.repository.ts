@@ -11,10 +11,6 @@ export class UserRepositoryImpl implements UserRepository {
     return this.userDatasource.getUsers(paginationDto);
   }
 
-  getUsersByStatus(status: IStatus, paginationDto: PaginationDto): Promise<UserQueryResult> {
-    return this.userDatasource.getUsersByStatus(status, paginationDto);
-  }
-
   updateUserImage(email: string, img: string): Promise<UserEntity | null> {
     return this.userDatasource.updateUserImage(email, img);
   }

@@ -10,7 +10,6 @@ export abstract class UserDatasource {
   abstract updateUserStatus(email: string, status: IStatus): Promise<UserEntity | null>;
   // Admin actions
   abstract getUsers(paginationDto: PaginationDto): Promise<UserQueryResult>;
-  abstract getUsersByStatus(status: IStatus, paginationDto: PaginationDto): Promise<UserQueryResult>;
   abstract updateUserRole(email: string, role: IUserRole): Promise<UserEntity | null>;
   abstract deactivateUser(email: string): Promise<void>;
 }

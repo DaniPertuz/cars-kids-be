@@ -31,28 +31,6 @@ export class UsersController {
     });
   };
 
-  public getUsersByStatus = async (req: Request, res: Response) => {
-    const { status } = req.params;
-    const { page = 1, limit = 10 } = req.query;
-
-    const [error, paginationDto] = PaginationDto.create(+page, +limit);
-
-    if (error) return res.status(400).json({ error });
-
-    const users = await this.userRepo.getUsersByStatus(status as IStatus, paginationDto!);
-
-    const { page: productPage, limit: limitPage, total, next, prev, users: data } = users;
-
-    return res.json({
-      page: productPage,
-      limit: limitPage,
-      total,
-      next,
-      prev,
-      users: data.map(user => user.params)
-    });
-  };
-
   public updateUserName = async (req: Request, res: Response) => {
     const { email, name } = req.body;
 
