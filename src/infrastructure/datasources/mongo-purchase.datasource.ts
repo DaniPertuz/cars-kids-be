@@ -121,10 +121,13 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
       const startDate = new Date(startingDateParts[2], startingDateParts[1] - 1, startingDateParts[0]);
       const endDate = new Date(endingDateParts[2], endingDateParts[1] - 1, endingDateParts[0]);
 
+      const endOfEndDate = new Date(endDate);
+      endOfEndDate.setHours(23, 59, 59, 999);
+
       const query = {
-        purchaseDate: {
+        date: {
           $gte: startDate,
-          $lt: endDate
+          $lt: endOfEndDate
         }
       };
 
