@@ -4,8 +4,8 @@ export class UserEntity {
   constructor(public params: IUser) { }
 
   static fromObject = (object: IUser): UserEntity => {
-    const { email, password, name, img, role, status } = object;
-    const user = new UserEntity({ email, password, name, img, role, status });
+    const { _id, email, password, name, img, role, status } = object;
+    const user = new UserEntity({ _id, email, password, name, img, role, status });
     return user;
   };
 }
