@@ -8,7 +8,7 @@ describe('PurchaseDTO', () => {
     purchaseDate: '2020-12-10',
     quantity: 1,
     payment: IPayment.Cash,
-    product: 'productID',
+    product: 'd4ba2daad17250e579833f5e',
     user: 'd4ba2daad17250e579833f0e',
     desk: 'd4ba2daad17250e579833f2e'
   };
@@ -130,7 +130,7 @@ describe('PurchaseDTO', () => {
       const invalidUserId = 'invalidUserId';
       const invalidPurchase = {
         price: 15000,
-        product: 'validProductId',
+        product: 'd4ba2daad17250e579833e4e',
         purchaseDate: new Date(),
         payment: IPayment.Cash,
         quantity: 2,
@@ -141,6 +141,42 @@ describe('PurchaseDTO', () => {
       const [error, purchaseDTO] = PurchaseDTO.create(invalidPurchase);
 
       expect(error).toBe('Invalid User ID');
+      expect(purchaseDTO).toBeUndefined();
+    });
+
+    test('should return error for invalid desk ID', () => {
+      const invalidDeskId = 'invalidDeskId';
+      const invalidPurchase = {
+        price: 15000,
+        product: 'd4ba2daad17250e579833e3e',
+        purchaseDate: new Date(),
+        payment: IPayment.Cash,
+        quantity: 2,
+        user: 'd4ba2daad17250e579833f3e',
+        desk: invalidDeskId
+      };
+
+      const [error, purchaseDTO] = PurchaseDTO.create(invalidPurchase);
+
+      expect(error).toBe('Invalid desk ID');
+      expect(purchaseDTO).toBeUndefined();
+    });
+
+    test('should return error for invalid product ID', () => {
+      const invalidProductId = 'invalidUserId';
+      const invalidPurchase = {
+        price: 15000,
+        product: invalidProductId,
+        purchaseDate: new Date(),
+        payment: IPayment.Cash,
+        quantity: 2,
+        user: 'd4ba2daad17250e579833f4e',
+        desk: 'd4ba2daad17250e579833f2e'
+      };
+
+      const [error, purchaseDTO] = PurchaseDTO.create(invalidPurchase);
+
+      expect(error).toBe('Invalid product ID');
       expect(purchaseDTO).toBeUndefined();
     });
 
