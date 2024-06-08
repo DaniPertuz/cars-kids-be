@@ -14,6 +14,8 @@ export class PurchaseDTO {
     if (!quantity) return ['Cantidad de items comprados es requerida'];
     if (!user) return ['Usuario es requerido'];
     if (!desk) return ['Puesto de trabajo es requerido'];
+    if (!Validators.isMongoID(product)) return ['Invalid product ID'];
+    if (!Validators.isMongoID(desk)) return ['Invalid desk ID'];
     if (!Validators.isMongoID(user)) return ['Invalid User ID'];
 
     return [undefined, new PurchaseDTO({ _id, price, product, payment, purchaseDate, quantity, user, desk })];
