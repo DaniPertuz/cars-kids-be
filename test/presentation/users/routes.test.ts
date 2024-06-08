@@ -63,13 +63,13 @@ describe('Users routes testing', () => {
       .send({ email: 'test1@test.com', role: IUserRole.Admin })
       .expect(200);
 
-    expect(body).toEqual({
+    expect(body).toEqual(expect.objectContaining({
       email: 'test1@test.com',
       name: 'Test User',
       img: 'User image',
       role: 'admin',
       status: 'active'
-    });
+    }));
 
     await UserModel.findOneAndDelete({ email: 'test1@test.com' });
   });

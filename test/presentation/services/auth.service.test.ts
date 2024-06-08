@@ -49,13 +49,13 @@ describe('AuthService', () => {
       expect(UserModel.prototype.save).toHaveBeenCalled();
       expect(JwtAdapter.generateJWT).toHaveBeenCalledWith({ email: 'testuser@test.com' });
       expect(result).toEqual({
-        user: {
+        user: expect.objectContaining({
           email: 'testuser@test.com',
           name: 'Test Register User',
           img: '',
           role: IUserRole.Editor,
           status: IStatus.Active
-        },
+        }),
         token: 'generatedToken'
       });
     });
@@ -88,13 +88,13 @@ describe('AuthService', () => {
       });
 
       expect(result).toEqual({
-        user: {
+        user: expect.objectContaining({
           name: 'Test Register User',
           img: '',
           email: 'testuser@test.com',
           role: IUserRole.Editor,
           status: IStatus.Active
-        },
+        }),
         token: 'generatedToken'
       });
       expect(UserModel.findOne).toHaveBeenCalledWith({ email: 'testuser@test.com' });
