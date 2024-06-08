@@ -23,7 +23,6 @@ export class MongoDeskDatasource implements DeskDatasource {
       const [total, desks] = await Promise.all([
         DeskModel.countDocuments({}),
         DeskModel.find({})
-          .sort({ name: 1 })
           .skip((page - 1) * limit)
           .limit(limit)
       ]);
