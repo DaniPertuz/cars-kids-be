@@ -125,7 +125,7 @@ export class MongoPurchaseDatasource implements PurchaseDatasource {
       endOfEndDate.setHours(23, 59, 59, 999);
 
       const query = {
-        date: {
+        purchaseDate: {
           $gte: startDate,
           $lt: endOfEndDate
         }
