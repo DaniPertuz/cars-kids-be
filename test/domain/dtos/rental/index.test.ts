@@ -121,7 +121,7 @@ describe('RentalDTO', () => {
 
       expect(error).toBe('Usuario es requerido');
     });
-    
+
     test('should return error when desk field is missing', () => {
       const invalidObject = {
         client: 'NN Test',
@@ -137,6 +137,44 @@ describe('RentalDTO', () => {
       expect(error).toBe('Puesto de trabajo es requerido');
     });
 
+    test('should return error for invalid desk ID', () => {
+      const invalidDeskId = 'invalidDeskId';
+      const invalidRental = {
+        client: 'NN Test',
+        time: 15,
+        date: '01-24-2023',
+        vehicle: '15c42daad17250e579833f0e',
+        desk: invalidDeskId,
+        payment: IPayment.Cash,
+        amount: 10000,
+        user: 'd4ba2daad17250e579833f2e'
+      };
+
+      const [error, rentalDTO] = RentalDTO.create(invalidRental);
+
+      expect(error).toBe('Invalid desk ID');
+      expect(rentalDTO).toBeUndefined();
+    });
+
+    test('should return error for invalid vehicle ID', () => {
+      const invalidVehicleId = 'invalidVehicleId';
+      const invalidRental = {
+        client: 'NN Test',
+        time: 15,
+        date: '01-24-2023',
+        vehicle: invalidVehicleId,
+        desk: 'd4ba2daad17250e579833f2e',
+        payment: IPayment.Cash,
+        amount: 10000,
+        user: '15c42daad17250e579833f0e'
+      };
+
+      const [error, rentalDTO] = RentalDTO.create(invalidRental);
+
+      expect(error).toBe('Invalid vehicle ID');
+      expect(rentalDTO).toBeUndefined();
+    });
+
     test('should return error for invalid user ID', () => {
       const invalidUserId = 'invalidUserId';
       const invalidRental = {
@@ -149,12 +187,12 @@ describe('RentalDTO', () => {
         amount: 10000,
         user: invalidUserId
       };
-  
+
       const [error, rentalDTO] = RentalDTO.create(invalidRental);
-  
+
       expect(error).toBe('Invalid User ID');
       expect(rentalDTO).toBeUndefined();
-  });
+    });
 
     test('should return RentalDTO instance when object is valid', () => {
       const [, rentalDTO] = RentalDTO.create(validObject);
