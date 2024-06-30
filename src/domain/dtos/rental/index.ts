@@ -15,6 +15,8 @@ export class RentalDTO {
     if (!amount) return ['Monto es requerido'];
     if (!user) return ['Usuario es requerido'];
     if (!desk) return ['Puesto de trabajo es requerido'];
+    if (!Validators.isMongoID(vehicle)) return ['Invalid vehicle ID'];
+    if (!Validators.isMongoID(desk)) return ['Invalid desk ID'];
     if (!Validators.isMongoID(user)) return ['Invalid User ID'];
 
     return [undefined, new RentalDTO({ client, time, date, vehicle, payment, amount, user, desk })];
