@@ -26,7 +26,8 @@ export enum IUserRole {
 export enum IVehicleSize {
   Small  = 'S',
   Medium = 'M',
-  Large  = 'L'
+  Large  = 'L',
+  XLarge = 'XL'
 }
 
 export interface IBudget {
