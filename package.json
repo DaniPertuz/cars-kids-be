@@ -2,11 +2,11 @@
   "name": "cars-kids-be",
   "version": "1.0.0",
   "description": "Pequeños conductores backend",
-  "main": "src/app.js",
+  "main": "app.js",
   "scripts": {
     "dev": "nodemon",
     "build": "rimraf ./dist && tsc",
-    "start": "node src/app.js",
+    "start": "npm run build && node dist/app.js",
     "test": "jest",
     "test:watch": "jest --watch --detectOpenHandles",
     "test:coverage": "jest --coverage"
