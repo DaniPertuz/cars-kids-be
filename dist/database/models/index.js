@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VehicleModel = exports.UserModel = exports.RentalModel = exports.PurchaseModel = exports.ProductModel = exports.DeskModel = exports.BudgetModel = void 0;
+var budget_1 = require("./budget");
+Object.defineProperty(exports, "BudgetModel", { enumerable: true, get: function () { return __importDefault(budget_1).default; } });
+var desk_1 = require("./desk");
+Object.defineProperty(exports, "DeskModel", { enumerable: true, get: function () { return __importDefault(desk_1).default; } });
+var product_1 = require("./product");
+Object.defineProperty(exports, "ProductModel", { enumerable: true, get: function () { return __importDefault(product_1).default; } });
+var purchase_1 = require("./purchase");
+Object.defineProperty(exports, "PurchaseModel", { enumerable: true, get: function () { return __importDefault(purchase_1).default; } });
+var rental_1 = require("./rental");
+Object.defineProperty(exports, "RentalModel", { enumerable: true, get: function () { return __importDefault(rental_1).default; } });
+var user_1 = require("./user");
+Object.defineProperty(exports, "UserModel", { enumerable: true, get: function () { return __importDefault(user_1).default; } });
+var vehicle_1 = require("./vehicle");
+Object.defineProperty(exports, "VehicleModel", { enumerable: true, get: function () { return __importDefault(vehicle_1).default; } });
