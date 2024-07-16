@@ -44,7 +44,7 @@ export class AuthService {
 
     if (!isMatching) throw CustomError.badRequest('Contraseña incorrecta');
 
-    const { password, ...userEntity } = UserEntity.fromObject(userDB).params;
+    const userEntity = UserEntity.fromObject(userDB).params;
 
     const token = await JwtAdapter.generateJWT({ email: userDB.email });
 
