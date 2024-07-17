@@ -60,7 +60,7 @@ export class AuthService {
   public checkAuthStatus = async (user: IUser) => {
     const token = await JwtAdapter.generateJWT({ email: user.email });
     return {
-      ...user,
+      user,
       token
     };
   };
