@@ -40,9 +40,11 @@ export class AuthController {
   };
 
   checkAuthStatus = (req: Request, res: Response) => {
-    const [error, userDto] = UserDTO.create(req.body);
-    if (error) return res.status(400).json({ error });
-    return this.service.checkAuthStatus(userDto!.params)
+    const { user } = req.body;
+
+    if (!user) return res.status(400).json({ error: 'Usuario inválido' });
+
+    return this.service.checkAuthStatus(user)
       .then(user => res.json(user))
       .catch(error => this.handleError(error, res));
   };
