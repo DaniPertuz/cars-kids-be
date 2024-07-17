@@ -3,6 +3,7 @@ import { RegisterUserDTO } from '../../domain/dtos/auth/register-user.dto';
 import { CustomError } from '../../domain/errors';
 import { AuthService } from '../services/auth.service';
 import { LoginUserDTO } from '../../domain/dtos/auth/login-user.dto';
+import { UserDTO } from '../../domain/dtos/user';
 
 export class AuthController {
 
@@ -39,8 +40,9 @@ export class AuthController {
   };
 
   checkAuthStatus = (req: Request, res: Response) => {
-    const { user } = req.body;
-    return this.service.checkAuthStatus(user)
+    const [error, userDto] = UserDTO.create(req.body);
+    if (error) return res.status(400).json({ error });
+    return this.service.checkAuthStatus(userDto!.params)
       .then(user => res.json(user))
       .catch(error => this.handleError(error, res));
   };
