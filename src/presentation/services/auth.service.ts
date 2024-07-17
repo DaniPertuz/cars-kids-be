@@ -3,6 +3,7 @@ import { LoginUserDTO } from '../../domain/dtos/auth/login-user.dto';
 import { RegisterUserDTO } from '../../domain/dtos/auth/register-user.dto';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { CustomError } from '../../domain/errors';
+import { IUser } from '../../interfaces';
 import { JwtAdapter, bcryptAdapter } from '../../plugins';
 
 export class AuthService {
@@ -55,6 +56,14 @@ export class AuthService {
       token
     };
   }
+
+  public checkAuthStatus = async (user: IUser) => {
+    const token = await JwtAdapter.generateJWT({ email: user.email });
+    return {
+      ...user,
+      token
+    };
+  };
 
   public validateUser = async (token: string) => {
     const payload = await JwtAdapter.validateToken(token);
