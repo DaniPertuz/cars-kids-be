@@ -182,7 +182,7 @@ export class VehiclesController {
 
   public updateVehicle = async (req: Request, res: Response) => {
     const { nickname } = req.params;
-    const { nickname: newNickname, category, img, color, size, status } = req.body;
+    const { nickname: newNickname, category, img, color, size, rentalInfo, status } = req.body;
 
     const vehicleDB = await this.vehicleRepo.getVehicleByNickname(nickname);
 
@@ -198,6 +198,7 @@ export class VehiclesController {
       img,
       color,
       size,
+      rentalInfo,
       status
     };
 
