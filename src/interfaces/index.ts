@@ -143,13 +143,19 @@ export interface UserQueryResult {
 }
 
 export interface IVehicle {
-  _id?:     string;
-  nickname: string;
-  category: ICategory;
-  color:    string;
-  img?:     string;
-  size:     IVehicleSize;
-  status:   IStatus;
+  _id?:        string;
+  nickname:    string;
+  category:    ICategory;
+  color:       string;
+  img?:        string;
+  size:        IVehicleSize;
+  rentalInfo?: VehicleRentalTime[];
+  status:      IStatus;
+}
+
+export interface VehicleRentalTime {
+  time: number;
+  price: number;
 }
 
 export interface VehicleQueryResult {
