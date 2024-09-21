@@ -21,6 +21,11 @@ describe('Vehicles routes testing', () => {
     img: 'Test image',
     category: ICategory.Car,
     color: '#000000',
+    rentalInfo: [
+      { "time": 15, "price": 10000 },
+      { "time": 20, "price": 14000 },
+      { "time": 30, "price": 18000 }
+    ],
     size: IVehicleSize.Large,
     status: IStatus.Active
   };
@@ -30,6 +35,11 @@ describe('Vehicles routes testing', () => {
     img: 'Test image 2',
     category: ICategory.Car,
     color: '#000000',
+    rentalInfo: [
+      { "time": 15, "price": 8000 },
+      { "time": 20, "price": 10000 },
+      { "time": 30, "price": 15000 }
+    ],
     size: IVehicleSize.Small,
     status: IStatus.Active
   };
@@ -38,6 +48,11 @@ describe('Vehicles routes testing', () => {
     img: 'Test image 2',
     category: ICategory.Car,
     color: '#000000',
+    rentalInfo: [
+      { "time": 15, "price": 8000 },
+      { "time": 20, "price": 10000 },
+      { "time": 30, "price": 15000 }
+    ],
     size: IVehicleSize.Small,
     status: IStatus.Active
   };
@@ -53,6 +68,18 @@ describe('Vehicles routes testing', () => {
     expect(body).toBeInstanceOf(Object);
     expect(body.vehicles.length).toBe(2);
     expect(body.vehicles[0].nickname).toBe('Test Name');
+  });
+
+  test('should return Vehicles by nickname api/vehicles/nickname', async () => {
+    await VehicleModel.create(vehicle1);
+    await VehicleModel.create(vehicle2);
+
+    const { body } = await request(testServer.app)
+      .get('/api/vehicles/nickname/Test Name 2')
+      .expect(200);
+
+    expect(body).toBeInstanceOf(Object);
+    expect(body.nickname).toBe('Test Name 2');
   });
 
   test('should return Vehicles by category api/vehicles/category', async () => {
@@ -102,7 +129,7 @@ describe('Vehicles routes testing', () => {
     await VehicleModel.create(vehicle2);
 
     const { body } = await request(testServer.app)
-      .get('/api/vehicles/size')
+      .get('/api/vehicles/props')
       .send({ color: vehicle1.color, size: vehicle1.size })
       .expect(200);
 
@@ -110,6 +137,15 @@ describe('Vehicles routes testing', () => {
     expect(body.vehicles.length).toBe(1);
     expect(body.vehicles[0].color).toBe('#000000');
     expect(body.vehicles[0].size).toBe(IVehicleSize.Large);
+  });
+
+  test('should return a bad request if color value is correct but size is incorrect api/vehicles/props', async () => {
+    const { body } = await request(testServer.app)
+      .get('/api/vehicles/props')
+      .send({ color: '#000000', size: 'X' })
+      .expect(400);
+
+    expect(body).toEqual({ error: 'Color válido pero tamaño de vehículo no válido' });
   });
 
   test('should return Vehicles by status api/vehicles/status', async () => {

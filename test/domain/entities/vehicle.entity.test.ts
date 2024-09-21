@@ -7,6 +7,11 @@ describe('Vehicle entity', () => {
     img: 'Test image',
     category: ICategory.Car,
     color: '#000000',
+    rentalInfo: [
+      { "time": 15, "price": 10000 },
+      { "time": 20, "price": 14000 },
+      { "time": 30, "price": 18000 }
+    ],
     size: IVehicleSize.Large,
     status: IStatus.Active
   };
@@ -19,6 +24,7 @@ describe('Vehicle entity', () => {
     expect(vehicle.params.img).toBe(data.img);
     expect(vehicle.params.category).toBe(data.category);
     expect(vehicle.params.color).toBe(data.color);
+    expect(vehicle.params.rentalInfo).toBe(data.rentalInfo);
     expect(vehicle.params.size).toBe(data.size);
     expect(vehicle.params.status).toBe(data.status);
   });
@@ -31,6 +37,7 @@ describe('Vehicle entity', () => {
     expect(vehicle.params.img).toBe('Test image');
     expect(vehicle.params.category).toBe(ICategory.Car);
     expect(vehicle.params.color).toBe('#000000');
+    expect(vehicle.params.rentalInfo?.length).toBe(3);
     expect(vehicle.params.size).toBe(IVehicleSize.Large);
     expect(vehicle.params.status).toBe(IStatus.Active);
   });
