@@ -2,26 +2,31 @@ import mongoose, { Model, Schema, model } from 'mongoose';
 import { IVehicle } from '../../interfaces';
 
 const vehicleSchema = new Schema({
-  nickname: { type: String, required: true, unique: true },
-  img:      { type: String, required: false, default: '' },
-  category: { type: String, required: true },
-  color:    { type: String, required: true },
-  size:     { type: String,
-              enum: {
-                values: ['S', 'M', 'L'],
-                message: '{VALUE} no es un tamaño válido',
-                default: 'M',
-                required: true
+  nickname:   { type: String, required: true, unique: true },
+  img:        { type: String, required: false, default: '' },
+  category:   { type: String, required: true },
+  color:      { type: String, required: true },
+  size:       { type: String,
+                enum: {
+                  values: ['S', 'M', 'L'],
+                  message: '{VALUE} no es un tamaño válido',
+                  default: 'M',
+                  required: true
+                }
+              },
+  rentalInfo: [{
+                time:  { type: Number, required: true, default: 0 },
+                price: { type: Number, required: true, default: 0 },
+                _id: false
+              }],
+  status:     { type: String,
+                enum: {
+                  values: ['active', 'inactive'],
+                  message: '{VALUE} no es un estado válido',
+                  default: 'active',
+                  required: true
+                }
               }
-            },
-  status:   { type: String,
-              enum: {
-                values: ['active', 'inactive'],
-                message: '{VALUE} no es un estado válido',
-                default: 'active',
-                required: true
-              }
-            }
 }, {
   timestamps: true,
   versionKey: false
