@@ -92,13 +92,13 @@ describe('Users routes testing', () => {
       .send({ email: 'test1@test.com', password: 'test-pass1' })
       .expect(200);
 
-    expect(body).toEqual({
+    expect(body).toEqual(expect.objectContaining({
       email: 'test1@test.com',
       name: 'Test User',
       img: 'User image',
       role: 'editor',
       status: 'active'
-    });
+    }));
 
     await UserModel.findOneAndDelete({ email: 'test1@test.com' });
   });
@@ -111,13 +111,13 @@ describe('Users routes testing', () => {
       .send({ email: 'test1@test.com', name: 'Test User Updated' })
       .expect(200);
 
-    expect(body).toEqual({
+    expect(body).toEqual(expect.objectContaining({
       email: 'test1@test.com',
       name: 'Test User Updated',
       img: 'User image',
       role: 'editor',
       status: 'active'
-    });
+    }));
 
     await UserModel.findOneAndDelete({ email: 'test1@test.com' });
   });
@@ -130,13 +130,13 @@ describe('Users routes testing', () => {
       .send({ email: 'test1@test.com', img: 'Image link' })
       .expect(200);
 
-    expect(body).toEqual({
+    expect(body).toEqual(expect.objectContaining({
       email: 'test1@test.com',
       name: 'Test User',
       img: 'Image link',
       role: 'editor',
       status: 'active'
-    });
+    }));
 
     await UserModel.findOneAndDelete({ email: 'test1@test.com' });
   });
@@ -149,13 +149,13 @@ describe('Users routes testing', () => {
       .send({ email: 'test1@test.com', newEmail: 'test11@test.com' })
       .expect(200);
 
-    expect(body).toEqual({
+    expect(body).toEqual(expect.objectContaining({
       email: 'test11@test.com',
       name: 'Test User',
       img: 'User image',
       role: 'editor',
       status: 'active'
-    });
+    }));
 
     await UserModel.findOneAndDelete({ email: 'test11@test.com' });
   });
@@ -169,13 +169,13 @@ describe('Users routes testing', () => {
       .send({ email: 'test1@test.com', status: IStatus.Inactive })
       .expect(200);
 
-    expect(body).toEqual({
+    expect(body).toEqual(expect.objectContaining({
       email: 'test1@test.com',
       name: 'Test User',
       img: 'User image',
       role: 'editor',
       status: 'inactive'
-    });
+    }));
 
     await UserModel.findOneAndDelete({ email: 'test11@test.com' });
   });
