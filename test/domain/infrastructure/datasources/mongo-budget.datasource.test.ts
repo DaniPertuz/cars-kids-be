@@ -14,7 +14,7 @@ describe('Mongo Budget datasource', () => {
     expenses: 0,
     loans: 0,
     payroll: 20000,
-    date: new Date(Date.UTC(2020, 0, 15)).toISOString()
+    date: new Date(2020, 0, 15).toISOString()
   });
 
   const budgetTwo = new BudgetEntity({
@@ -23,7 +23,7 @@ describe('Mongo Budget datasource', () => {
     expenses: 0,
     loans: 0,
     payroll: 20000,
-    date: new Date(Date.UTC(2020, 0, 16)).toISOString()
+    date: new Date(2020, 0, 16).toISOString()
   });
 
   beforeAll(async () => {
@@ -131,8 +131,6 @@ describe('Mongo Budget datasource', () => {
   test('should get budgets by day', async () => {
     await budgetDatasource.createBudget(budgetOne);
     const [error, paginationDto] = PaginationDto.create(1, 1);
-
-    await budgetDatasource.getBudgetsByDay('15', '01', '2020', paginationDto!);
 
     const { budgets, prev, next } = await budgetDatasource.getBudgetsByDay('15', '01', '2020', paginationDto!);
 
