@@ -18,6 +18,11 @@ describe('Vehicle model', () => {
       category: ICategory.Car,
       color: '#000000',
       size: IVehicleSize.Large,
+      rentalInfo: [
+        { "time": 15, "price": 10000 },
+        { "time": 20, "price": 14000 },
+        { "time": 30, "price": 18000 }
+      ],
       status: IStatus.Active
     };
 
@@ -25,6 +30,11 @@ describe('Vehicle model', () => {
 
     expect(vehicle.toJSON()).toEqual(expect.objectContaining({
       ...vehicleData,
+      rentalInfo: expect.arrayContaining([
+        expect.objectContaining({ time: 15, price: 10000 }),
+        expect.objectContaining({ time: 20, price: 14000 }),
+        expect.objectContaining({ time: 30, price: 18000 })
+      ]),
       _id: expect.any(Object)
     }));
 
@@ -33,12 +43,12 @@ describe('Vehicle model', () => {
 
   test('should return the schema object', () => {
     const expectedSchema = {
-      nickname: { type: expect.any(Function), required: true, unique: true },
-      img: { type: expect.any(Function), required: false, default: '' },
-      category: { type: expect.any(Function), required: true },
-      color: { type: expect.any(Function), required: true },
+      nickname: { type: String, required: true, unique: true },
+      img: { type: String, required: false, default: '' },
+      category: { type: String, required: true },
+      color: { type: String, required: true },
       size: {
-        type: expect.any(Function),
+        type: String,
         enum: {
           values: ['S', 'M', 'L'],
           message: '{VALUE} no es un tamaño válido',
@@ -46,8 +56,13 @@ describe('Vehicle model', () => {
           required: true
         }
       },
+      rentalInfo: [{
+        time: { type: Number, required: true, default: 0 },
+        price: { type: Number, required: true, default: 0 },
+        _id: false
+      }],
       status: {
-        type: expect.any(Function),
+        type: String,
         enum: {
           values: ['active', 'inactive'],
           message: '{VALUE} no es un estado válido',
