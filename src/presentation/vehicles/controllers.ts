@@ -171,7 +171,7 @@ export class VehiclesController {
 
     const vehicleDB = await Vehicle.findOne({ nickname });
 
-    if (vehicleDB) return res.status(404).json({ error: 'Ya existe un vehículo con este nombre/apodo' });
+    if (vehicleDB) return res.status(400).json({ error: 'Ya existe un vehículo con este nombre/apodo' });
 
     const vehicleData: VehicleEntity = VehicleEntity.fromObject(vehicleDto!.params);
 
@@ -190,7 +190,7 @@ export class VehiclesController {
 
     const existingVehicle = await this.vehicleRepo.getVehicleByNickname(newNickname);
 
-    if (existingVehicle) return res.status(404).json({ error: 'Ya existe un vehículo con este nombre/apodo' });
+    if (existingVehicle) return res.status(400).json({ error: 'Ya existe un vehículo con este nombre/apodo' });
 
     const updatedVehicleData: IVehicle = {
       nickname: newNickname,
