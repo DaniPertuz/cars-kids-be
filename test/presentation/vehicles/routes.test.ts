@@ -168,7 +168,7 @@ describe('Vehicles routes testing', () => {
 
     const imgValue = body.img ? body.img : '';
 
-    expect(body).toEqual(expect.objectContaining({
+    expect(body.vehicle).toEqual(expect.objectContaining({
       nickname: vehicle1.nickname,
       img: imgValue,
       category: vehicle1.category,
@@ -195,7 +195,7 @@ describe('Vehicles routes testing', () => {
       .send({ color: '#222222' })
       .expect(200);
 
-    expect(body).toEqual(expect.objectContaining({
+    expect(body.vehicle).toEqual(expect.objectContaining({
       nickname: 'Test Name 2',
       category: 'car',
       color: '#222222',
