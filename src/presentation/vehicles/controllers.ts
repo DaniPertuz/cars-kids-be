@@ -177,7 +177,7 @@ export class VehiclesController {
 
     const vehicle = (await this.vehicleRepo.createVehicle(vehicleData)).params;
 
-    return res.json(vehicle);
+    return res.json({ vehicle });
   };
 
   public updateVehicle = async (req: Request, res: Response) => {
@@ -206,7 +206,7 @@ export class VehiclesController {
 
     const updatedVehicle = await this.vehicleRepo.updateVehicle(nickname, updatedVehicleEntity);
 
-    return res.json(updatedVehicle?.params);
+    return res.json({ vehicle: updatedVehicle?.params });
   };
 
   public deactivateVehicle = async (req: Request, res: Response) => {
